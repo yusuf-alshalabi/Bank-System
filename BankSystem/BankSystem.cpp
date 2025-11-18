@@ -19,10 +19,12 @@ struct strClient {
 };
 
 void showMainMenuScreen();
+//Pause until user presses a key
 void customPause() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	cin.get();
 }
+//Clear console screen
 void clearScreen() {
 #ifdef _WIN32
 	system("cls");
@@ -35,6 +37,7 @@ void goBackToMainMenu() {
 	customPause();
 	showMainMenuScreen();
 }
+// Split string into tokens using delimiter
 vector<string> splitString(string S1, string delim) {
 	vector <string> split;
 	size_t pos = 0;
@@ -53,6 +56,7 @@ vector<string> splitString(string S1, string delim) {
 	return split;
 
 }
+// Convert a client struct to a single line for file
 string convertClientRecordToLine(const strClient& clientData, const string& seperator) {
 	string Line = "";
 	Line += clientData.AccountNumber + seperator;
@@ -64,6 +68,7 @@ string convertClientRecordToLine(const strClient& clientData, const string& sepe
 	return Line;
 
 }
+// Convert a line from file into a Client struct
 strClient convertLinetoRecord(const string& Line, const string& seperator) {
 	strClient Client;
 	vector<string> vClientData;
@@ -75,6 +80,7 @@ strClient convertLinetoRecord(const string& Line, const string& seperator) {
 	Client.AccountBalance = stod(vClientData[4]);//cast string to double
 	return Client;
 }
+// Load all clients from file, return vector of clients
 vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	vector <strClient> vClients;
 	fstream myFile;
@@ -90,6 +96,7 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	}
 	return vClients;
 }
+// Save all clients to file, skip those marked for deletion
 void SaveClientsDataToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);//over write
@@ -105,6 +112,7 @@ void SaveClientsDataToFile(string FileName, const vector<strClient>& vClients) {
 		MyFile.close();
 	}
 }
+// Append a client line to file
 void addDataLineToFile(const string& FileName, const string& stDataLine) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out | ios::app);
@@ -113,6 +121,8 @@ void addDataLineToFile(const string& FileName, const string& stDataLine) {
 		MyFile.close();
 	}
 }
+
+// Read a non-empty string input
 string readLine(string s) {
 	string line;
 	do {
@@ -121,6 +131,7 @@ string readLine(string s) {
 	} while (line.empty());
 	return line;
 }
+// Read a positive double input
 double readPositiveDouble(string s) {
 	double num;
 	cout << s;
@@ -135,6 +146,7 @@ double readPositiveDouble(string s) {
 	return num;
 }
 
+// Read client data from user except AccountNumber ; it is passed as parameter
 strClient changeClientRecord(const string& AccountNumber) {
 	strClient Client;
 	Client.AccountNumber = AccountNumber;
@@ -173,6 +185,7 @@ void printClientCard(const strClient& Client) {
 
 }
 
+// Search for a client by account number, return pointer to client if found
 strClient* findClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
 	for (auto& c : vClients) {
 		if (c.AccountNumber == accountNumber)
@@ -180,6 +193,7 @@ strClient* findClientByAccountNumber(const string& accountNumber, vector<strClie
 	}
 	return nullptr;
 }
+// Mark a client for deletion using account number
 bool markClientForDelete(string AccountNumber, vector <strClient>& vClients) {
 	for (strClient& c : vClients) {
 		if (AccountNumber == c.AccountNumber) {
@@ -189,6 +203,7 @@ bool markClientForDelete(string AccountNumber, vector <strClient>& vClients) {
 	}
 	return false;
 }
+// Mark client for deletion using pointer
 bool markClientForDelete(strClient* client) {
 	if (client == nullptr)
 		return false;
@@ -196,6 +211,7 @@ bool markClientForDelete(strClient* client) {
 		client->MarkForDelete = true;
 		return true;
 }
+// Ask user for confirmation (y/n)
 bool areYouSure(string s) {
 	char c;
 	do {
@@ -209,6 +225,7 @@ bool areYouSure(string s) {
 	else return false;
 }
 
+//- Display all clients in table
 void ShowAllClientsScreen(const vector<strClient>& vClients) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
@@ -238,6 +255,7 @@ void showScreenHeader(const string& title) {
 	cout << "-------------------------------------------------\n";
 }
 
+// Add client with unique account number
 void addnewClient(vector<strClient>& vClients) {
 	strClient newClient;
 	string accountNumber = readLine("\nPlease enter AccountNumber? ");
@@ -254,6 +272,7 @@ void addnewClient(vector<strClient>& vClients) {
 	addDataLineToFile(ClientsFileName, convertClientRecordToLine(newClient, Seperator));
 	cout << "Client Added Successfully!";
 }
+// Show Add New Client screen
 void showAddNewClient(vector <strClient>& vClients) {
 	showScreenHeader("Add New Client Screen");
 	cout << "Adding New Client :\n";
@@ -268,6 +287,7 @@ void showAddNewClient(vector <strClient>& vClients) {
 
 }
 
+// Delete a client by account number
 bool deleteClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
@@ -285,12 +305,14 @@ bool deleteClientByAccountNumber(const string& accountNumber, vector<strClient>&
 	}
 	return false;
 }
+// Show Delete Client screen
 void showDeleteClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Delete Client Screen");
 	string accountNumber = readLine("\nPlease enter AccountNumber? ");
 	deleteClientByAccountNumber(accountNumber, vClients);
 }
 
+// Update client information by account number
 bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
@@ -308,6 +330,7 @@ bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>&
 	}
 	return false;
 }
+// Show Update Client screen
 void showUpdateClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Update Info Client Screen");
 
@@ -319,6 +342,7 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 
 }
 
+// Show Find Client screen and display client details
 void ShowFindClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Find Client Screen");
 
@@ -332,6 +356,7 @@ void ShowFindClientScreen(vector<strClient>& vClients) {
 	}
 }
 
+// Show exit Client screen
 void showExitClient() {
 	clearScreen();
 
@@ -340,6 +365,7 @@ void showExitClient() {
 	cout << "-------------------------------------------------\n";
 
 }
+// Read user's choice from main menu (1 to 6)
 enMainMenuOptions readMainMenuOption() {
 	showMainMenuScreen();
 	int choice;
@@ -357,6 +383,7 @@ enMainMenuOptions readMainMenuOption() {
 	return (enMainMenuOptions)choice;
 
 }
+// Execute main menu option
 void performMainMenuOption(enMainMenuOptions MainMenuOption, vector<strClient>& vClients) {
 	clearScreen();
 	switch (MainMenuOption) {
@@ -388,6 +415,7 @@ void performMainMenuOption(enMainMenuOptions MainMenuOption, vector<strClient>& 
 		break;
 	}
 }
+// Main loop: show menu, execute options, repeat until exit
 void ManageMainMenu(vector<strClient>& vClients) {
 	enMainMenuOptions Choice;
 	do {
@@ -401,6 +429,7 @@ void ManageMainMenu(vector<strClient>& vClients) {
 	} while (Choice != enMainMenuOptions::Exit);
 
 }
+// Display main menu options
 void showMainMenuScreen() {
 	clearScreen();
 	cout << "\n===========================================\n";
