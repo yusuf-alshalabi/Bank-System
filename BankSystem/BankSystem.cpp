@@ -8,7 +8,7 @@
 using namespace std;
 
 const string ClientsFileName = "Clients.txt";
-const string Seperator = "#//#";
+const string Separator = "#//#";
 struct strClient {
 	string AccountNumber = "";
 	string PinCode = "";
@@ -89,7 +89,7 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 		string Line;
 		strClient Client;
 		while (getline(myFile, Line)) {
-			Client = convertLinetoRecord(Line, Seperator);
+			Client = convertLinetoRecord(Line, Separator);
 			vClients.push_back(Client);
 		}
 		myFile.close();
@@ -105,7 +105,7 @@ void SaveClientsDataToFile(string FileName, const vector<strClient>& vClients) {
 		for (strClient c : vClients) {
 			if (c.MarkForDelete == false) {
 				//we only write records that are not marked for delete.
-				DataLine = convertClientRecordToLine(c, Seperator);
+				DataLine = convertClientRecordToLine(c, Separator);
 				MyFile << DataLine << endl;
 			}
 		}
@@ -269,7 +269,7 @@ void addnewClient(vector<strClient>& vClients) {
 
 	newClient = changeClientRecord(accountNumber);
 	vClients.push_back(newClient);
-	addDataLineToFile(ClientsFileName, convertClientRecordToLine(newClient, Seperator));
+	addDataLineToFile(ClientsFileName, convertClientRecordToLine(newClient, Separator));
 	cout << "Client Added Successfully!";
 }
 // Show Add New Client screen
