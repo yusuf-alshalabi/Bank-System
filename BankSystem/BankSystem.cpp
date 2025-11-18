@@ -179,7 +179,7 @@ void printClientRecordLine(const strClient& client) {
 	cout << "|" << setw(10) << left << client.PinCode;
 	cout << "|" << setw(40) << left << client.Name;
 	cout << "|" << setw(12) << left << client.Phone;
-	cout << "|" << setw(12) << left << client.AccountBalance;
+	cout << "|" << setw(12) << left << client.AccountBalance << "|";
 }
 void printClientCard(const strClient& Client) {
 	showScreenHeader("Client Information");
