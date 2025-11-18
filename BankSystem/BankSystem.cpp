@@ -360,10 +360,7 @@ void ShowFindClientScreen(vector<strClient>& vClients) {
 void showExitClient() {
 	clearScreen();
 
-	cout << "\n-------------------------------------------------\n";
-	cout << "\t\tProgram Ends :-)\n";
-	cout << "-------------------------------------------------\n";
-
+	showScreenHeader("Program Ends :-)");
 }
 // Read user's choice from main menu (1 to 6)
 enMainMenuOptions readMainMenuOption() {
