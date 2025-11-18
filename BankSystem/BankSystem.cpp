@@ -158,7 +158,7 @@ strClient changeClientRecord(const string& AccountNumber) {
 	return Client;
 }
 
-enum MainMenuOptions {
+enum MainMenuOption {
 	ShowClientList = 1,
 	AddNewClient = 2,
 	DeleteClient = 3,
@@ -362,7 +362,7 @@ void showExitClient() {
 	showScreenHeader("Program Ends :-)");
 }
 // Read user's choice from main menu (1 to 6)
-MainMenuOptions readMainMenuOption() {
+MainMenuOption readMainMenuOption() {
 	showMainMenuScreen();
 	int choice;
 	do {
@@ -376,34 +376,34 @@ MainMenuOptions readMainMenuOption() {
 		}
 	} while ((choice < 1) || (choice > 6));
 
-	return (MainMenuOptions)choice;
+	return (MainMenuOption)choice;
 
 }
 // Execute main menu option
-void performMainMenuOption(MainMenuOptions MainMenuOption, vector<strClient>& vClients) {
+void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vClients) {
 	clearScreen();
 	switch (MainMenuOption) {
-	case MainMenuOptions::ShowClientList:
+	case MainMenuOption::ShowClientList:
 		ShowAllClientsScreen(vClients);
 		goBackToMainMenu();
 		break;
-	case MainMenuOptions::AddNewClient:
+	case MainMenuOption::AddNewClient:
 		showAddNewClient(vClients);
 		goBackToMainMenu();
 		break;
-	case MainMenuOptions::DeleteClient:
+	case MainMenuOption::DeleteClient:
 		showDeleteClientScreen(vClients);
 		goBackToMainMenu();
 		break;
-	case MainMenuOptions::UpdateClient:
+	case MainMenuOption::UpdateClient:
 		showUpdateClientScreen(vClients);
 		goBackToMainMenu();
 		break;
-	case MainMenuOptions::FindClient:
+	case MainMenuOption::FindClient:
 		ShowFindClientScreen(vClients);
 		goBackToMainMenu();
 		break;
-	case MainMenuOptions::Exit:
+	case MainMenuOption::Exit:
 		showExitClient();
 		break;
 	default:
@@ -413,16 +413,16 @@ void performMainMenuOption(MainMenuOptions MainMenuOption, vector<strClient>& vC
 }
 // Main loop: show menu, execute options, repeat until exit
 void ManageMainMenu(vector<strClient>& vClients) {
-	MainMenuOptions Choice;
+	MainMenuOption Choice;
 	do {
 		Choice = readMainMenuOption();
-		if (Choice == MainMenuOptions::Exit) {
+		if (Choice == MainMenuOption::Exit) {
 			showExitClient();
 			break;
 		}
 		performMainMenuOption(Choice, vClients);
 
-	} while (Choice != MainMenuOptions::Exit);
+	} while (Choice != MainMenuOption::Exit);
 
 }
 // Display main menu options
