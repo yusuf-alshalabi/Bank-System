@@ -173,16 +173,14 @@ void printClientCard(const strClient& Client) {
 
 }
 
-bool findClientByAccountNumber(const string& accountNumber, const vector<strClient>& vClient, strClient& client) {
-	for (const strClient& c : vClient) {
-		if (c.AccountNumber == accountNumber) {
-			client = c;
-			return true;
-		}
+strClient* findClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
+	for (auto& c : vClients) {
+		if (c.AccountNumber == accountNumber)
+			return &c;
 	}
-	return false;
+	return nullptr;
 }
-bool markClientForDeleteByAccountNumber(string AccountNumber, vector <strClient>& vClients) {
+bool markClientForDelete(string AccountNumber, vector <strClient>& vClients) {
 	for (strClient& c : vClients) {
 		if (AccountNumber == c.AccountNumber) {
 			c.MarkForDelete = true;
@@ -190,6 +188,13 @@ bool markClientForDeleteByAccountNumber(string AccountNumber, vector <strClient>
 		}
 	}
 	return false;
+}
+bool markClientForDelete(strClient* client) {
+	if (client == nullptr)
+		return false;
+
+		client->MarkForDelete = true;
+		return true;
 }
 bool areYouSure(string s) {
 	char c;
@@ -236,17 +241,18 @@ void showScreenHeader(const string& title) {
 void addnewClient(vector<strClient>& vClients) {
 	strClient newClient;
 	string accountNumber = readLine("\nPlease enter AccountNumber? ");
+	strClient* findClient = findClientByAccountNumber(accountNumber, vClients);
 
-	while (findClientByAccountNumber(accountNumber, vClients, newClient)) {
+	while (findClient != nullptr) {
 		cout << "Client with accountNumber [" << accountNumber << "] already Exits, enter another account number?\n";
 		accountNumber = readLine("\nPlease enter AccountNumber? ");
+		findClient = findClientByAccountNumber(accountNumber, vClients);
 	}
 
 	newClient = changeClientRecord(accountNumber);
 	vClients.push_back(newClient);
 	addDataLineToFile(ClientsFileName, convertClientRecordToLine(newClient, Seperator));
 	cout << "Client Added Successfully!";
-
 }
 void showAddNewClient(vector <strClient>& vClients) {
 	showScreenHeader("Add New Client Screen");
@@ -262,25 +268,22 @@ void showAddNewClient(vector <strClient>& vClients) {
 
 }
 
-bool deleteClientByAccountNumber(const string accountNumber, vector<strClient>& vClients) {
-	strClient client;
-	if (findClientByAccountNumber(accountNumber, vClients, client)) {
-		printClientCard(client);
-		if (areYouSure("Are you sure you want delete this client ?")) {
-			markClientForDeleteByAccountNumber(accountNumber, vClients);
-			SaveClientsDataToFile(ClientsFileName, vClients);
-			vClients = loadClientsDataFromFile(ClientsFileName);
-			cout << "\n\nClient Deleted Successfully.";
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else {
+bool deleteClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
+	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+	if (!client) {
 		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
 		return false;
 	}
+
+	printClientCard(*client);
+	if (areYouSure("Are you sure you want delete this client ?")) {
+		markClientForDelete(client);
+		SaveClientsDataToFile(ClientsFileName, vClients);
+		vClients = loadClientsDataFromFile(ClientsFileName);
+		cout << "\n\nClient Deleted Successfully.";
+		return true;
+	}
+	return false;
 }
 void showDeleteClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Delete Client Screen");
@@ -288,29 +291,22 @@ void showDeleteClientScreen(vector<strClient>& vClients) {
 	deleteClientByAccountNumber(accountNumber, vClients);
 }
 
-bool updateClientByAccountNumber(string accountNumber, vector<strClient>& vClients) {
-	strClient client;
-	if (findClientByAccountNumber(accountNumber, vClients, client)) {
-		printClientCard(client);
-
-		if (areYouSure("Are you sure you want update this client ?")) {
-			for (strClient& C : vClients) {
-				if (C.AccountNumber == accountNumber) {
-					C = changeClientRecord(accountNumber);
-					break;
-				}
-			}
-			SaveClientsDataToFile(ClientsFileName, vClients);
-			cout << "\n\nClient Updated Successfully.";
-			return true;
-		}
-		return false;
-	}
-	else {
+bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
+	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+	if (!client) {
 		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
 		return false;
 	}
 
+	printClientCard(*client);
+	if (areYouSure("Are you sure you want update this client ?")) {
+		*client = changeClientRecord(accountNumber); 
+		SaveClientsDataToFile(ClientsFileName, vClients);
+		vClients = loadClientsDataFromFile(ClientsFileName);
+		cout << "\n\nClient Updated Successfully.";
+		return true;
+	}
+	return false;
 }
 void showUpdateClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Update Info Client Screen");
@@ -323,18 +319,17 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 
 }
 
-void ShowFindClientScreen(const vector <strClient>& vClients) {
+void ShowFindClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Find Client Screen");
 
-	strClient client;
 	string accountNumber = readLine("\nPlease enter AccountNumber? ");
-	if (findClientByAccountNumber(accountNumber, vClients, client)) {
-		printClientCard(client);
-	}
-	else {
+	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+	if (!client) {
 		cout << "Client with account Number [" << accountNumber << "] is not found!\n";
 	}
-
+	else {
+		printClientCard(*client);
+	}
 }
 
 void showExitClient() {
