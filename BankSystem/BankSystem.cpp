@@ -183,7 +183,7 @@ void printClientRecordLine(const strClient& client) {
 }
 void printClientCard(const strClient& Client) {
 	showScreenHeader("Client Information");
-	cout << "\nAccout Number  : " << Client.AccountNumber;
+	cout << "\nAccount Number  : " << Client.AccountNumber;
 	cout << "\nPin Code       : " << Client.PinCode;
 	cout << "\nName           : " << Client.Name;
 	cout << "\nPhone          : " << Client.Phone;
