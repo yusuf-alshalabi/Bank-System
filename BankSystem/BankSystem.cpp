@@ -236,23 +236,22 @@ bool areYouSure(string s) {
 void ShowAllClientsScreen(const vector<strClient>& vClients) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
 
 	cout << "|" << setw(15) << left << "AccountNumber";
 	cout << "|" << setw(10) << left << "PinCode";
 	cout << "|" << setw(40) << left << "Name";
 	cout << "|" << setw(12) << left << "Phone";
 	cout << "|" << setw(12) << left << "AccountBalance";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
 	for (const strClient& Client : vClients) {
 		printClientRecordLine(Client);
 		cout << endl;
 	}
-	cout << "\n_";
-	cout << "_\n" << endl;
-
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
 }
 
 // Add client with unique account number
