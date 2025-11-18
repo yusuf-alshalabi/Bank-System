@@ -167,6 +167,13 @@ enum enMainMenuOptions {
 	Exit = 6
 };
 
+void showScreenHeader(const string& title) {
+	clearScreen();
+	cout << "\n-------------------------------------------------\n";
+	cout << "\t\t" << title << "\n";
+	cout << "-------------------------------------------------\n";
+}
+
 void printClientRecordLine(const strClient& client) {
 	cout << "|" << setw(15) << left << client.AccountNumber;
 	cout << "|" << setw(10) << left << client.PinCode;
@@ -175,14 +182,13 @@ void printClientRecordLine(const strClient& client) {
 	cout << "|" << setw(12) << left << client.AccountBalance;
 }
 void printClientCard(const strClient& Client) {
-	cout << "\nThe following are the client details:\n";
-	cout << "-----------------------------------";
+	showScreenHeader("Client Information");
 	cout << "\nAccout Number  : " << Client.AccountNumber;
 	cout << "\nPin Code       : " << Client.PinCode;
 	cout << "\nName           : " << Client.Name;
 	cout << "\nPhone          : " << Client.Phone;
 	cout << "\nAccount Balance: " << Client.AccountBalance;
-	cout << "\n-----------------------------------\n";
+	cout << "\n-------------------------------------------------\n";
 
 }
 
@@ -247,13 +253,6 @@ void ShowAllClientsScreen(const vector<strClient>& vClients) {
 	cout << "\n_";
 	cout << "_\n" << endl;
 
-}
-
-void showScreenHeader(const string& title) {
-	clearScreen();
-	cout << "\n-------------------------------------------------\n";
-	cout << "\t\t" << title << "\n";
-	cout << "-------------------------------------------------\n";
 }
 
 // Add client with unique account number
