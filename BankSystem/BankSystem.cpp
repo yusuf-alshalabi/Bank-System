@@ -520,7 +520,7 @@ void showTransactionsMenuScreen() {
 	cout << "===========================================\n";
 }
 
-TransactionsOptions readTransactionsMenuOption(vector<strClient>& vClients) {
+TransactionsOptions readTransactionsMenuOption() {
 	showTransactionsMenuScreen();
 	int choice;
 	do {
@@ -541,7 +541,7 @@ TransactionsOptions readTransactionsMenuOption(vector<strClient>& vClients) {
 void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
-		Choice = readTransactionsMenuOption(vClients);
+		Choice = readTransactionsMenuOption();
 		if (Choice != TransactionsOptions::ShowMainMenue) {
 			PerfromTranactionsMenuOption(Choice, vClients);
 		}
