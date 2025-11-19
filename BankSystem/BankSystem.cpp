@@ -667,7 +667,7 @@ void printUserCard(strUser* User) {
 	cout << "-----------------------------------";
 	cout << "\nUser Name   : " << User->UserName;
 	cout << "\nPassword    : " << User->Password;
-	cout << "\nImpression  : " << to_string(User->Permissions);
+	cout << "\nPermissions  : " << to_string(User->Permissions);
 	cout << "\n-----------------------------------\n";
 
 }
@@ -765,6 +765,20 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 	deleteUserByNameAndPassword(name, password, vUsers);
 }
 
+void showFindUserScreen(vector<strUser>& vUsers) {
+	clearScreen();
+	showScreenHeader("Find User Screen");
+
+	string name = readLine("Please Enter UserName?");
+	strUser* user = findUserByUserName(name,vUsers);
+	string password = readLine("Please Enter Password? ");
+	if (findUsersByUserNameAndPassword(password, user)) {
+		printUserCard(user);
+	}
+	else {
+		cout << "\nUser with name (" + name + ") and password (" + password + ") is not found!.\n";
+	}
+}
 
 void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
@@ -782,7 +796,7 @@ void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <str
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::FindUser:
-		//showFindUserScreen(vUsers);
+		showFindUserScreen(vUsers);
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::UpdateUser:
