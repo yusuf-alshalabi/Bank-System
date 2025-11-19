@@ -441,7 +441,7 @@ void printBalanceClientLine(const strClient& client) {
 	cout << "| " << setw(35) << left << client.AccountBalance;
 }
 
-void ShowTotalBalancesScreen(vector <strClient>& vClients) {
+void ShowTotalBalancesScreen(const vector <strClient>& vClients) {
 	clearScreen();
 	double totalBalance = 0;
 	cout << "\n\t\t\t\t\t Balance List (" << vClients.size() << ") Client(s).";
