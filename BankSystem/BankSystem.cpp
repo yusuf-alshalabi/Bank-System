@@ -181,7 +181,6 @@ enum TransactionsOptions {
 	ShowMainMenue = 4 
 };
 
-
 void showScreenHeader(const string& title) {
 	clearScreen();
 	cout << "\n-------------------------------------------------\n";
@@ -189,13 +188,6 @@ void showScreenHeader(const string& title) {
 	cout << "-------------------------------------------------\n";
 }
 
-void printClientRecordLine(const strClient& client) {
-	cout << "|" << setw(15) << left << client.AccountNumber;
-	cout << "|" << setw(10) << left << client.PinCode;
-	cout << "|" << setw(40) << left << client.Name;
-	cout << "|" << setw(12) << left << client.Phone;
-	cout << "|" << setw(12) << left << client.AccountBalance << "|";
-}
 void printClientCard(const strClient& Client) {
 	showScreenHeader("Client Information");
 	cout << "\nAccount Number  : " << Client.AccountNumber;
@@ -238,6 +230,13 @@ bool areYouSure(string s) {
 	else return false;
 }
 
+void printClientRecordLine(const strClient& client) {
+	cout << "|" << setw(15) << left << client.AccountNumber;
+	cout << "|" << setw(10) << left << client.PinCode;
+	cout << "|" << setw(40) << left << client.Name;
+	cout << "|" << setw(12) << left << client.Phone;
+	cout << "|" << setw(12) << left << client.AccountBalance << "|";
+}
 //- Display all clients in table
 void ShowAllClientsScreen(const vector<strClient>& vClients) {
 	clearScreen();
@@ -431,7 +430,6 @@ void printBalanceClientLine(const strClient& client) {
 	cout << "| " << setw(40) << left << client.Name;
 	cout << "| " << setw(35) << left << client.AccountBalance;
 }
-
 void ShowTotalBalancesScreen(const vector <strClient>& vClients) {
 	clearScreen();
 	double totalBalance = 0;
@@ -498,7 +496,6 @@ void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, ve
 	}
 
 }
-
 void showTransactionsMenuScreen() {
 	clearScreen();
 	cout << "===========================================\n";
@@ -510,7 +507,6 @@ void showTransactionsMenuScreen() {
 	cout << "\t[4] Main Menue.\n";
 	cout << "===========================================\n";
 }
-
 TransactionsOptions readTransactionsMenuOption() {
 	showTransactionsMenuScreen();
 	int choice;
@@ -528,7 +524,6 @@ TransactionsOptions readTransactionsMenuOption() {
 	return (TransactionsOptions)choice;
 
 }
-
 void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
