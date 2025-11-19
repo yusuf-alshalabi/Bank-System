@@ -367,6 +367,10 @@ void showExitClient() {
 	showScreenHeader("Program Ends :-)");
 }
 
+// ==================================================
+// TRANSACTIONS MANAGEMENT SYSTEM
+// Handles deposits, withdrawals, and balance reports
+// ==================================================
 bool depositBalanceToClient(strClient* client, double depositAmount) {
 	if (client == nullptr) {
 		return false;
@@ -533,7 +537,8 @@ void ManageTransactions(vector<strClient>& vClients) {
 		}
 	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
-
+//========================================================================
+// 
 // Read user's choice from main menu (1 to 7)
 MainMenuOption readMainMenuOption() {
 	showMainMenuScreen();
