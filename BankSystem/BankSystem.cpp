@@ -612,7 +612,7 @@ void ManageTransactions(vector<strClient>& vClients) {
 	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
 //========================================================================
-// 
+ 
 // Read user's choice from main menu (1 to 8)
 MainMenuOption readMainMenuOption() {
 	showMainMenuScreen();
@@ -632,14 +632,92 @@ MainMenuOption readMainMenuOption() {
 
 }
 
+strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
+	for (auto& user : vUsers) {
+		if (user.UserName == userName)
+			return &user;
+	}
+	return nullptr;
+}
+strUser changeUserInfo(const string& userName, const string& password) {
+	strUser user;
+	user.UserName = userName;
+	user.Password = password;
+	user.Permissions = -1;
+	//user.Permissions = readPermissionsToSet();
+	return user;
+}
+
+
+void printUserLine(const strUser& user) {
+	cout << "|" << setw(25) << left << user.UserName;
+	cout << "|" << setw(15) << left << user.Password;
+	cout << "|" << setw(15) << left << user.Permissions;
+}
+void ShowAllUsersScreen(const vector<strUser>& vUsers) {
+	clearScreen();
+	cout << "\n\t\t\t\t\tUsers List (" << vUsers.size() << ") User(s).";
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+	cout << "|" << setw(25) << left << "UserName";
+	cout << "|" << setw(15) << left << "Password";
+	cout << "|" << setw(15) << left << "Permissions";
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+	for (const strUser& user : vUsers) {
+		printUserLine(user);
+		cout << endl;
+	}
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+}
+
+void addNewUser(vector<strUser>& vUsers) {
+	clearScreen();
+
+	cout << "\n-------------------------------------------------\n";
+	cout << "\t\tAdd New User Screen\n";
+	cout << "-------------------------------------------------\n";
+
+	string name = readLine("Please Enter UserName?");
+	strUser* existingUser = findUserByUserName(name, vUsers);
+
+	while (existingUser != nullptr) {
+		cout << "User with name [" << name << "] already Exits, enter a different username?\n";
+		name = readLine("Please Enter UserName?");
+		existingUser = findUserByUserName(name, vUsers);
+	}
+
+	string password = readLine("Please Enter Password? ");
+
+	strUser newUser = changeUserInfo(name, password);
+	vUsers.push_back(newUser);
+	addDataLineToFile(UsersFileName, convertUserRecordToLine(newUser, Separator));
+
+	cout << "User Added Successfully!";
+}
+
+
+void showAddNewUser(vector<strUser>& vUsers) {
+
+	char AddMore = 'Y';
+	do
+	{
+		addNewUser(vUsers);
+		cout << " ,do you want to add more Users? Y/N? ";
+		cin >> AddMore;
+
+	} while (toupper(AddMore) == 'Y');
+}
+
 void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
 	case ManageUsersOptions::ListUser:
-		//ShowAllUsersScreen(vUsers);
+		ShowAllUsersScreen(vUsers);
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::AddNewUser: {
-		//showAddNewUser(vUsers);
+		showAddNewUser(vUsers);
 		goBackToManageUsers();
 		break;
 	}
