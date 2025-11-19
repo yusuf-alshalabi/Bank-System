@@ -385,7 +385,7 @@ bool depositBalanceToClient(strClient* client, double depositAmount) {
 	cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
 	return true;
 }
-void ShowDepositScreen(vector<strClient>& vClients) {
+void showDepositScreen(vector<strClient>& vClients) {
 	showScreenHeader("Deposit Screen");
 	string accountNumber = readLine("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
@@ -401,6 +401,40 @@ void ShowDepositScreen(vector<strClient>& vClients) {
 	}
 }
 
+bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
+	if (client == nullptr) {
+		cout << "Client is null\n";
+		return false;
+	}
+	if (withdrawAmount <= client->AccountBalance) {
+		client->AccountBalance -= withdrawAmount;
+		cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
+		return true;
+	}
+	cout << "Amount Exceed the balance\n";
+	return false;
+}
+void showWithdrawScreen(vector<strClient>& vClients) {
+	showScreenHeader("Withdraw Screen");
+	string accountNumber = readLine("\nPlease enter AccountNumber? ");
+	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+	if (!client) {
+		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		return;
+	}
+	printClientCard(*client);
+	double withdrawAmount = readPositiveDouble("Enter Withdraw Amount: ");
+	while (withdrawAmount > client->AccountBalance) {
+		cout << "Amount Exceed the balance, you can Withdraw up to " << client->AccountBalance << ".\n";
+		withdrawAmount = readPositiveDouble("Please enter another withdraw amount?");
+	}
+	
+	if (withdrawBalanceToClient(client, withdrawAmount)) {
+		SaveClientsDataToFile(ClientsFileName, vClients);
+		vClients = loadClientsDataFromFile(ClientsFileName);
+	}
+}
+
 void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenueOption)
@@ -408,7 +442,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 	case TransactionsMenueOptions::Deposit:
 	{
 		clearScreen();
-		ShowDepositScreen(vClients);
+		showDepositScreen(vClients);
 		goBackToTransactionsMenue(vClients);
 		break;
 	}
@@ -416,7 +450,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 	case TransactionsMenueOptions::Withdraw:
 	{
 		clearScreen();
-		//ShowWithDrawScreen();
+		showWithdrawScreen(vClients);
 		goBackToTransactionsMenue(vClients);
 		break;
 	}
