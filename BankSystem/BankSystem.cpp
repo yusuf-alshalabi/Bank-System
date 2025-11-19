@@ -9,6 +9,7 @@
 using namespace std;
 
 const string ClientsFileName = "Clients.txt";
+const string UsersFileName = "Users.txt";
 const string Separator = "#//#";
 struct strClient {
 	string AccountNumber = "";
@@ -18,7 +19,15 @@ struct strClient {
 	double AccountBalance = 0;
 	bool MarkForDelete = false;
 };
+struct strUser
+{
+	string UserName="";
+	string Password="";
+	int Permissions=-1;
+	bool MarkForDelete = false;
+};
 
+void showManageUsersScreen();
 void showMainMenuScreen();
 void ManageTransactions(vector<strClient>& vCleints);
 //Pause until user presses a key
@@ -43,6 +52,11 @@ void goBackToMainMenu() {
 	cout << "\n\nPress any key to go back to Main Menu...";
 	customPause();
 	showMainMenuScreen();
+}
+void goBackToManageUsers() {
+	cout << "\n\nPress any key to go back to Manage Users...";
+	customPause();
+	showManageUsersScreen();
 }
 // Split string into tokens using delimiter
 vector<string> splitString(string S1, string delim) {
@@ -87,6 +101,27 @@ strClient convertLinetoRecord(const string& Line, const string& seperator) {
 	Client.AccountBalance = stod(vClientData[4]);//cast string to double
 	return Client;
 }
+// Convert a User struct to a single line for file
+string convertUserRecordToLine(const strUser& userInfo, const string& separator = "#//#") {
+	string line = "";
+	line += userInfo.UserName + separator;
+	line += userInfo.Password + separator;
+	line += to_string(userInfo.Permissions);
+	return line;
+}
+
+// Convert a line from file into a User struct
+strUser convertLinetoUserInfo(string Line, const string& seperator) {
+	strUser userInfo;
+	vector<string> vUsersData;
+	vUsersData = splitString(Line, seperator);
+	userInfo.UserName = vUsersData[0];
+	userInfo.Password = vUsersData[1];
+	userInfo.Permissions = stoi(vUsersData[2]);
+
+	return userInfo;
+}
+
 // Load all clients from file, return vector of clients
 vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	vector <strClient> vClients;
@@ -102,6 +137,22 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 		myFile.close();
 	}
 	return vClients;
+}
+// Load all Users from file, return vector of Users
+vector<strUser> loadUsersDataFromFile(const string& fileName) {
+	vector <strUser> vUsers;
+	fstream myFile;
+	myFile.open(fileName, ios::in); //read only.
+	if (myFile.is_open()) {
+		string Line;
+		strUser User;
+		while (getline(myFile, Line)) {
+			User = convertLinetoUserInfo(Line, Separator);
+			vUsers.push_back(User);
+		}
+		myFile.close();
+	}
+	return vUsers;
 }
 // Save all clients to file, skip those marked for deletion
 void SaveClientsDataToFile(string FileName, const vector<strClient>& vClients) {
@@ -119,6 +170,21 @@ void SaveClientsDataToFile(string FileName, const vector<strClient>& vClients) {
 		MyFile.close();
 	}
 }
+void SaveUsersDataToFile(string FileName, const vector<strUser>& vUsers) {
+	fstream MyFile;
+	MyFile.open(FileName, ios::out);
+	string DataLine;
+	if (MyFile.is_open()) {
+		for (strUser c : vUsers) {
+			if (c.MarkForDelete == false) {
+				DataLine = convertUserRecordToLine(c, Separator);
+				MyFile << DataLine << endl;
+			}
+		}
+		MyFile.close();
+	}
+}
+
 // Append a client line to file
 void addDataLineToFile(const string& FileName, const string& stDataLine) {
 	fstream MyFile;
@@ -171,14 +237,22 @@ enum MainMenuOption {
 	UpdateClient = 4,
 	FindClient = 5,
 	Transactions = 6,
-	Exit = 7
+	ManageUsers = 7,
+	Exit = 8
 };
-
 enum TransactionsOptions { 
 	Deposit = 1, 
 	Withdraw = 2,
 	ShowTotalBalance = 3,
 	ShowMainMenue = 4 
+};
+enum ManageUsersOptions {
+	ListUser = 1,
+	AddNewUser = 2,
+	DeleteUser = 3,
+	UpdateUser = 4,
+	FindUser = 5,
+	MainMenue = 6
 };
 
 void showScreenHeader(const string& title) {
@@ -539,23 +613,82 @@ void ManageTransactions(vector<strClient>& vClients) {
 }
 //========================================================================
 // 
-// Read user's choice from main menu (1 to 7)
+// Read user's choice from main menu (1 to 8)
 MainMenuOption readMainMenuOption() {
 	showMainMenuScreen();
 	int choice;
 	do {
-		cout << "Choose what do you want to do? [1 to 7]? ";
+		cout << "Choose what do you want to do? [1 to 8]? ";
 		cin >> choice;
 		while (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one: [1 to 7]? " << endl;
+			cout << "Invalid Number, Enter a valid one: [1 to 8]? " << endl;
 			cin >> choice;
 		}
-	} while ((choice < 1) || (choice > 7));
+	} while ((choice < 1) || (choice > 8));
 
 	return (MainMenuOption)choice;
 
+}
+
+void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
+	switch (manageUsersOptions) {
+	case ManageUsersOptions::ListUser:
+		//ShowAllUsersScreen(vUsers);
+		goBackToManageUsers();
+		break;
+	case ManageUsersOptions::AddNewUser: {
+		//showAddNewUser(vUsers);
+		goBackToManageUsers();
+		break;
+	}
+	case ManageUsersOptions::DeleteUser:
+		//showDeleteUserScreen(vUsers);
+		goBackToManageUsers();
+		break;
+	case ManageUsersOptions::FindUser:
+		//showFindUserScreen(vUsers);
+		goBackToManageUsers();
+		break;
+	case ManageUsersOptions::UpdateUser:
+		//showUpdateUserScreen(vUsers);
+		goBackToManageUsers();
+		break;
+	case ManageUsersOptions::MainMenue:
+		goBackToMainMenu();
+		break;
+
+	}
+}
+
+ManageUsersOptions readManageUsersOption() {
+	showManageUsersScreen();
+	int choice;
+	do {
+		cout << "Choose what do you want to do? [1 to 6]? ";
+		cin >> choice;
+		while (cin.fail()) {
+			cin.clear();
+			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			cout << "Invalid Number, Enter a valid one: [1 to 6]? ";
+			cin >> choice;
+		}
+	} while ((choice < 1) || (choice > 6));
+
+	return (ManageUsersOptions)choice;
+}
+
+
+void manageUsersMenu(vector<strUser>& vUsers) {
+	ManageUsersOptions choice;
+	do
+	{
+		choice = readManageUsersOption();
+		if (choice != ManageUsersOptions::MainMenue)
+			performManageUsersOption(choice, vUsers);
+
+	} while (choice != ManageUsersOptions::MainMenue);
 }
 // Execute main menu option
 void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vClients) {
@@ -584,6 +717,13 @@ void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 	case MainMenuOption::Transactions:
 		ManageTransactions(vClients);
 		break;
+	case MainMenuOption::ManageUsers: {
+		vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
+		manageUsersMenu(vUsers);
+		SaveUsersDataToFile(UsersFileName, vUsers);
+		goBackToMainMenu();
+		break;
+	}
 	case MainMenuOption::Exit:
 		showExitClient();
 		break;
@@ -606,6 +746,22 @@ void ManageMainMenu(vector<strClient>& vClients) {
 	} while (Choice != MainMenuOption::Exit);
 
 }
+
+// Display Manage Users menu options
+void showManageUsersScreen() {
+	clearScreen();
+	cout << "\n===========================================\n";
+	cout << "\t\tManage Users Menu Screen\n";
+	cout << "===========================================\n";
+	cout << "\t[1] List Users.\n";
+	cout << "\t[2] Add New User.\n";
+	cout << "\t[3] Delete User.\n";
+	cout << "\t[4] Update User.\n";
+	cout << "\t[5] Find User.\n";
+	cout << "\t[6] Main Menue.\n";
+	cout << "===========================================\n";
+}
+
 // Display main menu options
 void showMainMenuScreen() {
 	clearScreen();
@@ -618,7 +774,8 @@ void showMainMenuScreen() {
 	cout << "\t[4] Update Client.\n";
 	cout << "\t[5] Find Client.\n";
 	cout << "\t[6] Transactions.\n";
-	cout << "\t[7] Exit.\n";
+	cout << "\t[7] Manage Users.\n";
+	cout << "\t[8] Exit.\n";
 	cout << "===========================================\n";
 
 }
