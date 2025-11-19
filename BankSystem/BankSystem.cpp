@@ -215,16 +215,7 @@ strClient* findClientByAccountNumber(const string& accountNumber, vector<strClie
 	}
 	return nullptr;
 }
-// Mark a client for deletion using account number
-bool markClientForDelete(string AccountNumber, vector <strClient>& vClients) {
-	for (strClient& c : vClients) {
-		if (AccountNumber == c.AccountNumber) {
-			c.MarkForDelete = true;
-			return true;
-		}
-	}
-	return false;
-}
+
 // Mark client for deletion using pointer
 bool markClientForDelete(strClient* client) {
 	if (client == nullptr)
