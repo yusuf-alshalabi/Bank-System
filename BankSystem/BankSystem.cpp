@@ -435,6 +435,40 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	}
 }
 
+void printBalanceClientLine(const strClient& client) {
+	cout << "| " << setw(15) << left << client.AccountNumber;
+	cout << "| " << setw(40) << left << client.Name;
+	cout << "| " << setw(35) << left << client.AccountBalance;
+}
+
+void ShowTotalBalancesScreen(vector <strClient>& vClients) {
+	clearScreen();
+	double totalBalance = 0;
+	cout << "\n\t\t\t\t\t Balance List (" << vClients.size() << ") Client(s).";
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+
+	cout << "| " << setw(15) << left << "AccountNumber";
+	cout << "| " << setw(40) << left << "Name";
+	cout << "| " << setw(12) << left << "AccountBalance";
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+
+	if (vClients.size() == 0) {
+		cout << "\t\t\t\t No Client Available In The System!.\n";
+	}
+
+	for (const strClient& Client : vClients) {
+		totalBalance += Client.AccountBalance;
+		printBalanceClientLine(Client);
+		cout << endl;
+	}
+	cout << "\n_______________________________________________________";
+	cout << "_________________________________________\n" << endl;
+	cout << "\n\t\t\t\t\tTotal Balance = " << totalBalance << endl;
+
+}
+
 void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenueOption)
@@ -459,7 +493,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 	case TransactionsMenueOptions::ShowTotalBalance:
 	{
 		clearScreen();
-		//ShowTotalBalancesScreen();
+		ShowTotalBalancesScreen(vClients);
 		goBackToTransactionsMenue(vClients);
 		break;
 	}
