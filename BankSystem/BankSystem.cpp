@@ -174,7 +174,7 @@ enum MainMenuOption {
 	Exit = 7
 };
 
-enum TransactionsMenueOptions { 
+enum TransactionsOptions { 
 	Deposit = 1, 
 	Withdraw = 2,
 	ShowTotalBalance = 3,
@@ -469,11 +469,11 @@ void ShowTotalBalancesScreen(vector <strClient>& vClients) {
 
 }
 
-void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOption, vector<strClient>& vClients)
+void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenueOption)
 	{
-	case TransactionsMenueOptions::Deposit:
+	case TransactionsOptions::Deposit:
 	{
 		clearScreen();
 		showDepositScreen(vClients);
@@ -481,7 +481,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 		break;
 	}
 
-	case TransactionsMenueOptions::Withdraw:
+	case TransactionsOptions::Withdraw:
 	{
 		clearScreen();
 		showWithdrawScreen(vClients);
@@ -490,7 +490,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 	}
 
 
-	case TransactionsMenueOptions::ShowTotalBalance:
+	case TransactionsOptions::ShowTotalBalance:
 	{
 		clearScreen();
 		ShowTotalBalancesScreen(vClients);
@@ -499,7 +499,7 @@ void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOptio
 	}
 
 
-	case TransactionsMenueOptions::ShowMainMenue:
+	case TransactionsOptions::ShowMainMenue:
 	{
 		showMainMenuScreen();
 		break;
@@ -520,7 +520,7 @@ void showTransactionsMenuScreen() {
 	cout << "===========================================\n";
 }
 
-TransactionsMenueOptions readTransactionsMenuOption(vector<strClient>& vClients) {
+TransactionsOptions readTransactionsMenuOption(vector<strClient>& vClients) {
 	showTransactionsMenuScreen();
 	int choice;
 	do {
@@ -534,18 +534,18 @@ TransactionsMenueOptions readTransactionsMenuOption(vector<strClient>& vClients)
 		}
 	} while ((choice < 1) || (choice > 4));
 
-	return (TransactionsMenueOptions)choice;
+	return (TransactionsOptions)choice;
 
 }
 
 void ManageTransactions(vector<strClient>& vClients) {
-	TransactionsMenueOptions Choice;
+	TransactionsOptions Choice;
 	do {
 		Choice = readTransactionsMenuOption(vClients);
-		if (Choice != TransactionsMenueOptions::ShowMainMenue) {
+		if (Choice != TransactionsOptions::ShowMainMenue) {
 			PerfromTranactionsMenuOption(Choice, vClients);
 		}
-	} while (Choice != TransactionsMenueOptions::ShowMainMenue);
+	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
 
 // Read user's choice from main menu (1 to 7)
