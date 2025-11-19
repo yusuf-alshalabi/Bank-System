@@ -20,7 +20,7 @@ struct strClient {
 };
 
 void showMainMenuScreen();
-void ShowTransactionsMenue();
+void ShowTransactionsMenu(vector<strClient>& vClients);
 //Pause until user presses a key
 void customPause() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -34,10 +34,10 @@ void clearScreen() {
 	system("clear");
 #endif
 }
-void goBackToTransactionsMenue() {
+void goBackToTransactionsMenue(vector<strClient>vClients) {
 	cout << "\n\nPress any key to go back to Main Menu...";
 	customPause();
-	ShowTransactionsMenue();
+	ShowTransactionsMenu(vClients);
 }
 void goBackToMainMenu() {
 	cout << "\n\nPress any key to go back to Main Menu...";
@@ -377,15 +377,39 @@ void showExitClient() {
 	showScreenHeader("Program Ends :-)");
 }
 
-void PerfromTranactionsMenueOption(TransactionsMenueOptions TransactionMenueOption)
+bool depositBalanceToClient(strClient* client, double depositAmount) {
+	if (client == nullptr) {
+		return false;
+	}
+	client->AccountBalance +=  depositAmount;
+	cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
+	return true;
+}
+void ShowDepositScreen(vector<strClient>& vClients) {
+	showScreenHeader("Deposit Screen");
+	string accountNumber = readLine("\nPlease enter AccountNumber? ");
+	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+	if (!client) {
+		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		return;
+	}
+	printClientCard(*client);
+	double depositAmount = readPositiveDouble("Enter Deposit Amount: ");
+	if (depositBalanceToClient(client, depositAmount)) {
+		SaveClientsDataToFile(ClientsFileName, vClients);
+		vClients = loadClientsDataFromFile(ClientsFileName);
+	}
+}
+
+void PerfromTranactionsMenuOption(TransactionsMenueOptions TransactionMenueOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenueOption)
 	{
 	case TransactionsMenueOptions::Deposit:
 	{
 		clearScreen();
-		//ShowDepositScreen();
-		goBackToTransactionsMenue();
+		ShowDepositScreen(vClients);
+		goBackToTransactionsMenue(vClients);
 		break;
 	}
 
@@ -393,7 +417,7 @@ void PerfromTranactionsMenueOption(TransactionsMenueOptions TransactionMenueOpti
 	{
 		clearScreen();
 		//ShowWithDrawScreen();
-		goBackToTransactionsMenue();
+		goBackToTransactionsMenue(vClients);
 		break;
 	}
 
@@ -402,7 +426,7 @@ void PerfromTranactionsMenueOption(TransactionsMenueOptions TransactionMenueOpti
 	{
 		clearScreen();
 		//ShowTotalBalancesScreen();
-		goBackToTransactionsMenue();
+		goBackToTransactionsMenue(vClients);
 		break;
 	}
 
@@ -416,9 +440,20 @@ void PerfromTranactionsMenueOption(TransactionsMenueOptions TransactionMenueOpti
 
 }
 
+void showTransactionsMenuScreen() {
+	system("cls");
+	cout << "===========================================\n";
+	cout << "\t\tTransactions Menue Screen\n";
+	cout << "===========================================\n";
+	cout << "\t[1] Deposit.\n";
+	cout << "\t[2] Withdraw.\n";
+	cout << "\t[3] Total Balances.\n";
+	cout << "\t[4] Main Menue.\n";
+	cout << "===========================================\n";
+}
 
-TransactionsMenueOptions readTransactionsMenueOption() {
-	ShowTransactionsMenue();
+TransactionsMenueOptions readTransactionsMenuOption(vector<strClient>& vClients) {
+	showTransactionsMenuScreen();
 	int choice;
 	do {
 		cout << "Choose what do you want to do? [1 to 4]? ";
@@ -435,17 +470,9 @@ TransactionsMenueOptions readTransactionsMenueOption() {
 
 }
 
-void ShowTransactionsMenue(){
-	system("cls");
-	cout << "===========================================\n";
-	cout << "\t\tTransactions Menue Screen\n";
-	cout << "===========================================\n";
-	cout << "\t[1] Deposit.\n";
-	cout << "\t[2] Withdraw.\n";
-	cout << "\t[3] Total Balances.\n";
-	cout << "\t[4] Main Menue.\n";
-	cout << "===========================================\n";
-	PerfromTranactionsMenueOption((TransactionsMenueOptions)readTransactionsMenueOption());
+void ShowTransactionsMenu(vector<strClient>& vClients){
+	TransactionsMenueOptions option = (TransactionsMenueOptions)readTransactionsMenuOption(vClients);
+	PerfromTranactionsMenuOption(option, vClients);
 }
 
 // Read user's choice from main menu (1 to 7)
@@ -491,7 +518,7 @@ void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		goBackToMainMenu();
 		break;
 	case MainMenuOption::Transactions:
-		ShowTransactionsMenue();
+		ShowTransactionsMenu(vClients);
 		break;
 	case MainMenuOption::Exit:
 		showExitClient();
