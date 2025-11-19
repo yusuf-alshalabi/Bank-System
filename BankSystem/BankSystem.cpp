@@ -509,7 +509,7 @@ void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, ve
 }
 
 void showTransactionsMenuScreen() {
-	system("cls");
+	clearScreen();
 	cout << "===========================================\n";
 	cout << "\t\tTransactions Menue Screen\n";
 	cout << "===========================================\n";
