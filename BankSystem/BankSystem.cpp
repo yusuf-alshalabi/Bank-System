@@ -290,6 +290,15 @@ bool markClientForDelete(strClient* client) {
 		client->MarkForDelete = true;
 		return true;
 }
+// Mark User for deletion using pointer
+bool markUserForDelete(strUser* user) {
+	if (user == nullptr)
+		return false;
+
+	user->MarkForDelete = true;
+	return true;
+}
+
 // Ask user for confirmation (y/n)
 bool areYouSure(string s) {
 	char c;
@@ -647,7 +656,21 @@ strUser changeUserInfo(const string& userName, const string& password) {
 	//user.Permissions = readPermissionsToSet();
 	return user;
 }
+bool findUsersByUserNameAndPassword(const string& password, strUser* User) {
+	if (User == nullptr)
+		return false;
+	else 
+		return (User->Password == password);
+}
+void printUserCard(strUser* User) {
+	cout << "\nThe following are the User details:\n";
+	cout << "-----------------------------------";
+	cout << "\nUser Name   : " << User->UserName;
+	cout << "\nPassword    : " << User->Password;
+	cout << "\nImpression  : " << to_string(User->Permissions);
+	cout << "\n-----------------------------------\n";
 
+}
 
 void printUserLine(const strUser& user) {
 	cout << "|" << setw(25) << left << user.UserName;
@@ -674,10 +697,7 @@ void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 
 void addNewUser(vector<strUser>& vUsers) {
 	clearScreen();
-
-	cout << "\n-------------------------------------------------\n";
-	cout << "\t\tAdd New User Screen\n";
-	cout << "-------------------------------------------------\n";
+	showScreenHeader("Add New User Screen");
 
 	string name = readLine("Please Enter UserName?");
 	strUser* existingUser = findUserByUserName(name, vUsers);
@@ -696,8 +716,6 @@ void addNewUser(vector<strUser>& vUsers) {
 
 	cout << "User Added Successfully!";
 }
-
-
 void showAddNewUser(vector<strUser>& vUsers) {
 
 	char AddMore = 'Y';
@@ -709,6 +727,44 @@ void showAddNewUser(vector<strUser>& vUsers) {
 
 	} while (toupper(AddMore) == 'Y');
 }
+
+bool deleteUserByNameAndPassword(const string& userName, const string& password, vector<strUser>& vUsers) {
+	if (userName == "Admin")
+	{
+		cout << "\n\nYou cannot Delete This User.";
+		return false;
+
+	}
+	strUser* user = findUserByUserName(userName,vUsers);
+
+	if (findUsersByUserNameAndPassword(password,user)) {
+		printUserCard(user);
+		if (areYouSure("Are you sure you want delete this user ?")) {
+			markUserForDelete(user);
+			SaveUsersDataToFile(UsersFileName, vUsers);
+			vUsers = loadUsersDataFromFile(UsersFileName);
+			cout << "\n\nUser Deleted Successfully.\n";
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		cout << "\nUsers with name (" << userName << ") with the password (" + password + ") is not Found!";
+		return false;
+	}
+}
+
+void showDeleteUserScreen(vector<strUser>& vUsers) {
+	clearScreen();
+	showScreenHeader("Delete User Screen");
+	
+	string name = readLine("Please Enter UserName?");
+	string password = readLine("Please Enter Password? ");
+	deleteUserByNameAndPassword(name, password, vUsers);
+}
+
 
 void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
@@ -722,7 +778,7 @@ void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <str
 		break;
 	}
 	case ManageUsersOptions::DeleteUser:
-		//showDeleteUserScreen(vUsers);
+		showDeleteUserScreen(vUsers);
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::FindUser:
