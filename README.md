@@ -1,67 +1,98 @@
-# 🏦 CRUD Bank System
+# 🏦 CRUD Bank System — Version 1.1.0
 
-A Console Application for managing bank client data, developed as part of the Programming Advices Roadmap (Course 7).
+A console-based Bank Management System built in C++ as part of the Programming Advices Roadmap (Course 7).
 
-This project implements *Create, **Read, **Update, and **D*elete (CRUD) operations for client records, with data persistence handled by a text file.
+This version includes full CRUD operations, financial transactions, real-time data persistence, and an enhanced user interface.
+
+---
 
 ## ✨ Features
 
-* *View All Clients:* Display a list of all bank clients.
-* *Add New Client:* Add a new client with a unique account number.
-* *Delete Client:* Remove an existing client by account number.
-* *Update Client Info:* Modify the details of an existing client.
-* *Find Client:* Search for and display a client's details by account number.
-* *Data Persistence:* Client data is stored and retrieved from a text file (Clients.txt).
+### 🔧 Client Management
+- View All Clients – Display all clients in a formatted table
+- Add New Client – Add a client with a unique account number
+- Delete Client – Remove a client by account number
+- Update Client Info – Modify client details
+- Find Client – Search for a client and display full information
+
+### 💰 Financial Transactions
+- Deposit – Add funds to a client's account
+- Withdraw – Withdraw funds with full balance validation
+- Total Balances – Display all balances with a grand total
+- Transactions Menu – Dedicated interface for financial operations
+
+### 💾 Data Management
+- Data Persistence – All client data stored in Clients.txt
+- Real-Time Updates – Instant file updates after modifications
+- Automatic File Creation – Generates data file if not exists
+
+---
 
 ## ⚙ How to Run
 
-1.  *Clone the repository* (or save the provided code as a .cpp file).
-2.  *Compile the C++ source code* using a standard C++ compiler (e.g., g++):
+1. Clone the repository (or save the code into BankSystem.cpp)
 
-    bash
-    g++ -o bank_system main.cpp
-    
+2. Compile with g++:
+   g++ -o BankSystem BankSystem.cpp
 
-3.  *Run the executable:*
+3. Run the executable:
+   ./BankSystem
+   On Windows: BankSystem.exe
 
-    bash
-    ./bank_system
-    
-    *(On Windows, it might be bank_system.exe)*
+4. The system starts automatically with main menu and loads/creates Clients.txt
 
-4.  The application will start, display the main menu, and automatically create the Clients.txt file if it doesn't exist.
+---
 
-## 💻 Code Quality, Architecture & Performance
+## 💻 Code Quality & Architecture
 
-This project is built using a *Procedural Programming* approach in C++ and demonstrates high standards of clean code, efficiency, and robustness.
+This project follows Procedural Programming with emphasis on clean code, efficiency, and maintainability.
 
-### 1. Procedural Programming & Clean Code (SRP)
+### 🏗 Procedural Architecture & Clean Code
+- Modular Design – Clear separation between client management and transactions
+- Single Responsibility Principle – Each function has one specific task
+- Readable Code – Meaningful names, constants, intuitive menus
+- Separation of Concerns – UI, file handling, and data processing isolated
 
-* *Procedural Architecture:* The program is structured around a clear sequence of procedures/functions, separating the logic for UI, file handling, and core operations.
-* *Single Responsibility Principle (SRP):* Functions are highly granular, each dedicated to a single task (e.g., splitString, convertClientRecordToLine, showDeleteClientScreen). This makes the code easy to test, maintain, and understand.
-* *Clarity and Readability:* The use of descriptive function and variable names, along with defined constants (ClientsFileName, Separator), ensures excellent code readability.
+### 🔧 Professional C++ Usage
+- Structs – strClient organizes related data
+- Enums – MainMenuOption, TransactionsOptions eliminate magic numbers
+- Pointers – strClient* enables direct in-memory editing
+- Input Validation – Prevents negative amounts, overdrafts, invalid input
 
-### 2. Professional Use of C++ Fundamentals
+### ⚡ Performance & Efficiency
+- Pointer-based retrieval avoids data copying
+- Pass-by-reference for large structures
+- Real-time data sync ensures consistency
+- Balance protection prevents overdrafts
 
-* *Structs:* strClient effectively bundles related data points into a single, cohesive entity.
-* *Enums:* enum MainMenuOption enhances code clarity by replacing "magic numbers" with descriptive names for menu choices, directly benefiting maintainability.
-* *Pointers:* Pointers (strClient*) are used professionally in the core search function (findClientByAccountNumber). This allows for *direct in-memory modification* of the client record within the std::vector during Update and Delete operations, avoiding unnecessary data copying.
+### 🎯 User Experience
+- Dual menu system for clients and transactions
+- Intuitive navigation with clear screen flow
+- Financial reporting with total balances
+- Dedicated operation screens for each task
 
-### 3. High Performance and Efficiency
+---
 
-* *Performance-Optimized CRUD:* By returning a pointer, the system achieves *high performance* for Update and Delete operations, as changes are applied directly to the client object in the memory vector, minimizing I/O operations and avoiding redundant searches.
-* *Efficient Memory Management:* Large data structures (the client vector) are consistently passed by **reference (&)** throughout the application (e.g., const vector<strClient>&), preventing costly object copying and ensuring low memory overhead.
-* *Robust Input Handling:* Functions like readPositiveDouble include logic to robustly handle input errors (cin.fail()) and buffer issues (cin.ignore), ensuring stability and a smooth user experience.
+## 🚀 What's New in Version 1.1.0
+
+- Full financial transaction system (Deposit & Withdraw)
+- Dedicated Transactions Menu
+- Real-time balance calculations
+- Enhanced UI with clearer navigation
+- Total Balance Report with aggregated sums
 
 ---
 
 ## 📅 Roadmap Context
 
-This project is *Version 1.0 (v 1.0)* of the CRUD Bank System, representing the successful completion of *Course 7* in the Programming Advices Roadmap.
+This project represents Version 2.0 of the CRUD Bank System, reflecting advanced topics from Course 7 of the Programming Advices Roadmap.
+
+---
 
 ## 🤝 Contribution
 
-Contributions are welcome! Please fork this repository and submit a pull request.
+Contributions are welcome!
+Feel free to fork the repository, submit pull requests, or open issues.
 
 ---
 
