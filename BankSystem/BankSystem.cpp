@@ -30,6 +30,8 @@ struct strUser
 void showManageUsersScreen();
 void showMainMenuScreen();
 void ManageTransactions(vector<strClient>& vCleints);
+void login();
+
 //Pause until user presses a key
 void customPause() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -238,7 +240,8 @@ enum MainMenuOption {
 	FindClient = 5,
 	Transactions = 6,
 	ManageUsers = 7,
-	Exit = 8
+	Logout = 8,
+	Exit = 9
 };
 enum TransactionsOptions { 
 	Deposit = 1, 
@@ -264,7 +267,6 @@ enum enPermissions {
 	pManageUsers = 64,
 	pAll = -1
 };
-
 
 void showScreenHeader(const string& title) {
 	clearScreen();
@@ -633,25 +635,24 @@ void ManageTransactions(vector<strClient>& vClients) {
 }
 //========================================================================
  
-// Read user's choice from main menu (1 to 8)
+// Read user's choice from main menu (1 to 9)
 MainMenuOption readMainMenuOption() {
 	showMainMenuScreen();
 	int choice;
 	do {
-		cout << "Choose what do you want to do? [1 to 8]? ";
+		cout << "Choose what do you want to do? [1 to 9]? ";
 		cin >> choice;
 		while (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one: [1 to 8]? " << endl;
+			cout << "Invalid Number, Enter a valid one: [1 to 9]? " << endl;
 			cin >> choice;
 		}
-	} while ((choice < 1) || (choice > 8));
+	} while ((choice < 1) || (choice > 9));
 
 	return (MainMenuOption)choice;
 
 }
-
 
 int readPermissionsToSet()
 {
@@ -678,7 +679,6 @@ int readPermissionsToSet()
 	return Permissions;
 
 }
-
 
 strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 	for (auto& user : vUsers) {
@@ -853,7 +853,6 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 	} while (!success);
 }
 
-
 void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
 	case ManageUsersOptions::ListUser:
@@ -975,6 +974,9 @@ void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		}
 		break;
 	}
+	case MainMenuOption::Logout:
+		login();
+		break;
 	case MainMenuOption::Exit:
 		showExitClient();
 		break;
@@ -1033,16 +1035,43 @@ void showMainMenuScreen() {
 	cout << "\t[5] Find Client.\n";
 	cout << "\t[6] Transactions.\n";
 	cout << "\t[7] Manage Users.\n";
-	cout << "\t[8] Exit.\n";
+	cout << "\t[8] Logout.\n";
+	cout << "\t[9] Exit.\n";
 	cout << "===========================================\n";
 
+}
+
+void login() {
+	clearScreen();
+	showScreenHeader("Login Screen");
+	bool found = false;
+	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
+
+	do {
+		string name = readLine("Please Enter UserName?");
+		string password = readLine("Please Enter Password? ");
+
+		strUser* user = findUserByUserName(name, vUsers);
+		found = findUsersByUserNameAndPassword(password, user);
+
+		if (found) {
+			CurrentUser = *user;  
+		}
+		else {
+			cout << "\nInvalid username or password, try again.\n";
+		}
+	} while (!found);
+
+	cout << "\nWelcome back, " << CurrentUser.UserName << "!\n";
+	customPause();
+	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+	ManageMainMenu(vClients);
 }
 
 int main()
 {
 	cout << fixed << setprecision(2);
-	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-	ManageMainMenu(vClients);
+	login();
 
 	customPause();
 	return 0;
