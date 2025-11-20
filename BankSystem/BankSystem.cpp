@@ -863,7 +863,8 @@ void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <str
 		break;
 	case ManageUsersOptions::MainMenue:
 		goBackToMainMenu();
-		break;
+		return;
+
 
 	}
 }
