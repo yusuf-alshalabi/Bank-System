@@ -648,10 +648,10 @@ strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 	}
 	return nullptr;
 }
-strUser changeUserInfo(const string& userName, const string& password) {
+strUser changeUserInfo(const string& userName) {
 	strUser user;
 	user.UserName = userName;
-	user.Password = password;
+	user.Password = readLine("Please Enter Password? ");
 	user.Permissions = -1;
 	//user.Permissions = readPermissionsToSet();
 	return user;
@@ -708,9 +708,7 @@ void addNewUser(vector<strUser>& vUsers) {
 		existingUser = findUserByUserName(name, vUsers);
 	}
 
-	string password = readLine("Please Enter Password? ");
-
-	strUser newUser = changeUserInfo(name, password);
+	strUser newUser = changeUserInfo(name);
 	vUsers.push_back(newUser);
 	addDataLineToFile(UsersFileName, convertUserRecordToLine(newUser, Separator));
 
