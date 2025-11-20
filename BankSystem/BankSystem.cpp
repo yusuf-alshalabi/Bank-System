@@ -254,6 +254,17 @@ enum ManageUsersOptions {
 	FindUser = 5,
 	MainMenue = 6
 };
+enum enPermissions {
+	pListClients = 1,
+	pAddClient = 2,
+	pDeleteClient = 4,
+	pUpdateClient = 8,
+	pFindClient = 16,
+	pTransactions = 32,
+	pManageUsers = 64,
+	pAll = -1
+};
+
 
 void showScreenHeader(const string& title) {
 	clearScreen();
@@ -641,6 +652,75 @@ MainMenuOption readMainMenuOption() {
 
 }
 
+
+int readPermissionsToSet()
+{
+	int Permissions = 0;
+	char Answer = 'n';
+	cout << "\nDo you want to give full access? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		return enPermissions::pAll;
+	}
+
+	cout << "\nDo you want to give access to : \n ";
+
+	cout << "\nShow Client List? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pListClients;
+	}
+
+	cout << "\nAdd New Client? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pAddClient;
+	}
+
+	cout << "\nDelete Client? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pDeleteClient;
+	}
+
+	cout << "\nUpdate Client? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pUpdateClient;
+	}
+
+	cout << "\nFind Client? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pFindClient;
+	}
+
+	cout << "\nTransactions? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pTransactions;
+	}
+
+	cout << "\nManage Users? y/n? ";
+	cin >> Answer;
+	if (Answer == 'y' || Answer == 'Y')
+	{
+		Permissions += enPermissions::pManageUsers;
+	}
+
+
+	return Permissions;
+
+}
+
+
 strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 	for (auto& user : vUsers) {
 		if (user.UserName == userName)
@@ -652,8 +732,7 @@ strUser changeUserInfo(const string& userName) {
 	strUser user;
 	user.UserName = userName;
 	user.Password = readLine("Please Enter Password? ");
-	user.Permissions = -1;
-	//user.Permissions = readPermissionsToSet();
+	user.Permissions = readPermissionsToSet();
 	return user;
 }
 bool findUsersByUserNameAndPassword(const string& password, strUser* User) {
