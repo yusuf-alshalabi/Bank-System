@@ -52,7 +52,6 @@ void goBackToTransactionsMenu(vector<strClient>& vClients) {
 void goBackToMainMenu() {
 	cout << "\n\nPress any key to go back to Main Menu...";
 	customPause();
-	buildMainMenuOptions();
 }
 void goBackToManageUsers() {
 	cout << "\n\nPress any key to go back to Manage Users...";
@@ -614,7 +613,7 @@ void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, ve
 
 	case TransactionsOptions::ShowMainMenue:
 	{
-		buildMainMenuOptions();
+
 		break;
 	}
 	}
@@ -631,9 +630,7 @@ void ManageTransactions(vector<strClient>& vClients) {
 	do {
 		showTransactionsMenuScreen();
 		Choice = (TransactionsOptions)readOption(1, 4);
-		if (Choice != TransactionsOptions::ShowMainMenue) {
-			PerfromTranactionsMenuOption(Choice, vClients);
-		}
+		PerfromTranactionsMenuOption(Choice, vClients);
 	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
 //========================================================================
