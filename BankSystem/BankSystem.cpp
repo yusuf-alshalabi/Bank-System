@@ -778,6 +778,44 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	}
 }
 
+
+bool updateUserByNameAndPassword(const string& userName, const string& password, vector<strUser>& vUsers) {
+	strUser* user = findUserByUserName(userName, vUsers);
+	if (findUsersByUserNameAndPassword(password, user)) {
+		printUserCard(user);
+
+		if (areYouSure("Are you sure you want update this User ?")) {
+			for (strUser& u : vUsers) {
+				if (u.UserName == userName && u.Password == password) {
+					u = changeUserInfo(userName);
+					break;
+				}
+			}
+			SaveUsersDataToFile(UsersFileName, vUsers);
+			cout << "\n\nUser Updated Successfully.";
+			return true;
+		}
+		return false;
+	}
+	else {
+		cout << "\nUser with name (" + userName + ") and password (" + password + ") is not found!.\n";
+		return false;
+	}
+}
+
+void showUpdateUserScreen(vector<strUser>& vUsers) {
+	clearScreen();
+	showScreenHeader("Update User Screen");
+
+	bool success = false;
+	do {
+		string name = readLine("Please Enter UserName?");
+		string password = readLine("Please Enter Password? ");
+		success = updateUserByNameAndPassword(name, password, vUsers);
+	} while (!success);
+}
+
+
 void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
 	case ManageUsersOptions::ListUser:
@@ -798,7 +836,7 @@ void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <str
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::UpdateUser:
-		//showUpdateUserScreen(vUsers);
+		showUpdateUserScreen(vUsers);
 		goBackToManageUsers();
 		break;
 	case ManageUsersOptions::MainMenue:
