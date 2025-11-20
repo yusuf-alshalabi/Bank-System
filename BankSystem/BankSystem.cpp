@@ -265,7 +265,8 @@ enum enPermissions {
 	pFindClient = 16,
 	pTransactions = 32,
 	pManageUsers = 64,
-	pAll = -1
+	pAll = -1,
+	pAllPermissions = 127
 };
 
 void showScreenHeader(const string& title) {
@@ -658,6 +659,9 @@ int readPermissionsToSet()
 		Permissions += enPermissions::pTransactions;
 	if(areYouSure("Manage Users? "))
 		Permissions += enPermissions::pManageUsers;
+
+	if (Permissions == enPermissions::pAllPermissions)
+		return enPermissions::pAll;
 
 	return Permissions;
 
