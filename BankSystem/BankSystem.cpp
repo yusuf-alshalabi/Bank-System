@@ -463,6 +463,23 @@ void showExitClient() {
 	showScreenHeader("Program Ends :-)");
 }
 
+
+// Read choice from menu (form "from" to "to")
+int readOption(int from, int to) {
+	int choice;
+	do {
+		cout << "Choose what do you want to do? [" << from << " to " << to << "] ? ";
+		cin >> choice;
+		while (cin.fail()) {
+			cin.clear();
+			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			cout << "Invalid Number, Enter a valid one:  [" << from << " to " << to << "] ? " << endl;
+			cin >> choice;
+		}
+	} while ((choice < from) || (choice > to));
+
+	return choice;
+}
 // ==================================================
 // TRANSACTIONS MANAGEMENT SYSTEM
 // Handles deposits, withdrawals, and balance reports
@@ -607,52 +624,18 @@ void showTransactionsMenuScreen() {
 	cout << "\t[4] Main Menue.\n";
 	cout << "===========================================\n";
 }
-TransactionsOptions readTransactionsMenuOption() {
-	showTransactionsMenuScreen();
-	int choice;
-	do {
-		cout << "Choose what do you want to do? [1 to 4]? ";
-		cin >> choice;
-		while (cin.fail()) {
-			cin.clear();
-			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one: [1 to 4]? " << endl;
-			cin >> choice;
-		}
-	} while ((choice < 1) || (choice > 4));
-
-	return (TransactionsOptions)choice;
-
-}
 void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
-		Choice = readTransactionsMenuOption();
+		showTransactionsMenuScreen();
+		Choice = (TransactionsOptions) readOption(1,4);
 		if (Choice != TransactionsOptions::ShowMainMenue) {
 			PerfromTranactionsMenuOption(Choice, vClients);
 		}
 	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
 //========================================================================
- 
-// Read user's choice from main menu (1 to 9)
-MainMenuOption readMainMenuOption() {
-	showMainMenuScreen();
-	int choice;
-	do {
-		cout << "Choose what do you want to do? [1 to 9]? ";
-		cin >> choice;
-		while (cin.fail()) {
-			cin.clear();
-			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one: [1 to 9]? " << endl;
-			cin >> choice;
-		}
-	} while ((choice < 1) || (choice > 9));
 
-	return (MainMenuOption)choice;
-
-}
 
 int readPermissionsToSet()
 {
@@ -883,23 +866,6 @@ void performManageUsersOption(ManageUsersOptions manageUsersOptions, vector <str
 	}
 }
 
-ManageUsersOptions readManageUsersOption() {
-	showManageUsersScreen();
-	int choice;
-	do {
-		cout << "Choose what do you want to do? [1 to 6]? ";
-		cin >> choice;
-		while (cin.fail()) {
-			cin.clear();
-			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one: [1 to 6]? ";
-			cin >> choice;
-		}
-	} while ((choice < 1) || (choice > 6));
-
-	return (ManageUsersOptions)choice;
-}
-
 strUser CurrentUser;
 bool checkAccessPermission(enPermissions permission) {
 	if (CurrentUser.Permissions == enPermissions::pAll)
@@ -912,7 +878,8 @@ void manageUsersMenu(vector<strUser>& vUsers) {
 	ManageUsersOptions choice;
 	do
 	{
-		choice = readManageUsersOption();
+		showManageUsersScreen();
+		choice = (ManageUsersOptions)readOption(1,6);
 		if (choice != ManageUsersOptions::MainMenue)
 			performManageUsersOption(choice, vUsers);
 
@@ -996,7 +963,8 @@ void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 void ManageMainMenu(vector<strClient>& vClients) {
 	MainMenuOption Choice;
 	do {
-		Choice = readMainMenuOption();
+		showMainMenuScreen();
+		Choice = (MainMenuOption)readOption(1,9);
 		if (Choice == MainMenuOption::Exit) {
 			showExitClient();
 			break;
