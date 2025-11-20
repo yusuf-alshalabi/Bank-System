@@ -656,65 +656,24 @@ MainMenuOption readMainMenuOption() {
 int readPermissionsToSet()
 {
 	int Permissions = 0;
-	char Answer = 'n';
-	cout << "\nDo you want to give full access? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+
+	if (areYouSure("Do you want to give full access? ")) 
 		return enPermissions::pAll;
-	}
-
 	cout << "\nDo you want to give access to : \n ";
-
-	cout << "\nShow Client List? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Show Client List? "))
 		Permissions += enPermissions::pListClients;
-	}
-
-	cout << "\nAdd New Client? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Add New Client? "))
 		Permissions += enPermissions::pAddClient;
-	}
-
-	cout << "\nDelete Client? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Delete Client? "))
 		Permissions += enPermissions::pDeleteClient;
-	}
-
-	cout << "\nUpdate Client? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Update Client? "))
 		Permissions += enPermissions::pUpdateClient;
-	}
-
-	cout << "\nFind Client? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Find Client? "))
 		Permissions += enPermissions::pFindClient;
-	}
-
-	cout << "\nTransactions? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Transactions? "))
 		Permissions += enPermissions::pTransactions;
-	}
-
-	cout << "\nManage Users? y/n? ";
-	cin >> Answer;
-	if (Answer == 'y' || Answer == 'Y')
-	{
+	if(areYouSure("Manage Users? "))
 		Permissions += enPermissions::pManageUsers;
-	}
-
 
 	return Permissions;
 
