@@ -28,7 +28,7 @@ struct strUser
 
 vector<string> buildMainMenuOptions();
 void showManageUsersScreen();
-void ManageTransactions(vector<strClient>& vCleints);
+void ManageTransactions(vector<strClient>& vClients);
 void login();
 
 //Pause until user presses a key
@@ -581,7 +581,7 @@ void ShowTotalBalancesScreen(const vector <strClient>& vClients) {
 
 }
 
-void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, vector<strClient>& vClients)
+void performTransactionsMenuOption(TransactionsOptions TransactionMenueOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenueOption)
 	{
@@ -630,7 +630,7 @@ void ManageTransactions(vector<strClient>& vClients) {
 	do {
 		showTransactionsMenuScreen();
 		Choice = (TransactionsOptions)readOption(1, 4);
-		PerfromTranactionsMenuOption(Choice, vClients);
+		performTransactionsMenuOption(Choice, vClients);
 	} while (Choice != TransactionsOptions::ShowMainMenue);
 }
 //========================================================================
