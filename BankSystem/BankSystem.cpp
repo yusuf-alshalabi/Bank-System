@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -21,14 +20,14 @@ struct strClient {
 };
 struct strUser
 {
-	string UserName="";
-	string Password="";
-	int Permissions=-1;
+	string UserName = "";
+	string Password = "";
+	int Permissions = -1;
 	bool MarkForDelete = false;
 };
 
+vector<string> buildMainMenuOptions();
 void showManageUsersScreen();
-void showMainMenuScreen();
 void ManageTransactions(vector<strClient>& vCleints);
 void login();
 
@@ -53,7 +52,7 @@ void goBackToTransactionsMenu(vector<strClient>& vClients) {
 void goBackToMainMenu() {
 	cout << "\n\nPress any key to go back to Main Menu...";
 	customPause();
-	showMainMenuScreen();
+	buildMainMenuOptions();
 }
 void goBackToManageUsers() {
 	cout << "\n\nPress any key to go back to Manage Users...";
@@ -243,11 +242,11 @@ enum MainMenuOption {
 	Logout = 8,
 	Exit = 9
 };
-enum TransactionsOptions { 
-	Deposit = 1, 
+enum TransactionsOptions {
+	Deposit = 1,
 	Withdraw = 2,
 	ShowTotalBalance = 3,
-	ShowMainMenue = 4 
+	ShowMainMenue = 4
 };
 enum ManageUsersOptions {
 	ListUser = 1,
@@ -275,6 +274,13 @@ void showScreenHeader(const string& title) {
 	cout << "\t\t" << title << "\n";
 	cout << "-------------------------------------------------\n";
 }
+void showOptions(vector<string> options) {
+	int count = 1;
+	for (string& option : options) {
+		cout << "\t[" << count++ << "] " << option << ".\n";
+	}
+	cout << "===========================================\n";
+}
 
 void printClientCard(const strClient& Client) {
 	showScreenHeader("Client Information");
@@ -301,8 +307,8 @@ bool markClientForDelete(strClient* client) {
 	if (client == nullptr)
 		return false;
 
-		client->MarkForDelete = true;
-		return true;
+	client->MarkForDelete = true;
+	return true;
 }
 // Mark User for deletion using pointer
 bool markUserForDelete(strUser* user) {
@@ -338,22 +344,22 @@ void printClientRecordLine(const strClient& client) {
 void ShowAllClientsScreen(const vector<strClient>& vClients) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 
 	cout << "|" << setw(15) << left << "AccountNumber";
 	cout << "|" << setw(10) << left << "PinCode";
 	cout << "|" << setw(40) << left << "Name";
 	cout << "|" << setw(12) << left << "Phone";
 	cout << "|" << setw(12) << left << "AccountBalance";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 	for (const strClient& Client : vClients) {
 		printClientRecordLine(Client);
 		cout << endl;
 	}
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 }
 
 // Add client with unique account number
@@ -423,7 +429,7 @@ bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>&
 
 	printClientCard(*client);
 	if (areYouSure("Are you sure you want update this client ?")) {
-		*client = changeClientRecord(accountNumber); 
+		*client = changeClientRecord(accountNumber);
 		SaveClientsDataToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
 		cout << "\n\nClient Updated Successfully.";
@@ -489,7 +495,7 @@ bool depositBalanceToClient(strClient* client, double depositAmount) {
 	if (client == nullptr) {
 		return false;
 	}
-	client->AccountBalance +=  depositAmount;
+	client->AccountBalance += depositAmount;
 	cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
 	return true;
 }
@@ -536,7 +542,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		cout << "Amount Exceed the balance, you can Withdraw up to " << client->AccountBalance << ".\n";
 		withdrawAmount = readPositiveDouble("Please enter another withdraw amount?");
 	}
-	
+
 	if (withdrawBalanceToClient(client, withdrawAmount)) {
 		SaveClientsDataToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
@@ -552,14 +558,14 @@ void ShowTotalBalancesScreen(const vector <strClient>& vClients) {
 	clearScreen();
 	double totalBalance = 0;
 	cout << "\n\t\t\t\t\t Balance List (" << vClients.size() << ") Client(s).";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 
 	cout << "| " << setw(15) << left << "AccountNumber";
 	cout << "| " << setw(40) << left << "Name";
 	cout << "| " << setw(12) << left << "AccountBalance";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 
 	if (vClients.size() == 0) {
 		cout << "\t\t\t\t No Client Available In The System!.\n";
@@ -570,8 +576,8 @@ void ShowTotalBalancesScreen(const vector <strClient>& vClients) {
 		printBalanceClientLine(Client);
 		cout << endl;
 	}
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 	cout << "\n\t\t\t\t\tTotal Balance = " << totalBalance << endl;
 
 }
@@ -608,7 +614,7 @@ void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, ve
 
 	case TransactionsOptions::ShowMainMenue:
 	{
-		showMainMenuScreen();
+		buildMainMenuOptions();
 		break;
 	}
 	}
@@ -616,20 +622,15 @@ void PerfromTranactionsMenuOption(TransactionsOptions TransactionMenueOption, ve
 }
 void showTransactionsMenuScreen() {
 	clearScreen();
-	cout << "===========================================\n";
-	cout << "\t\tTransactions Menue Screen\n";
-	cout << "===========================================\n";
-	cout << "\t[1] Deposit.\n";
-	cout << "\t[2] Withdraw.\n";
-	cout << "\t[3] Total Balances.\n";
-	cout << "\t[4] Main Menue.\n";
-	cout << "===========================================\n";
+	showScreenHeader("Transactions Menue Screen");
+	vector<string> options = { "Deposit","Withdraw","Total Balances","Main Menue" };
+	showOptions(options);
 }
 void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
 		showTransactionsMenuScreen();
-		Choice = (TransactionsOptions) readOption(1,4);
+		Choice = (TransactionsOptions)readOption(1, 4);
 		if (Choice != TransactionsOptions::ShowMainMenue) {
 			PerfromTranactionsMenuOption(Choice, vClients);
 		}
@@ -642,22 +643,22 @@ int readPermissionsToSet()
 {
 	int Permissions = 0;
 
-	if (areYouSure("Do you want to give full access? ")) 
+	if (areYouSure("Do you want to give full access? "))
 		return enPermissions::pAll;
 	cout << "\nDo you want to give access to : \n ";
-	if(areYouSure("Show Client List? "))
+	if (areYouSure("Show Client List? "))
 		Permissions += enPermissions::pListClients;
-	if(areYouSure("Add New Client? "))
+	if (areYouSure("Add New Client? "))
 		Permissions += enPermissions::pAddClient;
-	if(areYouSure("Delete Client? "))
+	if (areYouSure("Delete Client? "))
 		Permissions += enPermissions::pDeleteClient;
-	if(areYouSure("Update Client? "))
+	if (areYouSure("Update Client? "))
 		Permissions += enPermissions::pUpdateClient;
-	if(areYouSure("Find Client? "))
+	if (areYouSure("Find Client? "))
 		Permissions += enPermissions::pFindClient;
-	if(areYouSure("Transactions? "))
+	if (areYouSure("Transactions? "))
 		Permissions += enPermissions::pTransactions;
-	if(areYouSure("Manage Users? "))
+	if (areYouSure("Manage Users? "))
 		Permissions += enPermissions::pManageUsers;
 
 	if (Permissions == enPermissions::pAllPermissions)
@@ -684,7 +685,7 @@ strUser changeUserInfo(const string& userName) {
 bool findUsersByUserNameAndPassword(const string& password, strUser* User) {
 	if (User == nullptr)
 		return false;
-	else 
+	else
 		return (User->Password == password);
 }
 void printUserCard(strUser* User) {
@@ -705,19 +706,19 @@ void printUserLine(const strUser& user) {
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tUsers List (" << vUsers.size() << ") User(s).";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 	cout << "|" << setw(25) << left << "UserName";
 	cout << "|" << setw(15) << left << "Password";
 	cout << "|" << setw(15) << left << "Permissions";
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 	for (const strUser& user : vUsers) {
 		printUserLine(user);
 		cout << endl;
 	}
-	cout << "\n_______________________________________________________";
-	cout << "_________________________________________\n" << endl;
+	cout << "\n_";
+	cout << "_\n" << endl;
 }
 
 void addNewUser(vector<strUser>& vUsers) {
@@ -758,9 +759,9 @@ bool deleteUserByNameAndPassword(const string& userName, const string& password,
 		return false;
 
 	}
-	strUser* user = findUserByUserName(userName,vUsers);
+	strUser* user = findUserByUserName(userName, vUsers);
 
-	if (findUsersByUserNameAndPassword(password,user)) {
+	if (findUsersByUserNameAndPassword(password, user)) {
 		printUserCard(user);
 		if (areYouSure("Are you sure you want delete this user ?")) {
 			markUserForDelete(user);
@@ -782,7 +783,7 @@ bool deleteUserByNameAndPassword(const string& userName, const string& password,
 void showDeleteUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Delete User Screen");
-	
+
 	string name = readLine("Please Enter UserName?");
 	string password = readLine("Please Enter Password? ");
 	deleteUserByNameAndPassword(name, password, vUsers);
@@ -793,7 +794,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	showScreenHeader("Find User Screen");
 
 	string name = readLine("Please Enter UserName?");
-	strUser* user = findUserByUserName(name,vUsers);
+	strUser* user = findUserByUserName(name, vUsers);
 	string password = readLine("Please Enter Password? ");
 	if (findUsersByUserNameAndPassword(password, user)) {
 		printUserCard(user);
@@ -883,13 +884,57 @@ void manageUsersMenu(vector<strUser>& vUsers) {
 	do
 	{
 		showManageUsersScreen();
-		choice = (ManageUsersOptions)readOption(1,6);
+		choice = (ManageUsersOptions)readOption(1, 6);
 		if (choice != ManageUsersOptions::MainMenue)
 			performManageUsersOption(choice, vUsers);
 
 	} while (choice != ManageUsersOptions::MainMenue);
 }
 // Execute main menu option
+
+
+MainMenuOption convertChoiceToMainMenuOption(int choice, const vector<string>& options) {
+	string selectedOption = options[choice - 1];
+
+	if (selectedOption == "Show Client List") return MainMenuOption::ShowClientList;
+	if (selectedOption == "Add New Client") return MainMenuOption::AddNewClient;
+	if (selectedOption == "Delete Client") return MainMenuOption::DeleteClient;
+	if (selectedOption == "Update Client") return MainMenuOption::UpdateClient;
+	if (selectedOption == "Find Client") return MainMenuOption::FindClient;
+	if (selectedOption == "Transactions") return MainMenuOption::Transactions;
+	if (selectedOption == "Manage Users") return MainMenuOption::ManageUsers;
+	if (selectedOption == "Logout") return MainMenuOption::Logout;
+	if (selectedOption == "Exit") return MainMenuOption::Exit;
+
+	return MainMenuOption::Exit;
+}
+
+vector<string> buildMainMenuOptions() {
+	vector<string> options;
+	if (checkAccessPermission(enPermissions::pAll) || checkAccessPermission(enPermissions::pAllPermissions))
+		options = { "Show Client List","Add New Client","Delete Client","Update Client","Find Client","Transactions","Manage Users" };
+	else {
+		if (checkAccessPermission(enPermissions::pListClients))
+			options.push_back("Show Client List");
+		if (checkAccessPermission(enPermissions::pAddClient))
+			options.push_back("Add New Client");
+		if (checkAccessPermission(enPermissions::pDeleteClient))
+			options.push_back("Delete Client");
+		if (checkAccessPermission(enPermissions::pUpdateClient))
+			options.push_back("Update Client");
+		if (checkAccessPermission(enPermissions::pFindClient))
+			options.push_back("Find Client");
+		if (checkAccessPermission(enPermissions::pTransactions))
+			options.push_back("Transactions");
+		if (checkAccessPermission(enPermissions::pManageUsers))
+			options.push_back("Manage Users");
+	}
+	options.push_back("Logout");
+	options.push_back("Exit");
+
+	return options;
+}
+
 void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vClients) {
 	clearScreen();
 	bool hasPermission = true;
@@ -965,52 +1010,30 @@ void performMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 }
 // Main loop: show menu, execute options, repeat until exit
 void ManageMainMenu(vector<strClient>& vClients) {
-	MainMenuOption Choice;
 	do {
-		showMainMenuScreen();
-		Choice = (MainMenuOption)readOption(1,9);
+		clearScreen();
+		showScreenHeader("Main Menu Screen");
+		vector<string> options = buildMainMenuOptions();
+		showOptions(options);
+
+		int choiceNum = readOption(1, options.size());
+		MainMenuOption Choice = convertChoiceToMainMenuOption(choiceNum, options);
+
 		if (Choice == MainMenuOption::Exit) {
 			showExitClient();
 			break;
 		}
 		performMainMenuOption(Choice, vClients);
 
-	} while (Choice != MainMenuOption::Exit);
-
+	} while (true);
 }
 
 // Display Manage Users menu options
 void showManageUsersScreen() {
 	clearScreen();
-	cout << "\n===========================================\n";
-	cout << "\t\tManage Users Menu Screen\n";
-	cout << "===========================================\n";
-	cout << "\t[1] List Users.\n";
-	cout << "\t[2] Add New User.\n";
-	cout << "\t[3] Delete User.\n";
-	cout << "\t[4] Update User.\n";
-	cout << "\t[5] Find User.\n";
-	cout << "\t[6] Main Menue.\n";
-	cout << "===========================================\n";
-}
-
-// Display main menu options
-void showMainMenuScreen() {
-	clearScreen();
-	cout << "\n===========================================\n";
-	cout << "\t\tMain Menu Screen\n";
-	cout << "===========================================\n";
-	cout << "\t[1] Show Client List.\n";
-	cout << "\t[2] Add New Client.\n";
-	cout << "\t[3] Delete Client.\n";
-	cout << "\t[4] Update Client.\n";
-	cout << "\t[5] Find Client.\n";
-	cout << "\t[6] Transactions.\n";
-	cout << "\t[7] Manage Users.\n";
-	cout << "\t[8] Logout.\n";
-	cout << "\t[9] Exit.\n";
-	cout << "===========================================\n";
-
+	showScreenHeader("Manage Users Menu Screen");
+	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User","Main Menu" };
+	showOptions(options);
 }
 
 void login() {
@@ -1027,7 +1050,7 @@ void login() {
 		found = findUsersByUserNameAndPassword(password, user);
 
 		if (found) {
-			CurrentUser = *user;  
+			CurrentUser = *user;
 		}
 		else {
 			cout << "\nInvalid username or password, try again.\n";
