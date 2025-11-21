@@ -486,6 +486,34 @@ int readOption(int from, int to) {
 
 	return choice;
 }
+
+string encryptText(const string& text, int key = 5) {
+	string encrypted = "";
+	for (char c : text) {
+		encrypted += char(c + key);
+	}
+	return encrypted;
+}
+
+string decryptText(const string& encryptedText, int key = 5) {
+	string decrypted = "";
+	for (char c : encryptedText) {
+		decrypted += char(c - key); 
+	}
+	return decrypted;
+}
+
+string readPassword() {
+	string password;
+	do {
+		password = readNonEmptyString("Please Enter Password? ");
+		if (password.length() < 4) {
+			cout << "Password must be at least 4 characters!\n";
+		}
+	} while (password.length() < 4);
+	return encryptText(password);
+}
+
 // ==================================================
 // TRANSACTIONS MANAGEMENT SYSTEM
 // Handles deposits, withdrawals, and balance reports
@@ -675,15 +703,16 @@ strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 strUser readUserData(const string& userName) {
 	strUser user;
 	user.UserName = userName;
-	user.Password = readNonEmptyString("Please Enter Password? ");
+	user.Password = readPassword(); 
 	user.Permissions = readPermissionsToSet();
 	return user;
 }
-bool checkUserPassword(const string& password, strUser* User) {
+bool checkUserPassword(const string& inputPassword, strUser* User) {
 	if (User == nullptr)
 		return false;
-	else
-		return (User->Password == password);
+
+	string decryptedStoredPassword = decryptText(User->Password);
+	return (decryptedStoredPassword == inputPassword);
 }
 void printUserCard(strUser* User) {
 	cout << "\nThe following are the User details:\n";
