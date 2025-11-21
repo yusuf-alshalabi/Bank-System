@@ -343,22 +343,22 @@ void printClientRecordLine(const strClient& client) {
 void showAllClientsReport(const vector<strClient>& vClients) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 
 	cout << "|" << setw(15) << left << "AccountNumber";
 	cout << "|" << setw(10) << left << "PinCode";
 	cout << "|" << setw(40) << left << "Name";
 	cout << "|" << setw(12) << left << "Phone";
 	cout << "|" << setw(12) << left << "AccountBalance";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 	for (const strClient& Client : vClients) {
 		printClientRecordLine(Client);
 		cout << endl;
 	}
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 }
 
 // Add client with unique account number
@@ -557,14 +557,14 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	clearScreen();
 	double totalBalance = 0;
 	cout << "\n\t\t\t\t\t Balance List (" << vClients.size() << ") Client(s).";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 
 	cout << "| " << setw(15) << left << "AccountNumber";
 	cout << "| " << setw(40) << left << "Name";
 	cout << "| " << setw(12) << left << "AccountBalance";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 
 	if (vClients.size() == 0) {
 		cout << "\t\t\t\t No Client Available In The System!.\n";
@@ -575,8 +575,8 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 		printBalanceClientLine(Client);
 		cout << endl;
 	}
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 	cout << "\n\t\t\t\t\tTotal Balance = " << totalBalance << endl;
 
 }
@@ -703,19 +703,19 @@ void printUserLine(const strUser& user) {
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tUsers List (" << vUsers.size() << ") User(s).";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 	cout << "|" << setw(25) << left << "UserName";
 	cout << "|" << setw(15) << left << "Password";
 	cout << "|" << setw(15) << left << "Permissions";
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 	for (const strUser& user : vUsers) {
 		printUserLine(user);
 		cout << endl;
 	}
-	cout << "\n_";
-	cout << "_\n" << endl;
+	cout << "\n________________________________________________";
+	cout << "_______________________________________________\n" << endl;
 }
 
 void addNewUser(vector<strUser>& vUsers) {
