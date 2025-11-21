@@ -722,12 +722,12 @@ void addNewUser(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Add New User Screen");
 
-	string name = readNonEmptyString("Please Enter UserName?");
+	string name = readNonEmptyString("Please Enter UserName? ");
 	strUser* existingUser = findUserByUserName(name, vUsers);
 
 	while (existingUser != nullptr) {
 		cout << "User with name [" << name << "] already Exits, enter a different username?\n";
-		name = readNonEmptyString("Please Enter UserName?");
+		name = readNonEmptyString("Please Enter UserName? ");
 		existingUser = findUserByUserName(name, vUsers);
 	}
 
@@ -781,7 +781,7 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Delete User Screen");
 
-	string name = readNonEmptyString("Please Enter UserName?");
+	string name = readNonEmptyString("Please Enter UserName? ");
 	string password = readNonEmptyString("Please Enter Password? ");
 	deleteUserByNameAndPassword(name, password, vUsers);
 }
@@ -790,7 +790,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Find User Screen");
 
-	string name = readNonEmptyString("Please Enter UserName?");
+	string name = readNonEmptyString("Please Enter UserName? ");
 	strUser* user = findUserByUserName(name, vUsers);
 	string password = readNonEmptyString("Please Enter Password? ");
 	if (checkUserPassword(password, user)) {
@@ -832,7 +832,7 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 
 	bool success = false;
 	do {
-		string name = readNonEmptyString("Please Enter UserName?");
+		string name = readNonEmptyString("Please Enter UserName? ");
 		string password = readNonEmptyString("Please Enter Password? ");
 		success = updateUserByNameAndPassword(name, password, vUsers);
 	} while (!success);
@@ -1041,7 +1041,7 @@ void login() {
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
 	do {
-		string name = readNonEmptyString("Please Enter UserName?");
+		string name = readNonEmptyString("Please Enter UserName? ");
 		string password = readNonEmptyString("Please Enter Password? ");
 
 		strUser* user = findUserByUserName(name, vUsers);
