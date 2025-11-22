@@ -1087,9 +1087,30 @@ void login() {
 	ManageMainMenu(vClients);
 }
 
+void createDefaultAdmin() {
+	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
+
+	if (vUsers.empty()) {
+		strUser adminUser;
+		adminUser.UserName = "Admin";
+		adminUser.Password = encryptText("1234");  
+		adminUser.Permissions = Permissions::pAll;
+
+		vUsers.push_back(adminUser);
+		saveUsersToFile(UsersFileName, vUsers);
+
+		cout << "Default admin user created:\n";
+		cout << "Username: Admin\n";
+		cout << "Password: 1234\n";
+		cout << "Please change the password after first login!\n";
+		customPause();
+	}
+}
+
 int main()
 {
 	cout << fixed << setprecision(2);
+	createDefaultAdmin();
 	login();
 
 	customPause();
