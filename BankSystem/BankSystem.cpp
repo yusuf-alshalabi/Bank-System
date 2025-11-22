@@ -479,12 +479,16 @@ int readOption(int from, int to) {
 	do {
 		cout << "Choose what do you want to do? [" << from << " to " << to << "] ? ";
 		cin >> choice;
-		while (cin.fail()) {
+
+		if (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid Number, Enter a valid one:  [" << from << " to " << to << "] ? " << endl;
-			cin >> choice;
+			cout << "Invalid input! Please enter a number between " << from << " and " << to << ".\n";
+			continue;
 		}
+
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 	} while ((choice < from) || (choice > to));
 
 	return choice;
