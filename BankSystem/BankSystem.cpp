@@ -830,7 +830,7 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 		printUserCard(user);
 		if (confirm("Are you sure you want update this User ?")) {
 			for (strUser& u : vUsers) {
-				if (u.UserName == userName) { 
+				if (u.UserName == userName) {
 					cout << "Enter new user data:\n";
 					u = readUserData(userName);
 					break;
@@ -842,7 +842,12 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 		}
 		return false;
 	}
+	else { 
+		cout << "\nUser with name (" + userName + ") and password (" + password + ") is not found!.\n";
+		return false;
+	}
 }
+
 
 
 void showUpdateUserScreen(vector<strUser>& vUsers) {
