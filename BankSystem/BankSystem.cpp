@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 #include <limits>
+#include <sstream>
+#include <functional>
 
 using namespace std;
 
@@ -488,20 +490,11 @@ int readOption(int from, int to) {
 	return choice;
 }
 
-string encryptText(const string& text, int key = 5) {
-	string encrypted = "";
-	for (char c : text) {
-		encrypted += char(c + key);
-	}
-	return encrypted;
-}
-
-string decryptText(const string& encryptedText, int key = 5) {
-	string decrypted = "";
-	for (char c : encryptedText) {
-		decrypted += char(c - key);
-	}
-	return decrypted;
+string hashPassword(const string& password) {
+	size_t hashed = hash<string>{}(password);
+	stringstream ss;
+	ss << hex << setw(16) << setfill('0') << hashed;
+	return ss.str();
 }
 
 string readPassword() {
@@ -512,7 +505,7 @@ string readPassword() {
 			cout << "Password must be at least 4 characters!\n";
 		}
 	} while (password.length() < 4);
-	return encryptText(password);
+	return hashPassword(password);
 }
 
 // ==================================================
@@ -712,8 +705,8 @@ bool checkUserPassword(const string& inputPassword, strUser* User) {
 	if (User == nullptr)
 		return false;
 
-	string decryptedStoredPassword = decryptText(User->Password);
-	return (decryptedStoredPassword == inputPassword);
+	string hashInputPassword = hashPassword(inputPassword);
+	return (User->Password == hashInputPassword);
 }
 void printUserCard(strUser* User) {
 	cout << "\nThe following are the User details:\n";
@@ -1093,7 +1086,7 @@ void createDefaultAdmin() {
 	if (vUsers.empty()) {
 		strUser adminUser;
 		adminUser.UserName = "Admin";
-		adminUser.Password = encryptText("1234");  
+		adminUser.Password = hashPassword("1234");  
 		adminUser.Permissions = Permissions::pAll;
 
 		vUsers.push_back(adminUser);
