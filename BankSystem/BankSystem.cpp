@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -58,7 +59,7 @@ void returnToManageUsers() {
 	customPause();
 	showManageUsersScreen();
 }
-// Split string into tokens using delimiter
+// Split string into tokens using delimiter
 vector<string> splitStringByDelimiter(string S1, string delim) {
 	vector <string> split;
 	size_t pos = 0;
@@ -77,7 +78,7 @@ vector<string> splitStringByDelimiter(string S1, string delim) {
 	return split;
 
 }
-// Convert a client struct to a single line for file
+// Convert a client struct to a single line for file
 string convertClientRecordToLine(const strClient& clientData, const string& seperator) {
 	string Line = "";
 	Line += clientData.AccountNumber + seperator;
@@ -101,7 +102,7 @@ strClient convertLineToClientRecord(const string& Line, const string& seperator)
 	Client.AccountBalance = stod(vClientData[4]);//cast string to double
 	return Client;
 }
-// Convert a User struct to a single line for file
+// Convert a User struct to a single line for file
 string convertUserRecordToLine(const strUser& userInfo, const string& separator = "#//#") {
 	string line = "";
 	line += userInfo.UserName + separator;
@@ -154,7 +155,7 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 	}
 	return vUsers;
 }
-// Save all clients to file, skip those marked for deletion
+// Save all clients to file, skip those marked for deletion
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);//over write
@@ -292,7 +293,7 @@ void printClientCard(const strClient& Client) {
 
 }
 
-// Search for a client by account number, return pointer to client if found
+// Search for a client by account number, return pointer to client if found
 strClient* findClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
 	for (auto& c : vClients) {
 		if (c.AccountNumber == accountNumber)
@@ -361,7 +362,7 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 	cout << "_______________________________________________\n" << endl;
 }
 
-// Add client with unique account number
+// Add client with unique account number
 void addClient(vector<strClient>& vClients) {
 	strClient newClient;
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
@@ -448,7 +449,7 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 
 }
 
-// Show Find Client screen and display client details
+// Show Find Client screen and display client details
 void ShowFindClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Find Client Screen");
 
@@ -470,7 +471,7 @@ void showExitClient() {
 }
 
 
-// Read choice from menu (form "from" to "to")
+// Read choice from menu (form "from" to "to")
 int readOption(int from, int to) {
 	int choice;
 	do {
@@ -498,7 +499,7 @@ string encryptText(const string& text, int key = 5) {
 string decryptText(const string& encryptedText, int key = 5) {
 	string decrypted = "";
 	for (char c : encryptedText) {
-		decrypted += char(c - key); 
+		decrypted += char(c - key);
 	}
 	return decrypted;
 }
@@ -703,7 +704,7 @@ strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 strUser readUserData(const string& userName) {
 	strUser user;
 	user.UserName = userName;
-	user.Password = readPassword(); 
+	user.Password = readPassword();
 	user.Permissions = readPermissionsToSet();
 	return user;
 }
@@ -830,15 +831,14 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	}
 }
 
-
 bool updateUserByNameAndPassword(const string& userName, const string& password, vector<strUser>& vUsers) {
 	strUser* user = findUserByUserName(userName, vUsers);
 	if (checkUserPassword(password, user)) {
 		printUserCard(user);
-
 		if (confirm("Are you sure you want update this User ?")) {
 			for (strUser& u : vUsers) {
-				if (u.UserName == userName && u.Password == password) {
+				if (u.UserName == userName) { 
+					cout << "Enter new user data:\n";
 					u = readUserData(userName);
 					break;
 				}
@@ -849,11 +849,8 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 		}
 		return false;
 	}
-	else {
-		cout << "\nUser with name (" + userName + ") and password (" + password + ") is not found!.\n";
-		return false;
-	}
 }
+
 
 void showUpdateUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
@@ -917,7 +914,7 @@ void manageUsersMenu(vector<strUser>& vUsers) {
 
 	} while (choice != ManageUsersOptions::MainMenu);
 }
-// Execute main menu option
+// Execute main menu option
 
 
 MainMenuOption convertChoiceToMainMenuOption(int choice, const vector<string>& options) {
@@ -1035,7 +1032,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		returnToMainMenu();
 	}
 }
-// Main loop: show menu, execute options, repeat until exit
+// Main loop: show menu, execute options, repeat until exit
 void ManageMainMenu(vector<strClient>& vClients) {
 	do {
 		clearScreen();
