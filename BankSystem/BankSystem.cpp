@@ -719,21 +719,55 @@ void printUserCard(strUser* User) {
 
 }
 
+string getPermissionsAsString(int permissions) {
+	if (permissions == Permissions::pAll)
+		return "Full Access";
+
+	vector<string> permissionList;
+
+	if (permissions & Permissions::pListClients)
+		permissionList.push_back("List Clients");
+	if (permissions & Permissions::pAddClient)
+		permissionList.push_back("Add Clients");
+	if (permissions & Permissions::pDeleteClient)
+		permissionList.push_back("Delete Clients");
+	if (permissions & Permissions::pUpdateClient)
+		permissionList.push_back("Update Clients");
+	if (permissions & Permissions::pFindClient)
+		permissionList.push_back("Find Clients");
+	if (permissions & Permissions::pTransactions)
+		permissionList.push_back("Transactions");
+	if (permissions & Permissions::pManageUsers)
+		permissionList.push_back("Manage Users");
+
+	if (permissionList.empty())
+		return "No Permissions";
+
+	string result;
+	for (int i = 0; i < permissionList.size(); i++) {
+		result += permissionList[i];
+		if (i < permissionList.size() - 1)
+			result += ", ";
+	}
+	return result;
+}
+
+
 void printUserLine(const strUser& user) {
-	cout << "|" << setw(25) << left << user.UserName;
-	cout << "|" << setw(15) << left << user.Password;
-	cout << "|" << setw(15) << left << user.Permissions;
+	cout << "|" << setw(20) << left << user.UserName;
+	cout << "|" << setw(40) << left << getPermissionsAsString(user.Permissions);
 }
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	clearScreen();
 	cout << "\n\t\t\t\t\tUsers List (" << vUsers.size() << ") User(s).";
 	cout << "\n________________________________________________";
 	cout << "_______________________________________________\n" << endl;
-	cout << "|" << setw(25) << left << "UserName";
-	cout << "|" << setw(15) << left << "Password";
-	cout << "|" << setw(15) << left << "Permissions";
+
+	cout << "|" << setw(20) << left << "User Name";
+	cout << "|" << setw(40) << left << "Permissions";
 	cout << "\n________________________________________________";
 	cout << "_______________________________________________\n" << endl;
+
 	for (const strUser& user : vUsers) {
 		printUserLine(user);
 		cout << endl;
