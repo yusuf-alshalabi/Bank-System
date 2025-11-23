@@ -350,6 +350,7 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 	}
 	cout << "\n________________________________________________";
 	cout << "_______________________________________________\n" << endl;
+	customPause();
 }
 
 // Add client with unique account number
@@ -592,7 +593,7 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	cout << "\n________________________________________________";
 	cout << "_______________________________________________\n" << endl;
 	cout << "\n\t\t\t\t\tTotal Balance = " << totalBalance << endl;
-
+	customPause();
 }
 
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
@@ -728,6 +729,7 @@ void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	}
 	cout << "\n________________________________________________";
 	cout << "_______________________________________________\n" << endl;
+	customPause();
 }
 
 void addNewUser(vector<strUser>& vUsers) {
