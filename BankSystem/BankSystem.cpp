@@ -49,6 +49,17 @@ void clearScreen() {
 #endif
 }
 
+void showSuccessMessage(string message) {
+	cout << "\n" << string(50, '=') << "\n";
+	cout << "   SUCCESS: " << message << "\n";
+	cout << string(50, '=') << "\n\n";
+}
+
+void showErrorMessage(string message) {
+	cout << "\n" << string(50, '-') << "\n";
+	cout << "   ERROR: " << message << "\n";
+	cout << string(50, '-') << "\n\n";
+}
 // Split string into tokens using delimiter
 vector<string> splitStringByDelimiter(string S1, string delim) {
 	vector <string> split;
@@ -203,7 +214,7 @@ double readPositiveNumber(string s) {
 	while (cin.fail() || num < 0) {
 		cin.clear();
 		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		cout << "Invalid Number, Enter a valid one: " << endl;
+		showErrorMessage("Invalid Number, Enter a valid one: ");
 		cin >> num;
 	}
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -360,7 +371,7 @@ void addClient(vector<strClient>& vClients) {
 	strClient* findClient = findClientByAccountNumber(accountNumber, vClients);
 
 	while (findClient != nullptr) {
-		cout << "Client with accountNumber [" << accountNumber << "] already Exits, enter another account number?\n";
+		showErrorMessage("Client with accountNumber [" + accountNumber + "] already Exits, enter another account number?");
 		accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 		findClient = findClientByAccountNumber(accountNumber, vClients);
 	}
@@ -368,7 +379,7 @@ void addClient(vector<strClient>& vClients) {
 	newClient = readClientData(accountNumber);
 	vClients.push_back(newClient);
 	appendLineToFile(ClientsFileName, convertClientRecordToLine(newClient, Separator));
-	cout << "Client Added Successfully!";
+	showSuccessMessage("Client Added Successfully!");
 }
 // Show Add New Client screen
 void showAddClientScreen(vector <strClient>& vClients) {
@@ -389,7 +400,7 @@ void showAddClientScreen(vector <strClient>& vClients) {
 bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
-		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
 		return false;
 	}
 
@@ -398,7 +409,7 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 		markClientForDelete(client);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
-		cout << "\n\nClient Deleted Successfully.";
+		showSuccessMessage("Client Deleted Successfully.");
 		return true;
 	}
 	return false;
@@ -414,7 +425,7 @@ void showDeleteClientScreen(vector<strClient>& vClients) {
 bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
-		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
 		return false;
 	}
 
@@ -423,7 +434,7 @@ bool updateClientByAccountNumber(const string& accountNumber, vector<strClient>&
 		*client = readClientData(accountNumber);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
-		cout << "\n\nClient Updated Successfully.";
+		showSuccessMessage("Client Updated Successfully.");
 		return true;
 	}
 	return false;
@@ -447,7 +458,7 @@ void ShowFindClientScreen(vector<strClient>& vClients) {
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
-		cout << "Client with account Number [" << accountNumber << "] is not found!\n";
+		showErrorMessage("Client with account Number [" + accountNumber +"] is not found!");
 	}
 	else {
 		printClientCard(*client);
@@ -472,7 +483,7 @@ int readOption(int from, int to) {
 		if (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			cout << "Invalid input! Please enter a number between " << from << " and " << to << ".\n";
+			showErrorMessage("Invalid input! Please enter a number between " + to_string(from) + " and " + to_string(to)+".");
 			continue;
 		}
 
@@ -495,7 +506,7 @@ string readPassword() {
 	do {
 		password = readNonEmptyString("Please Enter Password? ");
 		if (password.length() < 4) {
-			cout << "Password must be at least 4 characters!\n";
+			showErrorMessage("Password must be at least 4 characters!");
 		}
 	} while (password.length() < 4);
 	return hashPassword(password);
@@ -510,7 +521,7 @@ bool depositBalanceToClient(strClient* client, double depositAmount) {
 		return false;
 	}
 	client->AccountBalance += depositAmount;
-	cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
+	showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
 	return true;
 }
 void showDepositScreen(vector<strClient>& vClients) {
@@ -518,7 +529,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
-		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
 		return;
 	}
 	printClientCard(*client);
@@ -536,7 +547,7 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	}
 	if (withdrawAmount <= client->AccountBalance) {
 		client->AccountBalance -= withdrawAmount;
-		cout << "\nDone Successfully . New Balance is : " << client->AccountBalance << endl;
+		showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
 		return true;
 	}
 	cout << "Amount Exceed the balance\n";
@@ -547,7 +558,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
-		cout << "\nClient with Account Number (" << accountNumber << ") is not Found!";
+		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
 		return;
 	}
 	printClientCard(*client);
@@ -740,7 +751,7 @@ void addNewUser(vector<strUser>& vUsers) {
 	strUser* existingUser = findUserByUserName(name, vUsers);
 
 	while (existingUser != nullptr) {
-		cout << "User with name [" << name << "] already Exits, enter a different username?\n";
+		showErrorMessage("User with name [" + name + "] already Exits, enter a different username?");
 		name = readNonEmptyString("Please Enter UserName? ");
 		existingUser = findUserByUserName(name, vUsers);
 	}
@@ -749,7 +760,7 @@ void addNewUser(vector<strUser>& vUsers) {
 	vUsers.push_back(newUser);
 	appendLineToFile(UsersFileName, convertUserRecordToLine(newUser, Separator));
 
-	cout << "User Added Successfully!";
+	showSuccessMessage("User Added Successfully!");
 }
 void showAddNewUser(vector<strUser>& vUsers) {
 
@@ -766,7 +777,7 @@ void showAddNewUser(vector<strUser>& vUsers) {
 bool deleteUserByNameAndPassword(const string& userName, const string& password, vector<strUser>& vUsers) {
 	if (userName == "Admin")
 	{
-		cout << "\n\nYou cannot Delete This User.";
+		showErrorMessage("You cannot Delete This User.");
 		return false;
 
 	}
@@ -778,7 +789,7 @@ bool deleteUserByNameAndPassword(const string& userName, const string& password,
 			markUserForDelete(user);
 			saveUsersToFile(UsersFileName, vUsers);
 			vUsers = loadUsersDataFromFile(UsersFileName);
-			cout << "\n\nUser Deleted Successfully.\n";
+			showSuccessMessage("User Deleted Successfully.");
 			return true;
 		}
 		else {
@@ -786,7 +797,7 @@ bool deleteUserByNameAndPassword(const string& userName, const string& password,
 		}
 	}
 	else {
-		cout << "\nUsers with name (" << userName << ") with the password (" + password + ") is not Found!";
+		showErrorMessage("Users with name (" + userName + ") with the password (" + password + ") is not Found!");
 		return false;
 	}
 }
@@ -811,7 +822,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 		printUserCard(user);
 	}
 	else {
-		cout << "\nUser with name (" + name + ") and password (" + password + ") is not found!.\n";
+		showErrorMessage("User with name (" + name + ") and password (" + password + ") is not found!.");
 	}
 }
 
@@ -828,13 +839,13 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 				}
 			}
 			saveUsersToFile(UsersFileName, vUsers);
-			cout << "\n\nUser Updated Successfully.";
+			showSuccessMessage("User Updated Successfully.");
 			return true;
 		}
 		return false;
 	}
 	else { 
-		cout << "\nUser with name (" + userName + ") and password (" + password + ") is not found!.\n";
+		showErrorMessage("User with name (" + userName + ") and password (" + password + ") is not found!.");
 		return false;
 	}
 }
@@ -999,13 +1010,13 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		showExitClient();
 		break;
 	default:
-		cout << "\nInvalid option.\n";
+		showErrorMessage("Invalid option.");
 		break;
 	}
 	if (!hasPermission) {
 		clearScreen();
 		cout << "\n------------------------------------\n";
-		cout << "Access Denied, \nYou dont Have Permission To Do this,\nPlease Conact Your Admin.";
+		showErrorMessage("Access Denied, \nYou dont Have Permission To Do this,\nPlease Conact Your Admin.");
 		cout << "\n------------------------------------\n";
 	}
 }
@@ -1056,11 +1067,11 @@ void login() {
 			CurrentUser = *user;
 		}
 		else {
-			cout << "\nInvalid username or password, try again.\n";
+			showErrorMessage("Invalid username or password, try again.");
 		}
 	} while (!found);
 
-	cout << "\nWelcome back, " << CurrentUser.UserName << "!\n";
+	showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
 	customPause();
 	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 	ManageMainMenu(vClients);
