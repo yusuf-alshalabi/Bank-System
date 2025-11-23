@@ -48,21 +48,7 @@ void clearScreen() {
 	system("clear");
 #endif
 }
-void returnToTransactionsMenu(vector<strClient>& vClients) {
-	cout << "\n\nPress any key to go back to Transactions Menu...";
-	customPause();
-	ManageTransactions(vClients);
-}
-void returnToMainMenu(vector<strClient>& vClients) {
-	cout << "\n\nPress any key to go back to Main Menu...";
-	customPause();
-	ManageMainMenu(vClients);
-}
-void returnToManageUsers() {
-	cout << "\n\nPress any key to go back to Manage Users...";
-	customPause();
-	showManageUsersScreen();
-}
+
 // Split string into tokens using delimiter
 vector<string> splitStringByDelimiter(string S1, string delim) {
 	vector <string> split;
@@ -617,7 +603,6 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 	{
 		clearScreen();
 		showDepositScreen(vClients);
-		returnToTransactionsMenu(vClients);
 		break;
 	}
 
@@ -625,7 +610,6 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 	{
 		clearScreen();
 		showWithdrawScreen(vClients);
-		returnToTransactionsMenu(vClients);
 		break;
 	}
 
@@ -634,7 +618,6 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 	{
 		clearScreen();
 		showTotalBalancesReport(vClients);
-		returnToTransactionsMenu(vClients);
 		break;
 	}
 
@@ -868,31 +851,25 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 	} while (!success);
 }
 
-void executeUserOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers, vector<strClient>& vClients) {
+void executeUserOption(ManageUsersOptions manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
 	case ManageUsersOptions::ListUser:
 		ShowAllUsersScreen(vUsers);
-		returnToManageUsers();
 		break;
 	case ManageUsersOptions::AddNewUser: {
 		showAddNewUser(vUsers);
-		returnToManageUsers();
 		break;
 	}
 	case ManageUsersOptions::DeleteUser:
 		showDeleteUserScreen(vUsers);
-		returnToManageUsers();
 		break;
 	case ManageUsersOptions::FindUser:
 		showFindUserScreen(vUsers);
-		returnToManageUsers();
 		break;
 	case ManageUsersOptions::UpdateUser:
 		showUpdateUserScreen(vUsers);
-		returnToManageUsers();
 		break;
 	case ManageUsersOptions::MainMenu:
-		returnToMainMenu(vClients);
 		return;
 
 
@@ -908,14 +885,14 @@ bool checkAccessPermission(Permissions permission) {
 }
 
 
-void manageUsersMenu(vector<strUser>& vUsers,vector<strClient>& vClients) {
+void manageUsersMenu(vector<strUser>& vUsers) {
 	ManageUsersOptions choice;
 	do
 	{
 		showManageUsersScreen();
 		choice = (ManageUsersOptions)readOption(1, 6);
 		if (choice != ManageUsersOptions::MainMenu)
-			executeUserOption(choice, vUsers,vClients);
+			executeUserOption(choice, vUsers);
 
 	} while (choice != ManageUsersOptions::MainMenu);
 }
@@ -972,35 +949,30 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		hasPermission = checkAccessPermission(Permissions::pListClients);
 		if (hasPermission) {
 			showAllClientsReport(vClients);
-			returnToMainMenu(vClients);
 		}
 		break;
 	case MainMenuOption::AddNewClient:
 		hasPermission = checkAccessPermission(Permissions::pAddClient);
 		if (hasPermission) {
 			showAddClientScreen(vClients);
-			returnToMainMenu(vClients);
 		}
 		break;
 	case MainMenuOption::DeleteClient:
 		hasPermission = checkAccessPermission(Permissions::pDeleteClient);
 		if (hasPermission) {
 			showDeleteClientScreen(vClients);
-			returnToMainMenu(vClients);
 		}
 		break;
 	case MainMenuOption::UpdateClient:
 		hasPermission = checkAccessPermission(Permissions::pUpdateClient);
 		if (hasPermission) {
 			showUpdateClientScreen(vClients);
-			returnToMainMenu(vClients);
 		}
 		break;
 	case MainMenuOption::FindClient:
 		hasPermission = checkAccessPermission(Permissions::pFindClient);
 		if (hasPermission) {
 			ShowFindClientScreen(vClients);
-			returnToMainMenu(vClients);
 		}
 		break;
 	case MainMenuOption::Transactions:
@@ -1013,9 +985,8 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		hasPermission = checkAccessPermission(Permissions::pManageUsers);
 		if (hasPermission) {
 			vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
-			manageUsersMenu(vUsers,vClients);
+			manageUsersMenu(vUsers);
 			saveUsersToFile(UsersFileName, vUsers);
-			returnToMainMenu(vClients);
 		}
 		break;
 	}
@@ -1034,11 +1005,12 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		cout << "\n------------------------------------\n";
 		cout << "Access Denied, \nYou dont Have Permission To Do this,\nPlease Conact Your Admin.";
 		cout << "\n------------------------------------\n";
-		returnToMainMenu(vClients);
 	}
 }
 // Main loop: show menu, execute options, repeat until exit
 void ManageMainMenu(vector<strClient>& vClients) {
+	MainMenuOption Choice;
+
 	do {
 		clearScreen();
 		showScreenHeader("Main Menu Screen");
@@ -1046,7 +1018,7 @@ void ManageMainMenu(vector<strClient>& vClients) {
 		showOptions(options);
 
 		int choiceNum = readOption(1, options.size());
-		MainMenuOption Choice = convertChoiceToMainMenuOption(choiceNum, options);
+		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
 		if (Choice == MainMenuOption::Exit) {
 			showExitClient();
@@ -1054,7 +1026,7 @@ void ManageMainMenu(vector<strClient>& vClients) {
 		}
 		executeMainMenuOption(Choice, vClients);
 
-	} while (true);
+	} while (Choice != MainMenuOption::Exit);
 }
 
 // Display Manage Users menu options
