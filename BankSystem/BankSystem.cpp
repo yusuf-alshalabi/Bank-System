@@ -28,6 +28,145 @@ struct strUser
 	int Permissions = -1;
 	bool MarkForDelete = false;
 };
+//=====================================================
+//============= Session Management System =============
+//=====================================================
+
+// Smart function to get current username (without getenv)
+string getCurrentUsernameSafe() {
+	string username = "default_user";
+
+#ifdef _WIN32
+	FILE* pipe = _popen("whoami", "r");
+	if (pipe) {
+		char buffer[128];
+		if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+			username = buffer;
+			// Extract username from result (usually: DOMAIN\username)
+			size_t backslashPos = username.find_last_of("\\");
+			if (backslashPos != string::npos) {
+				username = username.substr(backslashPos + 1);
+			}
+			username.erase(username.find_last_not_of(" \n\r\t") + 1);
+		}
+		_pclose(pipe);
+	}
+#else
+	FILE* pipe = popen("whoami", "r");
+	if (pipe) {
+		char buffer[128];
+		if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+			username = buffer;
+			username.erase(username.find_last_not_of(" \n\r\t") + 1);
+		}
+		pclose(pipe);
+	}
+#endif
+
+	return username;
+}
+
+// Smart function to get LOCALAPPDATA path safely
+string getLocalAppDataPath() {
+	string localAppDataPath;
+
+#ifdef _WIN32
+	// Safe method: using system command to query special folders
+	FILE* pipe = _popen("echo %LOCALAPPDATA%", "r");
+	if (pipe) {
+		char buffer[512];
+		if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+			localAppDataPath = buffer;
+			localAppDataPath.erase(localAppDataPath.find_last_not_of(" \n\r\t") + 1);
+		}
+		_pclose(pipe);
+	}
+
+	// If first method failed, use default path
+	if (localAppDataPath.empty() || localAppDataPath == "%LOCALAPPDATA%") {
+		localAppDataPath = "C:\\Users\\" + getCurrentUsernameSafe() + "\\AppData\\Local";
+	}
+#else
+	localAppDataPath = getenv("HOME") ? string(getenv("HOME")) + "/.config" : "/tmp";
+#endif
+
+	return localAppDataPath;
+}
+
+#ifdef _WIN32
+string getSessionPath() {
+	string localAppData = getLocalAppDataPath();
+	string username = getCurrentUsernameSafe();
+	return localAppData + "\\BankSystem\\session_" + username + ".txt";
+}
+
+string getSessionFolder() {
+	string localAppData = getLocalAppDataPath();
+	return localAppData + "\\BankSystem\\";
+}
+#else
+string getSessionPath() {
+	string username = getCurrentUsernameSafe();
+	return "/home/" + username + "/.config/BankSystem/session.dat";
+}
+
+string getSessionFolder() {
+	string username = getCurrentUsernameSafe();
+	return "/home/" + username + "/.config/BankSystem/";
+}
+#endif
+
+// Create session folder if not exists
+void createSessionFolder() {
+	string folder = getSessionFolder();
+	string command;
+
+#ifdef _WIN32
+	command = "mkdir \"" + folder + "\" 2>nul";
+#else
+	command = "mkdir -p \"" + folder + "\" 2>/dev/null";
+#endif
+	system(command.c_str());
+}
+
+// Save current user session to file
+void saveCurrentUserSession(const strUser& user) {
+	createSessionFolder();
+	string sessionPath = getSessionPath();
+
+	ofstream file(sessionPath);
+	if (file.is_open()) {
+		file << user.UserName << endl;
+		file << user.Password << endl;
+		file << user.Permissions << endl;
+		file.close();
+	}
+}
+
+// Load current user session from file
+bool loadCurrentUserSession(strUser& user) {
+	string sessionPath = getSessionPath();
+	ifstream file(sessionPath);
+
+	if (file.is_open()) {
+		getline(file, user.UserName);
+		getline(file, user.Password);
+		string permStr;
+		getline(file, permStr);
+		user.Permissions = stoi(permStr);
+		file.close();
+		return true;
+	}
+	return false;
+}
+
+// Clear current user session (on logout)
+void clearCurrentUserSession() {
+	string sessionPath = getSessionPath();
+	remove(sessionPath.c_str());
+}
+
+//========================================================================
 
 vector<string> buildMainMenuOptions();
 void showManageUsersScreen();
@@ -744,14 +883,13 @@ string getPermissionsAsString(int permissions) {
 		return "No Permissions";
 
 	string result;
-	for (int i = 0; i < permissionList.size(); i++) {
+	for (size_t i = 0; i < permissionList.size(); i++) { 
 		result += permissionList[i];
 		if (i < permissionList.size() - 1)
 			result += ", ";
 	}
 	return result;
 }
-
 
 void printUserLine(const strUser& user) {
 	cout << "|" << setw(20) << left << user.UserName;
@@ -1038,7 +1176,13 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		break;
 	}
 	case MainMenuOption::Logout:
-		login();
+		// NEW: Clear session on logout
+		if (confirm("Are you sure you want to logout?")) {
+			clearCurrentUserSession();
+			showSuccessMessage("You have been logged out successfully.");
+			customPause();
+			login();
+		}
 		break;
 	case MainMenuOption::Exit:
 		showExitClient();
@@ -1087,6 +1231,23 @@ void showManageUsersScreen() {
 void login() {
 	clearScreen();
 	showScreenHeader("Login Screen");
+
+	// NEW: Try to load existing session
+	strUser sessionUser;
+	if (loadCurrentUserSession(sessionUser)) {
+		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
+
+		if (confirm("Do you want to continue with your previous session?")) {
+			CurrentUser = sessionUser;
+			showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
+			customPause();
+			vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+			ManageMainMenu(vClients);
+			return;
+		}
+	}
+
+	// NEW: Continue with normal login if no session or user declined
 	bool found = false;
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
@@ -1099,6 +1260,8 @@ void login() {
 
 		if (found) {
 			CurrentUser = *user;
+			// NEW: Save the new session
+			saveCurrentUserSession(CurrentUser);
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
