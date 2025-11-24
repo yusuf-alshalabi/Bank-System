@@ -28,6 +28,7 @@ struct strUser
 	int Permissions = -1;
 	bool MarkForDelete = false;
 };
+
 //=====================================================
 //============= Session Management System =============
 //=====================================================
@@ -97,7 +98,7 @@ string getLocalAppDataPath() {
 string getSessionPath() {
 	string localAppData = getLocalAppDataPath();
 	string username = getCurrentUsernameSafe();
-	return localAppData + "\\BankSystem\\session_" + username + ".txt";
+	return localAppData + "\\BankSystem\\session_" + username + ".bsess";
 }
 
 string getSessionFolder() {
@@ -107,7 +108,7 @@ string getSessionFolder() {
 #else
 string getSessionPath() {
 	string username = getCurrentUsernameSafe();
-	return "/home/" + username + "/.config/BankSystem/session.dat";
+	return "/home/" + username + "/.config/BankSystem/session.bsess";
 }
 
 string getSessionFolder() {
@@ -129,32 +130,54 @@ void createSessionFolder() {
 	system(command.c_str());
 }
 
-// Save current user session to file
+// Save current user session to binary file
 void saveCurrentUserSession(const strUser& user) {
 	createSessionFolder();
 	string sessionPath = getSessionPath();
 
-	ofstream file(sessionPath);
+	ofstream file(sessionPath, ios::binary);
 	if (file.is_open()) {
-		file << user.UserName << endl;
-		file << user.Password << endl;
-		file << user.Permissions << endl;
+		// Save username length and content
+		size_t usernameSize = user.UserName.size();
+		file.write(reinterpret_cast<const char*>(&usernameSize), sizeof(usernameSize));
+		file.write(user.UserName.c_str(), usernameSize);
+
+		// Save password length and content
+		size_t passwordSize = user.Password.size();
+		file.write(reinterpret_cast<const char*>(&passwordSize), sizeof(passwordSize));
+		file.write(user.Password.c_str(), passwordSize);
+
+		// Save permissions
+		file.write(reinterpret_cast<const char*>(&user.Permissions), sizeof(user.Permissions));
+
 		file.close();
+		cout << "Session saved securely to: " << sessionPath << endl;
 	}
 }
 
-// Load current user session from file
+// Load current user session from binary file
 bool loadCurrentUserSession(strUser& user) {
 	string sessionPath = getSessionPath();
-	ifstream file(sessionPath);
+	ifstream file(sessionPath, ios::binary);
 
 	if (file.is_open()) {
-		getline(file, user.UserName);
-		getline(file, user.Password);
-		string permStr;
-		getline(file, permStr);
-		user.Permissions = stoi(permStr);
+		// Read username
+		size_t usernameSize;
+		file.read(reinterpret_cast<char*>(&usernameSize), sizeof(usernameSize));
+		user.UserName.resize(usernameSize);
+		file.read(&user.UserName[0], usernameSize);
+
+		// Read password
+		size_t passwordSize;
+		file.read(reinterpret_cast<char*>(&passwordSize), sizeof(passwordSize));
+		user.Password.resize(passwordSize);
+		file.read(&user.Password[0], passwordSize);
+
+		// Read permissions
+		file.read(reinterpret_cast<char*>(&user.Permissions), sizeof(user.Permissions));
+
 		file.close();
+		cout << "Session loaded from: " << sessionPath << endl;
 		return true;
 	}
 	return false;
@@ -163,8 +186,11 @@ bool loadCurrentUserSession(strUser& user) {
 // Clear current user session (on logout)
 void clearCurrentUserSession() {
 	string sessionPath = getSessionPath();
-	remove(sessionPath.c_str());
+	if (remove(sessionPath.c_str()) == 0) {
+		cout << "Session cleared securely." << endl;
+	}
 }
+
 
 //========================================================================
 
@@ -1179,7 +1205,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		// NEW: Clear session on logout
 		if (confirm("Are you sure you want to logout?")) {
 			clearCurrentUserSession();
-			showSuccessMessage("You have been logged out successfully.");
+			showSuccessMessage("You have been logged out successfully. Session cleared.");
 			customPause();
 			login();
 		}
@@ -1232,10 +1258,11 @@ void login() {
 	clearScreen();
 	showScreenHeader("Login Screen");
 
-	// NEW: Try to load existing session
+	// Try to load existing BINARY session
 	strUser sessionUser;
 	if (loadCurrentUserSession(sessionUser)) {
 		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
+		cout << "Session loaded from secure binary storage." << endl;
 
 		if (confirm("Do you want to continue with your previous session?")) {
 			CurrentUser = sessionUser;
@@ -1247,7 +1274,7 @@ void login() {
 		}
 	}
 
-	// NEW: Continue with normal login if no session or user declined
+	// Continue with normal login if no session or user declined
 	bool found = false;
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
@@ -1260,8 +1287,9 @@ void login() {
 
 		if (found) {
 			CurrentUser = *user;
-			// NEW: Save the new session
+			// Save the new session in BINARY format
 			saveCurrentUserSession(CurrentUser);
+			cout << "New session saved in secure binary format." << endl;
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
