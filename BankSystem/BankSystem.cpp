@@ -1078,10 +1078,8 @@ void printUserCard(strUser* User) {
 	cout << "\nThe following are the User details:\n";
 	cout << "-----------------------------------";
 	cout << "\nUser Name   : " << User->UserName;
-	cout << "\nPassword    : " << User->Password;
-	cout << "\nPermissions  : " << to_string(User->Permissions);
+	cout << "\nPermissions : " << getPermissionsAsString(User->Permissions); 
 	cout << "\n-----------------------------------\n";
-
 }
 
 string getPermissionsAsString(int permissions) {
