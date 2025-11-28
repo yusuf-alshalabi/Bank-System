@@ -1,92 +1,119 @@
-# 🏦 CRUD Bank System — Version 1.2.0
+# 🏦 CRUD Bank System (V1.3.0)
 
-A fully-featured console-based *Bank Management System* built in C++. This release introduces a major upgrade with a robust *User Management and Permissions System*, securing the application and allowing granular control over access rights for different staff members.
-
----
-
-## ✨ Features
-
-### 🔐 User Management & Security (New)
-* *Secure Login:* Dedicated login screen required to access the main menu.
-* *User CRUD Operations:* Full capabilities to *Add, Delete, Update, and Find* system users.
-* *Role-Based Access Control (RBAC):* Implementation of *Bitwise Permissions* to define precise access levels for each user (e.g., read-only, transactions, full access).
-* *Password Hashing:* Passwords are stored securely as *hashed* strings using std::hash.
-* *Dynamic Menus:* The Main Menu structure adapts automatically based on the currently logged-in user's permissions.
-* *Default Admin:* An initial "Admin" user is created automatically on the first run for setup (Username: Admin, Password: 1234).
-
-### 🔧 Client Management
-* *View All Clients:* Display client data in a clear, formatted table.
-* *Add New Client:* Register new clients with unique account numbers.
-* *Delete Client:* Remove client records.
-* *Update Client Info:* Modify existing client details.
-* *Find Client:* Search for a client by account number.
-
-### 💰 Financial Transactions
-* *Deposit:* Add funds to a client's account.
-* *Withdraw:* Debit funds with *overdraft protection* (validation against current balance).
-* *Total Balances Report:* Generate a list of all client balances, including the aggregated grand total.
-
-### 💾 Data Persistence
-* *File Storage:* Client data is stored in Clients.txt and user credentials/permissions are stored in Users.txt.
-* *Real-Time Sync:* Data files are updated instantly after every successful modification.
+A professional-grade console-based Bank Management System built in modern C++.  
+This major release introduces Binary Session Encryption (Libsodium) and a fully secured Session Management System, bringing the project to real-world security standards.
 
 ---
 
-## ⚙ How to Run
+## 🚀 Quick Start
 
-1.  Save the code as BankSystem.cpp.
-2.  Compile the program using g++:
-    bash
-    g++ -o BankSystem BankSystem.cpp
-    
-3.  Run the executable:
-    bash
-    ./BankSystem
-    # On Windows: BankSystem.exe
-    
-4.  The system will prompt you for login. Use the default admin credentials initially.
+### Prerequisites
+- C++ compiler (g++ recommended)  
+- C++11 standard or later  
+- *Libsodium* library installed and linked
+
+### Build & Run
+
+```bash
+# Compile with Libsodium
+g++ -o BankSystem BankSystem.cpp -std=c++11 -lsodium
+
+# Run the executable
+./BankSystem        # Linux / macOS
+BankSystem.exe      # Windows
+```
+## 📦 Libsodium Installation
+
+For detailed setup instructions, see the full guide here:  
+[Libsodium Setup Instructions](LIBSODIUM_SETUP.md)
+
+
+## 🔑 First-Time Setup
+
+At first launch, the system automatically creates a default administrator:
+
+- Username: Admin  
+- Password: 1234  
+
+⚠ Important: Change this password immediately for security.
 
 ---
 
-## 💻 Code Quality & Architecture
+## ✨ Features Overview (V1.3.0)
 
-This version significantly enhances security and modularity while maintaining the principles of *Clean Procedural Programming*.
+### 🔒 Advanced Cryptographic Security
+- Binary session encryption using XChaCha20-Poly1305 (Libsodium)
+- Secure key generation & storage (OS-protected hidden file)
+- Data integrity validation on load
+- Non-reversible password hashing using std::hash
 
-### 🛡 Security Architecture
-* *Bitwise Permissions:* Permissions are managed efficiently using *Bit Masks*, allowing for combinations of access rights stored as a single integer.
-* *Access Checks:* The checkAccessPermission function acts as the central gatekeeper, preventing unauthorized operations.
-* *Input Handling:* Robust input validation and dedicated helper functions (readNonEmptyString, readPositiveNumber) ensure data integrity and system stability.
+### ⏱ Session Management System
+- Automatic session resume (decrypts previous session)
+- Secure logout with multi-pass random overwrite
+- Platform-aware paths (AppData/Local on Windows, ~/.config on Linux/macOS)
 
-### 🏗 Procedural Design
-* *Modularity:* Clear separation of concerns into distinct modules (Client Management, Transactions, User Management, File Handling, and UI utilities).
-* *Structs and Enums:* Effective use of strClient, strUser for data organization, and enum types for clear menu and permission constants.
-* *Pointers and References:* Continued use of pointers (strClient*, strUser*) for efficient in-memory searching and updates, avoiding unnecessary data copying.
+### 👥 User & Access Control (RBAC)
+- Bitwise permission flags for fast, scalable access control
+- Dynamic main menu based on user privileges
+- Full administrative User CRUD (Add / Delete / Update / Find)
+
+### 🏦 Bank Core Operations
+- Client CRUD (Add, Update, Delete, Find)
+- Deposits & Withdrawals with overdraft protection
+- Comprehensive balance reports with total aggregation
 
 ---
 
-## 🚀 What's New in Version 1.2.0
+### 🔐 Security Architecture Details
 
-| Feature | Description |
+| Feature Area | Implementation Details |
 | :--- | :--- |
-| *Complete User & Permissions System* | The core focus of the release, introducing multi-level access control. |
-| *Password Hashing* | Security enhancement for user data integrity. |
-| *Dedicated User Management Menu* | A new section for administrative control over system users. |
-| *Dynamic UI* | Main Menu options are filtered and displayed based on the logged-in user's granted permissions. |
+| *Password Security* | One-way hashing (std::hash), minimum 4-char enforcement, no plain-text storage. |
+| *Session Security* | Encryption (Libsodium), OS-protected key storage, 3-pass secure overwrite on logout. |
+| *Data Protection* | Input validation, bounds checking, and file corruption detection. |
+
+### 🛡 Bitwise Permissions
+
+```cpp
+enum Permissions {
+    pListClients    = 1,    // 0000001
+    pAddClient      = 2,    // 0000010  
+    pDeleteClient   = 4,    // 0000100
+    pUpdateClient   = 8,    // 0001000
+    pFindClient     = 16,   // 0010000
+    pTransactions   = 32,   // 0100000
+    pManageUsers    = 64,   // 1000000
+    pAllPermissions = 127,  // 1111111 
+    pAll            = -1    // 1111111 (Admin) 
+};
+```
+
+### Encrypted Session Flow
+1. User logs in or previous session is detected  
+2. Session data is serialized  
+3. Encrypted using Libsodium (XChaCha20-Poly1305)  
+4. Stored as a hidden binary file (*.bsess)  
+5. Key stored securely in a protected OS-specific directory  
 
 ---
 
-## 📅 Project Context
-
-This project represents the *1.2.0 release* of the CRUD Bank System, demonstrating proficiency in advanced topics including file security, data hashing, and granular access control.
+## 🏗 System Architecture (High-Level)
+- 🔐 Authentication & Security
+- 👥 User Management + RBAC
+- 🏦 Client Management
+- 💰 Transaction Processing
+- 💾 File-Based Persistence
+- 🔐 Encrypted Session Storage
 
 ---
 
-## 🤝 Contribution
-
-Contributions, bug reports, and suggestions for future enhancements are highly welcome. Feel free to fork the repository or open an issue.
+## 🏆 Version History
+- v1.0 - Basic Client CRUD  
+- v1.1 - Financial Transactions  
+- v1.2 - User Management + RBAC  
+- v1.3.0 - Binary Encryption + Secure Session Management  
 
 ---
 
 ## 📜 License
-
-MIT License
+[MIT License](LICENSE.txt)
