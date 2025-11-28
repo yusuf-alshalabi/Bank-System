@@ -907,7 +907,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	if (client == nullptr) {
-		cout << "Client is null\n";
+		showErrorMessage("Client not found!");
 		return false;
 	}
 	if (withdrawAmount <= client->AccountBalance) {
@@ -915,7 +915,7 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 		showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
 		return true;
 	}
-	cout << "Amount Exceed the balance\n";
+	showErrorMessage("Amount Exceed the balance!");
 	return false;
 }
 void showWithdrawScreen(vector<strClient>& vClients) {
