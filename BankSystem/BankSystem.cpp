@@ -178,19 +178,16 @@ vector<unsigned char> getEncryptionKey() {
 	string keyFile = keyFolder + ".encryption_key.bsess";
 #endif
 
-	// Try to load existing key
 	ifstream file(keyFile, ios::binary);
 	if (file.is_open()) {
 		file.read(reinterpret_cast<char*>(key.data()), key.size());
 		file.close();
-		cout << "Encryption key loaded from hidden file." << endl;
+		
 		return key;
 	}
 
-	// Generate new key
 	key = generateEncryptionKey();
 
-	// Save key securely
 	createSessionFolder();
 	ofstream outFile(keyFile, ios::binary);
 	if (outFile.is_open()) {
@@ -200,19 +197,10 @@ vector<unsigned char> getEncryptionKey() {
 #ifdef _WIN32
 		DWORD attributes = GetFileAttributesA(keyFile.c_str());
 		if (attributes != INVALID_FILE_ATTRIBUTES) {
-			if (SetFileAttributesA(keyFile.c_str(), attributes | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
-				cout << "Encryption key file hidden successfully." << endl;
-			}
-			else {
-				cout << "Warning: Could not hide encryption key file." << endl;
-			}
+			SetFileAttributesA(keyFile.c_str(), attributes | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
 		}
-#else
-		
-		cout << "Encryption key file hidden (starts with dot)." << endl;
 #endif
 
-		// Set secure permissions on key file
 #ifdef _WIN32
 		string permissionCommand = "icacls \"" + keyFile + "\" /inheritance:r /grant:r \"%USERNAME%:F\"";
 		system(permissionCommand.c_str());
@@ -221,11 +209,11 @@ vector<unsigned char> getEncryptionKey() {
 		system(permissionCommand.c_str());
 #endif
 
-		cout << "New encryption key created and saved to hidden file." << endl;
 	}
 
 	return key;
 }
+
 
 // Encrypt data with better error handling
 string encryptData(const string& plaintext, const vector<unsigned char>& key) {
@@ -324,42 +312,34 @@ void saveCurrentUserSession(const strUser& user) {
 	string sessionPath = getSessionPath();
 
 	try {
-		// Get encryption key
 		vector<unsigned char> key = getEncryptionKey();
-
-		// Serialize and encrypt user data
 		string userData = serializeUserData(user);
 		string encryptedData = encryptData(userData, key);
 
-		// Save encrypted data
 		ofstream file(sessionPath, ios::binary);
 		if (file.is_open()) {
-			// Save encrypted data size and content
 			size_t dataSize = encryptedData.size();
 			file.write(reinterpret_cast<const char*>(&dataSize), sizeof(dataSize));
 			file.write(encryptedData.c_str(), dataSize);
-
 			file.close();
-			cout << "Session saved securely with encryption to: " << sessionPath << endl;
 		}
 	}
 	catch (const exception& e) {
-		showErrorMessage("Failed to encrypt session data: " + string(e.what()));
+		// showErrorMessage("Failed to encrypt session data: " + string(e.what()));
 	}
 }
+
 // Enhanced session loading with integrity checks
 bool loadCurrentUserSession(strUser& user) {
 	string sessionPath = getSessionPath();
 
-	// Check if file exists and has reasonable size
 	ifstream file(sessionPath, ios::binary | ios::ate);
 	if (!file.is_open()) {
 		return false;
 	}
 
 	streamsize fileSize = file.tellg();
-	if (fileSize < sizeof(size_t) || fileSize > 10 * 1024 * 1024) { // Max 10MB
-		showErrorMessage("Session file corrupted or too large");
+	if (fileSize < sizeof(size_t) || fileSize > 10 * 1024 * 1024) {
 		file.close();
 		return false;
 	}
@@ -367,101 +347,76 @@ bool loadCurrentUserSession(strUser& user) {
 	file.seekg(0);
 
 	try {
-		// Get encryption key
 		vector<unsigned char> key = getEncryptionKey();
 
-		// Read encrypted data size
 		size_t dataSize;
 		file.read(reinterpret_cast<char*>(&dataSize), sizeof(dataSize));
 
-		// Validate data size
 		if (dataSize > fileSize - sizeof(size_t) || dataSize < crypto_secretbox_NONCEBYTES + crypto_secretbox_MACBYTES) {
-			showErrorMessage("Invalid session data size");
 			file.close();
 			return false;
 		}
 
-		// Read encrypted data
 		string encryptedData(dataSize, '\0');
 		file.read(&encryptedData[0], dataSize);
 		file.close();
 
-		// Decrypt and deserialize
 		string decryptedData = decryptData(encryptedData, key);
 
-		// Basic validation of decrypted data
 		if (decryptedData.empty() || decryptedData.find('\n') == string::npos) {
-			showErrorMessage("Decrypted session data is invalid");
 			return false;
 		}
 
 		user = deserializeUserData(decryptedData);
 
-		// Validate user data
 		if (user.UserName.empty() || user.Password.empty()) {
-			showErrorMessage("Session contains invalid user data");
 			return false;
 		}
 
-		cout << "Session loaded and decrypted from: " << sessionPath << endl;
 		return true;
 	}
 	catch (const exception& e) {
-		showErrorMessage("Failed to decrypt session data: " + string(e.what()));
 		if (file.is_open()) file.close();
 		return false;
 	}
 }
+
 // Enhanced secure session clearing
 void clearCurrentUserSession() {
 	string sessionPath = getSessionPath();
 
-	// Multiple overwrite passes for better security
 	fstream file(sessionPath, ios::binary | ios::out | ios::in);
 	if (file.is_open()) {
 		file.seekp(0);
-
-		// Multiple overwrite passes
 		for (int pass = 0; pass < 3; pass++) {
 			vector<char> randomData(1024);
 			if (pass == 0) {
-				// First pass: zeros
 				fill(randomData.begin(), randomData.end(), 0);
 			}
 			else if (pass == 1) {
-				// Second pass: ones
 				fill(randomData.begin(), randomData.end(), 0xFF);
 			}
 			else {
-				// Third pass: random data
 				randombytes_buf(randomData.data(), randomData.size());
 			}
-
 			file.write(randomData.data(), randomData.size());
 			file.flush();
 		}
 		file.close();
 	}
 
-	// Attempt to remove the file
 	if (remove(sessionPath.c_str()) == 0) {
-		cout << "Session securely cleared and file destroyed." << endl;
 	}
 	else {
-		// If removal fails, try to truncate the file
 		ofstream truncateFile(sessionPath, ios::trunc);
 		if (truncateFile.is_open()) {
 			truncateFile.close();
-			cout << "Session data securely overwritten and truncated." << endl;
-		}
-		else {
-			cout << "Session data securely overwritten." << endl;
 		}
 	}
 
-	// Clear the current user from memory
 	CurrentUser = strUser();
 }
+
 //========================================================================
 
 vector<string> buildMainMenuOptions();
@@ -1502,11 +1457,10 @@ void login() {
 	clearScreen();
 	showScreenHeader("Login Screen");
 
-	// Try to load existing BINARY session
 	strUser sessionUser;
 	if (loadCurrentUserSession(sessionUser)) {
+	
 		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
-		cout << "Session loaded from secure binary storage." << endl;
 
 		if (confirm("Do you want to continue with your previous session?")) {
 			CurrentUser = sessionUser;
@@ -1518,7 +1472,6 @@ void login() {
 		}
 	}
 
-	// Continue with normal login if no session or user declined
 	bool found = false;
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
@@ -1531,16 +1484,14 @@ void login() {
 
 		if (found) {
 			CurrentUser = *user;
-			// Save the new session in BINARY format
-			saveCurrentUserSession(CurrentUser);
-			cout << "New session saved in secure binary format." << endl;
+			saveCurrentUserSession(CurrentUser); 
+			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
 		}
 	} while (!found);
 
-	showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
 	customPause();
 	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 	ManageMainMenu(vClients);
@@ -1570,21 +1521,10 @@ int main()
 {
 	cout << fixed << setprecision(2);
 
-	// Initialize libsodium with version check
 	if (sodium_init() < 0) {
-		showErrorMessage("Failed to initialize encryption library!");
+		showErrorMessage("System initialization failed!");
 		return 1;
 	}
-
-	// Verify that required functions are available
-	if (crypto_secretbox_keybytes() != 32 ||
-		crypto_secretbox_noncebytes() != 24 ||
-		crypto_secretbox_macbytes() != 16) {
-		showErrorMessage("Unsupported crypto library version!");
-		return 1;
-	}
-
-	cout << "Crypto library initialized successfully (libsodium)" << endl;
 
 	createDefaultAdmin();
 	login();
