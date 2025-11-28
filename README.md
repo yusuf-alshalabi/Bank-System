@@ -89,4 +89,4 @@ Contributions, bug reports, and suggestions for future enhancements are highly w
 
 ## 📜 License
 
-MIT License
+MIT License
