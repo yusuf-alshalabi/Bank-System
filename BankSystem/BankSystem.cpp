@@ -1519,7 +1519,6 @@ void createDefaultAdmin() {
 		customPause();
 	}
 }
-
 int main()
 {
 	cout << fixed << setprecision(2);
@@ -1529,8 +1528,14 @@ int main()
 		return 1;
 	}
 
-	createDefaultAdmin();
-	login();
+	try {
+		createDefaultAdmin();
+		login();
+	}
+	catch (const exception& e) {
+		showErrorMessage("Critical system error: " + string(e.what()));
+		return 1;
+	}
 
 	customPause();
 	return 0;
