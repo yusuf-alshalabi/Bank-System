@@ -1,4 +1,4 @@
-
+﻿
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -1079,13 +1079,6 @@ bool checkUserPassword(const string& inputPassword, strUser* User) {
 	string hashInputPassword = hashPassword(inputPassword);
 	return (User->Password == hashInputPassword);
 }
-void printUserCard(strUser* User) {
-	cout << "\nThe following are the User details:\n";
-	cout << "-----------------------------------";
-	cout << "\nUser Name   : " << User->UserName;
-	cout << "\nPermissions : " << getPermissionsAsString(User->Permissions); 
-	cout << "\n-----------------------------------\n";
-}
 
 string getPermissionsAsString(int permissions) {
 	if (permissions == Permissions::pAll)
@@ -1112,12 +1105,21 @@ string getPermissionsAsString(int permissions) {
 		return "No Permissions";
 
 	string result;
-	for (size_t i = 0; i < permissionList.size(); i++) { 
+	for (size_t i = 0; i < permissionList.size(); i++) {
 		result += permissionList[i];
 		if (i < permissionList.size() - 1)
 			result += ", ";
 	}
 	return result;
+}
+
+
+void printUserCard(strUser* User) {
+	cout << "\nThe following are the User details:\n";
+	cout << "-----------------------------------";
+	cout << "\nUser Name   : " << User->UserName;
+	cout << "\nPermissions : " << getPermissionsAsString(User->Permissions); 
+	cout << "\n-----------------------------------\n";
 }
 
 void printUserLine(const strUser& user) {
