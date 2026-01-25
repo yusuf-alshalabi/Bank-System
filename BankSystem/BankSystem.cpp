@@ -19,14 +19,33 @@ using namespace std;
 const string ClientsFileName = "Clients.txt";
 const string UsersFileName = "Users.txt";
 const string Separator = "#//#";
-struct strClient {
-	string AccountNumber = "";
-	string PinCode = "";
-	string Name = "";
-	string Phone = "";
-	double AccountBalance = 0;
-	bool MarkForDelete = false;
+enum TransactionType {
+	DEPOSIT = 1,
+	WITHDRAWAL = 2,
+	TRANSFER = 3
 };
+
+struct Transaction {
+	string TransactionID;
+	TransactionType Type;
+	string FromAccount;
+	string ToAccount;
+	double Amount;
+	double Fees;
+	string Timestamp;
+	string Description;
+};
+
+struct strClient {
+	string AccountNumber;
+	string PinCode;
+	string Name;
+	string Phone;
+	double AccountBalance;
+	bool MarkForDelete;
+	vector<Transaction> Transactions;
+};
+
 struct strUser
 {
 	string UserName = "";
