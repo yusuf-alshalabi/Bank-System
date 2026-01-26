@@ -562,16 +562,19 @@ void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 }
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	fstream MyFile;
-	MyFile.open(FileName, ios::out);
-	string DataLine;
+	MyFile.open(FileName, ios::out | ios::trunc); 
+
 	if (MyFile.is_open()) {
-		for (strUser c : vUsers) {
-			if (c.MarkForDelete == false) {
-				DataLine = convertUserRecordToLine(c, Separator);
+		for (const strUser& user : vUsers) { 
+			if (!user.MarkForDelete) {
+				string DataLine = convertUserRecordToLine(user, Separator);
 				MyFile << DataLine << endl;
 			}
 		}
 		MyFile.close();
+	}
+	else {
+		showErrorMessage("Could not open file for saving users!");
 	}
 }
 
