@@ -1077,6 +1077,76 @@ bool executeTransfer(strClient* fromClient, strClient* toClient,
 	return true;
 }
 
+void showTransferConfirmation(strClient* fromClient, strClient* toClient,
+	const string& fromAccount, const string& toAccount,
+	double transferAmount, double transferFee) {
+
+	cout << "\nTransfer Details:\n";
+	cout << "From: " << fromClient->Name << " (" << fromAccount << ")\n";
+	cout << "To: " << toClient->Name << " (" << toAccount << ")\n";
+	cout << "Amount: " << transferAmount << "\n";
+	cout << "Fee: " << transferFee << "\n";
+	cout << "Total: " << (transferAmount + transferFee) << "\n";
+}
+
+Transaction createTransferTransaction(const string& fromAccount, const string& toAccount,
+	double transferAmount, double transferFee,
+	strClient* toClient) {
+
+	Transaction transaction;
+	transaction.TransactionID = generateTransactionID();
+	transaction.Type = TRANSFER;
+	transaction.FromAccount = fromAccount;
+	transaction.ToAccount = toAccount;
+	transaction.Amount = transferAmount;
+	transaction.Fees = transferFee;
+	transaction.Timestamp = getCurrentTimestamp();
+	transaction.Description = "Transfer to " + toClient->Name;
+	return transaction;
+}
+
+void showTransferScreen(vector<strClient>& vClients) {
+	showScreenHeader("Transfer Screen");
+
+	string fromAccount = readNonEmptyString("Enter Your Account Number: ");
+	string toAccount = readNonEmptyString("Enter Recipient Account Number: ");
+
+	strClient* fromClient = nullptr;
+	strClient* toClient = nullptr;
+	if (!validateTransferAccounts(fromAccount, toAccount, fromClient, toClient, vClients)) {
+		return;
+	}
+
+	double transferAmount = readPositiveNumber("Enter Transfer Amount: ");
+	double transferFee = transferAmount * 0.01;
+
+	if (!validateTransferAmount(transferAmount, transferFee, fromClient)) {
+		return;
+	}
+
+	showTransferConfirmation(fromClient, toClient, fromAccount, toAccount,
+		transferAmount, transferFee);
+
+	if (!confirm("Confirm transfer?")) {
+		showErrorMessage("Transfer cancelled.");
+		return;
+	}
+
+	if (!executeTransfer(fromClient, toClient, transferAmount, transferFee)) {
+		showErrorMessage("Transfer failed!");
+		return;
+	}
+
+	Transaction transferTransaction = createTransferTransaction(fromAccount, toAccount,
+		transferAmount, transferFee, toClient);
+	saveTransactionToFile(transferTransaction);
+
+	saveClientsToFile(ClientsFileName, vClients);
+
+	showSuccessMessage("Transfer completed successfully!\nTransaction ID: " +
+		transferTransaction.TransactionID);
+	customPause();
+}
 
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
 {
