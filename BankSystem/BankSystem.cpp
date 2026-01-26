@@ -548,12 +548,11 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 // Save all clients to file, skip those marked for deletion
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
-	MyFile.open(FileName, ios::out);//over write
+	MyFile.open(FileName, ios::out | ios::trunc);
 	string DataLine;
 	if (MyFile.is_open()) {
-		for (strClient c : vClients) {
-			if (c.MarkForDelete == false) {
-				//we only write records that are not marked for delete.
+		for (const strClient& c : vClients) {
+			if (!c.MarkForDelete) {
 				DataLine = convertClientRecordToLine(c, Separator);
 				MyFile << DataLine << endl;
 			}
