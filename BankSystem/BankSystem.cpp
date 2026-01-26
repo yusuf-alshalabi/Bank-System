@@ -578,6 +578,16 @@ void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	}
 }
 
+// Append a client line to file
+void appendLineToFile(const string& FileName, const string& stDataLine) {
+	fstream MyFile;
+	MyFile.open(FileName, ios::out | ios::app);
+	if (MyFile.is_open()) {
+		MyFile << stDataLine << endl;
+		MyFile.close();
+	}
+}
+
 void saveTransactionToFile(const Transaction& transaction) {
 	const string TransactionsFileName = "Transactions.txt";
 	string transactionLine = transaction.TransactionID + Separator +
@@ -590,16 +600,6 @@ void saveTransactionToFile(const Transaction& transaction) {
 		transaction.Description;
 
 	appendLineToFile(TransactionsFileName, transactionLine);
-}
-
-// Append a client line to file
-void appendLineToFile(const string& FileName, const string& stDataLine) {
-	fstream MyFile;
-	MyFile.open(FileName, ios::out | ios::app);
-	if (MyFile.is_open()) {
-		MyFile << stDataLine << endl;
-		MyFile.close();
-	}
 }
 
 // Read a non-empty string input
