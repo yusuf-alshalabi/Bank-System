@@ -651,8 +651,9 @@ enum MainMenuOption {
 enum TransactionsOptions {
 	Deposit = 1,
 	Withdraw = 2,
-	ShowTotalBalance = 3,
-	ShowMainMenu = 4
+	Transfer = 3,
+	ShowTotalBalance = 4,
+	ShowMainMenu = 5
 };
 enum ManageUsersOptions {
 	ListUser = 1,
