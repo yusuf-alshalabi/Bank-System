@@ -1037,6 +1037,30 @@ string generateTransactionID() {
 	return "TXN" + to_string(++counter) + to_string(time(0));
 }
 
+bool validateTransferAccounts(const string& fromAccount, const string& toAccount,
+	strClient*& fromClient, strClient*& toClient,
+	vector<strClient>& vClients) {
+
+	fromClient = findClientByAccountNumber(fromAccount, vClients);
+	if (!fromClient) {
+		showErrorMessage("Your account not found!");
+		return false;
+	}
+
+	toClient = findClientByAccountNumber(toAccount, vClients);
+	if (!toClient) {
+		showErrorMessage("Recipient account not found!");
+		return false;
+	}
+
+	if (fromAccount == toAccount) {
+		showErrorMessage("Cannot transfer to the same account!");
+		return false;
+	}
+
+	return true;
+}
+
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenuOption)
