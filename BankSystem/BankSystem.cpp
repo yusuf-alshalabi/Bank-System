@@ -1061,6 +1061,16 @@ bool validateTransferAccounts(const string& fromAccount, const string& toAccount
 	return true;
 }
 
+bool validateTransferAmount(double transferAmount, double transferFee, strClient* fromClient) {
+	if (fromClient->AccountBalance < (transferAmount + transferFee)) {
+		showErrorMessage("Insufficient balance! Total required: " +
+			to_string(transferAmount + transferFee));
+		return false;
+	}
+	return true;
+}
+
+
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenuOption)
