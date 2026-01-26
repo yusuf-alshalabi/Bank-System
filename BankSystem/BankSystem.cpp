@@ -674,6 +674,25 @@ enum Permissions {
 	pAllPermissions = 127
 };
 
+string getCurrentTimestamp() {
+	time_t now = time(0);
+
+#ifdef _WIN32
+	tm localTime;
+	localtime_s(&localTime, &now);
+#else
+	tm* localTime = localtime(&now);
+#endif
+
+	stringstream ss;
+#ifdef _WIN32
+	ss << put_time(&localTime, "%Y-%m-%d %H:%M:%S");
+#else
+	ss << put_time(localTime, "%Y-%m-%d %H:%M:%S");
+#endif
+	return ss.str();
+}
+
 void showScreenHeader(const string& title) {
 	clearScreen();
 	cout << "\n-------------------------------------------------\n";
