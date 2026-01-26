@@ -1070,6 +1070,13 @@ bool validateTransferAmount(double transferAmount, double transferFee, strClient
 	return true;
 }
 
+bool executeTransfer(strClient* fromClient, strClient* toClient,
+	double transferAmount, double transferFee) {
+	fromClient->AccountBalance -= (transferAmount + transferFee);
+	toClient->AccountBalance += transferAmount;
+	return true;
+}
+
 
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
 {
