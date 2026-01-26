@@ -1012,6 +1012,11 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	customPause();
 }
 
+string generateTransactionID() {
+	static int counter = 1000;
+	return "TXN" + to_string(++counter) + to_string(time(0));
+}
+
 void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenuOption)
