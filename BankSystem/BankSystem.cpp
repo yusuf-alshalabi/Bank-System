@@ -1039,29 +1039,34 @@ void showDepositScreen(vector<strClient>& vClients) {
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
+		customPause();
 	}
 }
 
 bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	if (client == nullptr) {
 		showErrorMessage("Client not found!");
+		customPause();
 		return false;
 	}
 
 	if (withdrawAmount <= 0) {
 		showErrorMessage("Invalid amount! Please enter a positive value.");
+		customPause();
 		return false;
 	}
 
 	if (withdrawAmount > client->AccountBalance) {
 		showErrorMessage("Insufficient funds! Available balance: " +
 			to_string(client->AccountBalance));
+		customPause();
 		return false;
 	}
 
 	client->AccountBalance -= withdrawAmount;
 	showSuccessMessage("Withdrawal successful! Remaining balance: " +
 		to_string(client->AccountBalance));
+	customPause();
 	return true;
 }
 Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
@@ -1848,9 +1853,11 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser); 
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
+			customPause();
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
+			customPause();
 		}
 	} while (!found);
 
