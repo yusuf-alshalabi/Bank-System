@@ -1263,6 +1263,7 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 	}
 
 	case TransactionsOptions::Transfer: {
+		clearScreen();
 		showTransferScreen(vClients);
 		break;
 	}
