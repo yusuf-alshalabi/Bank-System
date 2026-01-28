@@ -1291,14 +1291,14 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 void showTransactionsMenuScreen() {
 	clearScreen();
 	showScreenHeader("Transactions Menu Screen");
-	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Main Menu"};
+	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History","Main Menu"};
 	showOptions(options);
 }
 void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
 		showTransactionsMenuScreen();
-		Choice = (TransactionsOptions)readOption(1, 5);
+		Choice = (TransactionsOptions)readOption(1, 6);
 		executeTransactionOption(Choice, vClients);
 	} while (Choice != TransactionsOptions::ShowMainMenu);
 }
