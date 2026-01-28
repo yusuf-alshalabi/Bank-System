@@ -492,6 +492,23 @@ strClient convertLineToClientRecord(const string& Line, const string& seperator)
 	}
 	return Client;
 }
+// Convert aline from file into a Transaction struct
+Transaction convertLineToTransaction(const string& line, const string& separator) {
+	Transaction txn;
+	vector<string> parts = splitStringByDelimiter(line, separator);
+
+	if (parts.size() >= 8) {
+		txn.TransactionID = parts[0];
+		txn.Type = static_cast<TransactionType>(stoi(parts[1]));
+		txn.FromAccount = parts[2];
+		txn.ToAccount = parts[3];
+		txn.Amount = stod(parts[4]);
+		txn.Fees = stod(parts[5]);
+		txn.Timestamp = parts[6];
+		txn.Description = parts[7];
+	}
+	return txn;
+}
 // Convert a User struct to a single line for file
 string convertUserRecordToLine(const strUser& userInfo, const string& separator = "#//#") {
 	string line = "";
