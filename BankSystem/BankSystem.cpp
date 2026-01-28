@@ -740,9 +740,9 @@ string getCurrentTimestamp() {
 
 void showScreenHeader(const string& title) {
 	clearScreen();
-	cout << "\n-------------------------------------------------\n";
-	cout << "\t\t" << title << "\n";
-	cout << "-------------------------------------------------\n";
+	cout << "\n" << string(50, '=') << "\n";
+	cout << "    " << title << "\n";
+	cout << string(50, '=') << "\n\n";
 }
 void showOptions(vector<string> options) {
 	int count = 1;
@@ -1040,13 +1040,13 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	}
 
 	if (withdrawAmount > client->AccountBalance) {
-		showErrorMessage("Insufficient funds! Available: " +
+		showErrorMessage("Insufficient funds! Available balance: " +
 			to_string(client->AccountBalance));
 		return false;
 	}
 
 	client->AccountBalance -= withdrawAmount;
-	showSuccessMessage("Withdrawal successful! New balance: " +
+	showSuccessMessage("Withdrawal successful! Remaining balance: " +
 		to_string(client->AccountBalance));
 	return true;
 }
@@ -1068,7 +1068,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 
 	if (!client) {
-		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
 		customPause();
 		return;
 	}
