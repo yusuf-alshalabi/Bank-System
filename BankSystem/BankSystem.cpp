@@ -546,6 +546,19 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	}
 	return vClients;
 }
+// Load all Transactions from file, return vector of Transactions
+vector<Transaction> loadTransactionsFromFile(const string& fileName) {
+	vector<Transaction> transactions;
+	fstream file(fileName, ios::in);
+	if (file.is_open()) {
+		string line;
+		while (getline(file, line)) {
+			transactions.push_back(convertLineToTransaction(line, Separator));
+		}
+		file.close();
+	}
+	return transactions;
+}
 // Load all Users from file, return vector of Users
 vector<strUser> loadUsersDataFromFile(const string& fileName) {
 	vector <strUser> vUsers;
