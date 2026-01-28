@@ -1166,6 +1166,10 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 		break;
 	}
 
+	case TransactionsOptions::Transfer: {
+		showTransferScreen(vClients);
+		break;
+	}
 
 	case TransactionsOptions::ShowTotalBalance:
 	{
