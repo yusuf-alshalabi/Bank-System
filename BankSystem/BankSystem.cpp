@@ -1272,8 +1272,13 @@ void showTransferScreen(vector<strClient>& vClients) {
 	double transferAmount = readPositiveNumber("Enter Transfer Amount: ");
 	double transferFee = transferAmount * 0.01;
 
-	if (!validateTransferAmount(transferAmount, transferFee, fromClient)) {
-		return;
+	while (!validateTransferAmount(transferAmount, transferFee, fromClient)) {
+		if (!confirm("Do you want to enter a different amount?")) {
+			showErrorMessage("Transfer cancelled.");
+			return;
+		}
+		transferAmount = readPositiveNumber("Enter Transfer Amount: ");
+		transferFee = transferAmount * 0.01;
 	}
 
 	showTransferConfirmation(fromClient, toClient, fromAccount, toAccount,
@@ -1284,23 +1289,29 @@ void showTransferScreen(vector<strClient>& vClients) {
 		return;
 	}
 
+	double originalBalance = fromClient->AccountBalance;
+
 	if (!executeTransfer(fromClient, toClient, transferAmount, transferFee)) {
 		showErrorMessage("Transfer failed!");
 		return;
 	}
 
-	
 	string description = "Transfer to " + toClient->Name;
 	Transaction transferTransaction = createTransferTransaction(fromAccount, toAccount,
-		transferAmount, transferFee,
-		description);
+		transferAmount, transferFee, description);
 	saveTransactionToFile(transferTransaction);
 
 	saveClientsToFile(ClientsFileName, vClients);
 	vClients = loadClientsDataFromFile(ClientsFileName);
 
-	showSuccessMessage("Transfer completed successfully!\nTransaction ID: " +
-		transferTransaction.TransactionID);
+	string successMessage = string("Transfer completed successfully!\n") +
+		"Transaction ID: " + transferTransaction.TransactionID + "\n" +
+		"Transferred Amount: " + to_string(transferAmount) + "\n" +
+		"Fee: " + to_string(transferFee) + "\n" +
+		"Previous Balance: " + to_string(originalBalance) + "\n" +
+		"New Balance: " + to_string(fromClient->AccountBalance);
+
+	showSuccessMessage(successMessage);
 	customPause();
 }
 
