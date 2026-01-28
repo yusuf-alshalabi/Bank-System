@@ -642,17 +642,30 @@ string readNonEmptyString(string s) {
 	return line;
 }
 // Read a positive double input
-double readPositiveNumber(string s) {
-	double num;
-	cout << s;
-	cin >> num;
-	while (cin.fail() || num < 0) {
-		cin.clear();
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		showErrorMessage("Invalid Number, Enter a valid one: ");
-		cin >> num;
-	}
-	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+double readPositiveNumber(string prompt) {
+	double num = 0;
+	bool validInput = false;
+
+	do {
+		cout << prompt;
+		string input;
+		getline(cin, input);
+
+		stringstream ss(input);
+		if (ss >> num && num >= 0) {
+			char remaining;
+			if (ss >> remaining) {
+				showErrorMessage("Invalid input. Please enter a valid number.");
+			}
+			else {
+				validInput = true;
+			}
+		}
+		else {
+			showErrorMessage("Invalid input. Please enter a positive number.");
+		}
+	} while (!validInput);
+
 	return num;
 }
 
