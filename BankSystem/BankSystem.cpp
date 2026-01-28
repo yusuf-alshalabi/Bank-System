@@ -1020,13 +1020,22 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 		showErrorMessage("Client not found!");
 		return false;
 	}
-	if (withdrawAmount <= client->AccountBalance) {
-		client->AccountBalance -= withdrawAmount;
-		showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
-		return true;
+
+	if (withdrawAmount <= 0) {
+		showErrorMessage("Invalid amount! Please enter a positive value.");
+		return false;
 	}
-	showErrorMessage("Amount Exceed the balance!");
-	return false;
+
+	if (withdrawAmount > client->AccountBalance) {
+		showErrorMessage("Insufficient funds! Available: " +
+			to_string(client->AccountBalance));
+		return false;
+	}
+
+	client->AccountBalance -= withdrawAmount;
+	showSuccessMessage("Withdrawal successful! New balance: " +
+		to_string(client->AccountBalance));
+	return true;
 }
 Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
 	Transaction txn;
