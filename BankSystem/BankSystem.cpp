@@ -1044,22 +1044,40 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	showScreenHeader("Withdraw Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		customPause();
 		return;
 	}
+
 	printClientCard(*client);
-	double withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
-	while (withdrawAmount > client->AccountBalance) {
-		cout << "Amount Exceed the balance, you can Withdraw up to " << client->AccountBalance << ".\n";
-		withdrawAmount = readPositiveNumber("Please enter another withdraw amount?");
-	}
+	double withdrawAmount = 0;
+
+	do {
+		withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
+
+		if (withdrawAmount > client->AccountBalance) {
+			showErrorMessage("Amount Exceeds the balance! You can withdraw up to: " +
+				to_string(client->AccountBalance));
+
+			if (!confirm("Do you want to enter a different amount?")) {
+				showErrorMessage("Withdrawal cancelled.");
+				customPause();
+				return;
+			}
+		}
+		else {
+			break;
+		}
+	} while (true);
 
 	if (withdrawBalanceToClient(client, withdrawAmount)) {
 		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
+		customPause();
 	}
 }
 
