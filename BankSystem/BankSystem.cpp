@@ -1099,9 +1099,24 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
+
 		vClients = loadClientsDataFromFile(ClientsFileName);
+
+		strClient* updatedClient = findClientByAccountNumber(accountNumber, vClients);
+
+		string successMessage = string("Transaction completed successfully!\n") +
+			"Transaction ID: " + txn.TransactionID;
+
+		if (updatedClient) {
+			successMessage += "\nNew Balance: " + to_string(updatedClient->AccountBalance);
+		}
+		else {
+			successMessage += "\nNote: Could not retrieve updated balance.";
+		}
+
+		showSuccessMessage(successMessage);
 	}
-	customPause();
+	customPause(); 
 }
 
 void printBalanceClientLine(const strClient& client) {
