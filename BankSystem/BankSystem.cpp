@@ -1074,33 +1074,34 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	}
 
 	printClientCard(*client);
-	double withdrawAmount = 0;
+	double withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
 
-	do {
+	while (withdrawAmount > client->AccountBalance) {
+		showErrorMessage("Amount exceeds balance! Available: " +
+			to_string(client->AccountBalance));
+
+		if (!confirm("Enter a different amount?")) {
+			showErrorMessage("Withdrawal cancelled");
+			customPause();
+			return;
+		}
+
 		withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
+	}
 
-		if (withdrawAmount > client->AccountBalance) {
-			showErrorMessage("Amount Exceeds the balance! You can withdraw up to: " +
-				to_string(client->AccountBalance));
-
-			if (!confirm("Do you want to enter a different amount?")) {
-				showErrorMessage("Withdrawal cancelled.");
-				customPause();
-				return;
-			}
-		}
-		else {
-			break;
-		}
-	} while (true);
+	if (!confirm("Confirm withdrawal of " + to_string(withdrawAmount) + "?")) {
+		showErrorMessage("Withdrawal cancelled");
+		customPause();
+		return;
+	}
 
 	if (withdrawBalanceToClient(client, withdrawAmount)) {
 		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
-		customPause();
 	}
+	customPause();
 }
 
 void printBalanceClientLine(const strClient& client) {
