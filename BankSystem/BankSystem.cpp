@@ -867,6 +867,7 @@ void showAddClientScreen(vector <strClient>& vClients) {
 	char AddMore = 'Y';
 	do {
 		addClient(vClients);
+		customPause();
 		cout << " ,do you want to add more clients? Y/N? ";
 
 		cin >> AddMore;
@@ -897,6 +898,7 @@ void showDeleteClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Delete Client Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	deleteClient(accountNumber, vClients);
+	customPause();
 }
 
 // Update client information by account number
@@ -925,6 +927,7 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 	do {
 		string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 		success = updateClientByAccountNumber(accountNumber, vClients);
+		customPause();
 	} while (!success);
 
 }
@@ -941,13 +944,14 @@ void ShowFindClientScreen(vector<strClient>& vClients) {
 	else {
 		printClientCard(*client);
 	}
+	customPause();
 }
 
 // Show exit Client screen
 void showExitClient() {
 	clearScreen();
-
 	showScreenHeader("Program Ends :-)");
+	customPause();
 }
 
 
@@ -1025,6 +1029,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		customPause();
 		return;
 	}
 	printClientCard(*client);
@@ -1519,6 +1524,7 @@ void showAddNewUser(vector<strUser>& vUsers) {
 	do
 	{
 		addNewUser(vUsers);
+		customPause();
 		cout << " ,do you want to add more Users? Y/N? ";
 		cin >> AddMore;
 
@@ -1560,6 +1566,7 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 	string name = readNonEmptyString("Please Enter UserName? ");
 	string password = readNonEmptyString("Please Enter Password? ");
 	deleteUserByNameAndPassword(name, password, vUsers);
+	customPause();
 }
 
 void showFindUserScreen(vector<strUser>& vUsers) {
@@ -1575,6 +1582,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	else {
 		showErrorMessage("User with name (" + name + ") and password (" + password + ") is not found!.");
 	}
+	customPause();
 }
 
 bool updateUserByNameAndPassword(const string& userName, const string& password, vector<strUser>& vUsers) {
@@ -1612,6 +1620,7 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 		string name = readNonEmptyString("Please Enter UserName? ");
 		string password = readNonEmptyString("Please Enter Password? ");
 		success = updateUserByNameAndPassword(name, password, vUsers);
+		customPause();
 	} while (!success);
 }
 
