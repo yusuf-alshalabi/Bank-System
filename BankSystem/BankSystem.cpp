@@ -972,6 +972,11 @@ string readPassword() {
 // TRANSACTIONS MANAGEMENT SYSTEM
 // Handles deposits, withdrawals, and balance reports
 // ==================================================
+string generateTransactionID() {
+	static int counter = 1000;
+	return "TXN" + to_string(++counter) + to_string(time(0));
+}
+
 bool depositBalanceToClient(strClient* client, double depositAmount) {
 	if (client == nullptr) {
 		return false;
@@ -1121,11 +1126,6 @@ void showTransactionsHistory(const string& accountNumber) {
 	}
 	cout << "-------------------------------------------------------------\n";
 	customPause();
-}
-
-string generateTransactionID() {
-	static int counter = 1000;
-	return "TXN" + to_string(++counter) + to_string(time(0));
 }
 
 bool validateTransferAccounts(const string& fromAccount, const string& toAccount,
