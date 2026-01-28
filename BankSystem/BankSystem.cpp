@@ -17,6 +17,7 @@
 using namespace std;
 
 const string ClientsFileName = "Clients.txt";
+const string TransactionsFileName = "Transactions.txt";
 const string UsersFileName = "Users.txt";
 const string Separator = "#//#";
 enum TransactionType {
@@ -619,7 +620,6 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 }
 
 void saveTransactionToFile(const Transaction& transaction) {
-	const string TransactionsFileName = "Transactions.txt";
 	string transactionLine = transaction.TransactionID + Separator +
 		to_string(transaction.Type) + Separator +
 		transaction.FromAccount + Separator +
