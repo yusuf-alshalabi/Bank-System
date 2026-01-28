@@ -1062,6 +1062,38 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	customPause();
 }
 
+void showTransactionsHistory(const string& accountNumber) {
+	vector<Transaction> transactions = loadTransactionsFromFile("Transactions.txt");
+
+	cout << "\nTransaction History for Account: " << accountNumber << "\n";
+	cout << "-------------------------------------------------------------\n";
+	cout << left << setw(15) << "TxnID"
+		<< setw(12) << "Type"
+		<< setw(15) << "From"
+		<< setw(15) << "To"
+		<< setw(10) << "Amount"
+		<< setw(10) << "Fees"
+		<< setw(20) << "Timestamp"
+		<< "Description\n";
+	cout << "-------------------------------------------------------------\n";
+
+	for (const Transaction& txn : transactions) {
+		if (txn.FromAccount == accountNumber || txn.ToAccount == accountNumber) {
+			cout << setw(15) << txn.TransactionID
+				<< setw(12) << (txn.Type == DEPOSIT ? "Deposit" :
+					txn.Type == WITHDRAWAL ? "Withdraw" : "Transfer")
+				<< setw(15) << txn.FromAccount
+				<< setw(15) << txn.ToAccount
+				<< setw(10) << txn.Amount
+				<< setw(10) << txn.Fees
+				<< setw(20) << txn.Timestamp
+				<< txn.Description << "\n";
+		}
+	}
+	cout << "-------------------------------------------------------------\n";
+	customPause();
+}
+
 string generateTransactionID() {
 	static int counter = 1000;
 	return "TXN" + to_string(++counter) + to_string(time(0));
