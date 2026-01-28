@@ -683,7 +683,7 @@ enum TransactionsOptions {
 	Withdraw = 2,
 	Transfer = 3,
 	ShowTotalBalance = 4,
-	showTransactionsHistory = 5,
+	ShowTransactionsHistory = 5,
 	ShowMainMenu = 6
 };
 enum ManageUsersOptions {
@@ -1241,6 +1241,11 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 		break;
 	}
 
+	case TransactionsOptions::ShowTransactionsHistory: {
+		string accountNumber = readNonEmptyString("Enter Account Number: ");
+		showTransactionsHistory(accountNumber);
+		break;
+	}
 
 	case TransactionsOptions::ShowMainMenu:
 	{
