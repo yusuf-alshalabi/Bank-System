@@ -980,6 +980,18 @@ bool depositBalanceToClient(strClient* client, double depositAmount) {
 	showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
 	return true;
 }
+Transaction createDepositTransaction(const string& account, double amount, const string& description = "Deposit operation") {
+	Transaction txn;
+	txn.TransactionID = generateTransactionID();
+	txn.Type = DEPOSIT;
+	txn.FromAccount = account;
+	txn.ToAccount = account; 
+	txn.Amount = amount;
+	txn.Fees = 0;
+	txn.Timestamp = getCurrentTimestamp();
+	txn.Description = description;
+	return txn;
+}
 void showDepositScreen(vector<strClient>& vClients) {
 	showScreenHeader("Deposit Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
@@ -991,6 +1003,8 @@ void showDepositScreen(vector<strClient>& vClients) {
 	printClientCard(*client);
 	double depositAmount = readPositiveNumber("Enter Deposit Amount: ");
 	if (depositBalanceToClient(client, depositAmount)) {
+		Transaction txn = createDepositTransaction(client->AccountNumber, depositAmount);
+		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
 	}
@@ -1009,6 +1023,18 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	showErrorMessage("Amount Exceed the balance!");
 	return false;
 }
+Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
+	Transaction txn;
+	txn.TransactionID = generateTransactionID();
+	txn.Type = WITHDRAWAL;
+	txn.FromAccount = account;
+	txn.ToAccount = account; 
+	txn.Amount = amount;
+	txn.Fees = 0;
+	txn.Timestamp = getCurrentTimestamp();
+	txn.Description = description;
+	return txn;
+}
 void showWithdrawScreen(vector<strClient>& vClients) {
 	showScreenHeader("Withdraw Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
@@ -1025,6 +1051,8 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	}
 
 	if (withdrawBalanceToClient(client, withdrawAmount)) {
+		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
+		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
 	}
@@ -1152,10 +1180,11 @@ void showTransferConfirmation(strClient* fromClient, strClient* toClient,
 	cout << "Total: " << (transferAmount + transferFee) << "\n";
 }
 
-Transaction createTransferTransaction(const string& fromAccount, const string& toAccount,
-	double transferAmount, double transferFee,
-	strClient* toClient) {
-
+Transaction createTransferTransaction(const string& fromAccount,
+	const string& toAccount,
+	double transferAmount,
+	double transferFee,
+	const string& description) {
 	Transaction transaction;
 	transaction.TransactionID = generateTransactionID();
 	transaction.Type = TRANSFER;
@@ -1164,7 +1193,7 @@ Transaction createTransferTransaction(const string& fromAccount, const string& t
 	transaction.Amount = transferAmount;
 	transaction.Fees = transferFee;
 	transaction.Timestamp = getCurrentTimestamp();
-	transaction.Description = "Transfer to " + toClient->Name;
+	transaction.Description = description;
 	return transaction;
 }
 
@@ -1200,11 +1229,15 @@ void showTransferScreen(vector<strClient>& vClients) {
 		return;
 	}
 
+	
+	string description = "Transfer to " + toClient->Name;
 	Transaction transferTransaction = createTransferTransaction(fromAccount, toAccount,
-		transferAmount, transferFee, toClient);
+		transferAmount, transferFee,
+		description);
 	saveTransactionToFile(transferTransaction);
 
 	saveClientsToFile(ClientsFileName, vClients);
+	vClients = loadClientsDataFromFile(ClientsFileName);
 
 	showSuccessMessage("Transfer completed successfully!\nTransaction ID: " +
 		transferTransaction.TransactionID);
