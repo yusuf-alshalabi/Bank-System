@@ -1197,7 +1197,7 @@ void ManageTransactions(vector<strClient>& vClients) {
 	TransactionsOptions Choice;
 	do {
 		showTransactionsMenuScreen();
-		Choice = (TransactionsOptions)readOption(1, 4);
+		Choice = (TransactionsOptions)readOption(1, 5);
 		executeTransactionOption(Choice, vClients);
 	} while (Choice != TransactionsOptions::ShowMainMenu);
 }
