@@ -1190,7 +1190,7 @@ void executeTransactionOption(TransactionsOptions TransactionMenuOption, vector<
 void showTransactionsMenuScreen() {
 	clearScreen();
 	showScreenHeader("Transactions Menu Screen");
-	vector<string> options = { "Deposit","Withdraw","Total Balances","Main Menu" };
+	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Main Menu"};
 	showOptions(options);
 }
 void ManageTransactions(vector<strClient>& vClients) {
