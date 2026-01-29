@@ -1735,6 +1735,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		hasPermission = checkAccessPermission(Permissions::pAddClient);
 		if (hasPermission) {
 			showAddClientScreen(vClients);
+			vClients = loadClientsDataFromFile(ClientsFileName);
 		}
 		break;
 	case MainMenuOption::DeleteClient:
