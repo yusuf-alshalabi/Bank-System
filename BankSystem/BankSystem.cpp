@@ -1200,32 +1200,48 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 void showTransactionsHistory(const string& accountNumber) {
 	vector<Transaction> transactions = loadTransactionsFromFile("Transactions.txt");
 
-	cout << "\nTransaction History for Account: " << accountNumber << "\n";
-	cout << "-------------------------------------------------------------\n";
-	cout << left << setw(15) << "TxnID"
-		<< setw(12) << "Type"
-		<< setw(15) << "From"
-		<< setw(15) << "To"
-		<< setw(10) << "Amount"
-		<< setw(10) << "Fees"
-		<< setw(20) << "Timestamp"
-		<< "Description\n";
-	cout << "-------------------------------------------------------------\n";
+	clearScreen();
+	showScreenHeader("Transaction History");
 
+	cout << "Account Number: " << accountNumber << "\n\n";
+
+	// Table header
+	cout << "+" << string(140, '-') << "+\n";
+	cout << "| " << left << setw(18) << "Transaction ID"
+		<< "| " << setw(12) << "Type"
+		<< "| " << setw(15) << "From Account"
+		<< "| " << setw(15) << "To Account"
+		<< "| " << setw(12) << "Amount"
+		<< "| " << setw(8) << "Fees"
+		<< "| " << setw(20) << "Timestamp"
+		<< "| " << setw(25) << "Description" << "|\n";
+	cout << "+" << string(140, '-') << "+\n";
+
+	bool found = false;
 	for (const Transaction& txn : transactions) {
 		if (txn.FromAccount == accountNumber || txn.ToAccount == accountNumber) {
-			cout << setw(15) << txn.TransactionID
-				<< setw(12) << (txn.Type == DEPOSIT ? "Deposit" :
-					txn.Type == WITHDRAWAL ? "Withdraw" : "Transfer")
-				<< setw(15) << txn.FromAccount
-				<< setw(15) << txn.ToAccount
-				<< setw(10) << txn.Amount
-				<< setw(10) << txn.Fees
-				<< setw(20) << txn.Timestamp
-				<< txn.Description << "\n";
+			found = true;
+			string type = (txn.Type == DEPOSIT ? "Deposit" :
+				txn.Type == WITHDRAWAL ? "Withdraw" : "Transfer");
+
+			cout << "| " << left << setw(18) << txn.TransactionID
+				<< "| " << setw(12) << type
+				<< "| " << setw(15) << txn.FromAccount
+				<< "| " << setw(15) << txn.ToAccount
+				<< "| " << setw(12) << fixed << setprecision(2) << txn.Amount
+				<< "| " << setw(8) << txn.Fees
+				<< "| " << setw(20) << txn.Timestamp
+				<< "| " << setw(25) << txn.Description << "|\n";
 		}
 	}
-	cout << "-------------------------------------------------------------\n";
+
+	cout << "+" << string(140, '-') << "+\n";
+
+	if (!found) {
+		cout << "\n";
+		showErrorMessage("No transactions found for this account.");
+	}
+
 	customPause();
 }
 
