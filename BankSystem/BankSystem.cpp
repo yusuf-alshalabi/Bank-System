@@ -1171,29 +1171,38 @@ void printBalanceClientLine(const strClient& client) {
 }
 void showTotalBalancesReport(const vector <strClient>& vClients) {
 	clearScreen();
-	double totalBalance = 0;
-	cout << "\n\t\t\t\t\t Balance List (" << vClients.size() << ") Client(s).";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+	showScreenHeader("Total Balances Report");
 
-	cout << "| " << setw(15) << left << "AccountNumber";
-	cout << "| " << setw(40) << left << "Name";
-	cout << "| " << setw(12) << left << "AccountBalance";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+	double totalBalance = 0;
+
+	cout << "Total Clients: " << vClients.size() << "\n\n";
 
 	if (vClients.size() == 0) {
-		cout << "\t\t\t\t No Client Available In The System!.\n";
+		showErrorMessage("No clients available in the system!");
+		customPause();
+		return;
 	}
 
+	// Table header
+	cout << "+" << string(80, '-') << "+\n";
+	cout << "| " << left << setw(18) << "Account Number"
+		<< "| " << setw(35) << "Client Name"
+		<< "| " << setw(22) << "Balance" << "|\n";
+	cout << "+" << string(80, '-') << "+\n";
+
+	// Print each client
 	for (const strClient& Client : vClients) {
 		totalBalance += Client.AccountBalance;
-		printBalanceClientLine(Client);
-		cout << endl;
+		cout << "| " << left << setw(18) << Client.AccountNumber
+			<< "| " << setw(35) << Client.Name
+			<< "| " << setw(22) << fixed << setprecision(2) << Client.AccountBalance << "|\n";
 	}
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
-	cout << "\n\t\t\t\t\tTotal Balance = " << totalBalance << endl;
+
+	cout << "+" << string(80, '-') << "+\n";
+	cout << "| " << left << setw(55) << "TOTAL BALANCE"
+		<< "| " << setw(22) << fixed << setprecision(2) << totalBalance << "|\n";
+	cout << "+" << string(80, '=') << "+\n\n";
+
 	customPause();
 }
 
