@@ -759,12 +759,12 @@ void showScreenHeader(const string& title) {
 	cout << "|" << string(58, ' ') << "|\n";
 	cout << "+" << string(58, '=') << "+\n\n";
 }
-void showOptions(vector<string> options) {
-	int count = 1;
-	for (string& option : options) {
-		cout << "\t[" << count++ << "] " << option << ".\n";
+void showOptions(const vector<string>& options) {
+	cout << "\n";
+	for (size_t i = 0; i < options.size(); i++) {
+		cout << "  [" << (i + 1) << "]  " << options[i] << ".\n";
 	}
-	cout << "===========================================\n";
+	cout << "\n" << string(60, '-') << "\n";
 }
 
 void printClientCard(const strClient& Client) {
