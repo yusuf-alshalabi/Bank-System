@@ -1546,21 +1546,30 @@ void printUserLine(const strUser& user) {
 }
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	clearScreen();
-	cout << "\n\t\t\t\t\tUsers List (" << vUsers.size() << ") User(s).";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+	showScreenHeader("Users List");
 
-	cout << "|" << setw(20) << left << "User Name";
-	cout << "|" << setw(40) << left << "Permissions";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+	cout << "Total Users: " << vUsers.size() << "\n\n";
 
-	for (const strUser& user : vUsers) {
-		printUserLine(user);
-		cout << endl;
+	if (vUsers.size() == 0) {
+		showErrorMessage("No users available in the system!");
+		customPause();
+		return;
 	}
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+
+	// Table header
+	cout << "+" << string(120, '-') << "+\n";
+	cout << "| " << left << setw(25) << "Username"
+		<< "| " << setw(92) << "Permissions" << "|\n";
+	cout << "+" << string(120, '-') << "+\n";
+
+	// Print each user
+	for (const strUser& user : vUsers) {
+		cout << "| " << left << setw(25) << user.UserName
+			<< "| " << setw(92) << getPermissionsAsString(user.Permissions) << "|\n";
+	}
+
+	cout << "+" << string(120, '-') << "+\n\n";
+
 	customPause();
 }
 
