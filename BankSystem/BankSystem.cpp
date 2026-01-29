@@ -1381,7 +1381,10 @@ void ManageTransactions(vector<strClient>& vClients) {
 	do {
 		showTransactionsMenuScreen();
 		Choice = (TransactionsOptions)readOption(1, 6);
-		executeTransactionOption(Choice, vClients);
+		if (Choice != TransactionsOptions::ShowMainMenu) {
+			executeTransactionOption(Choice, vClients);
+			vClients = loadClientsDataFromFile(ClientsFileName);
+		}
 	} while (Choice != TransactionsOptions::ShowMainMenu);
 }
 //========================================================================
