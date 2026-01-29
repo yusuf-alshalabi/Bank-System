@@ -767,15 +767,23 @@ void showOptions(const vector<string>& options) {
 	cout << "\n" << string(60, '-') << "\n";
 }
 
-void printClientCard(const strClient& Client) {
-	showScreenHeader("Client Information");
-	cout << "\nAccount Number  : " << Client.AccountNumber;
-	cout << "\nPin Code       : " << Client.PinCode;
-	cout << "\nName           : " << Client.Name;
-	cout << "\nPhone          : " << Client.Phone;
-	cout << "\nAccount Balance: " << Client.AccountBalance;
-	cout << "\n-------------------------------------------------\n";
+void printClientCard(const strClient& client) {
+	cout << "\n+" << string(58, '=') << "+\n";
+	cout << "|  " << left << setw(56) << "Client Information" << "|\n";
+	cout << "+" << string(58, '=') << "+\n";
 
+	cout << "|  Account Number : " << left << setw(39)
+		<< client.AccountNumber << "|\n";
+	cout << "|  PIN Code       : " << left << setw(39)
+		<< client.PinCode << "|\n";
+	cout << "|  Name           : " << left << setw(39)
+		<< client.Name << "|\n";
+	cout << "|  Phone          : " << left << setw(39)
+		<< client.Phone << "|\n";
+	cout << "|  Balance        : " << left << setw(39)
+		<< client.AccountBalance << "|\n";
+
+	cout << "+" << string(58, '=') << "+\n";
 }
 
 // Search for a client by account number, return pointer to client if found
