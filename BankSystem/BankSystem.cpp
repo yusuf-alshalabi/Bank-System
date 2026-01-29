@@ -1038,7 +1038,6 @@ void showDepositScreen(vector<strClient>& vClients) {
 		Transaction txn = createDepositTransaction(client->AccountNumber, depositAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
-		vClients = loadClientsDataFromFile(ClientsFileName);
 		customPause();
 	}
 }
