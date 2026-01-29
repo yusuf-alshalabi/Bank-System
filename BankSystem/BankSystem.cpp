@@ -1119,7 +1119,6 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
-		vClients = loadClientsDataFromFile(ClientsFileName);
 
 		string successMessage = string("Transaction completed successfully!\n") +
 			"Transaction ID: " + txn.TransactionID + "\n" +
