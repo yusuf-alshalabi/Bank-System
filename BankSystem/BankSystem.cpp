@@ -1748,6 +1748,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		hasPermission = checkAccessPermission(Permissions::pUpdateClient);
 		if (hasPermission) {
 			showUpdateClientScreen(vClients);
+			vClients = loadClientsDataFromFile(ClientsFileName);
 		}
 		break;
 	case MainMenuOption::FindClient:
