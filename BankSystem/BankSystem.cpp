@@ -1164,11 +1164,6 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	customPause();
 }
 
-void printBalanceClientLine(const strClient& client) {
-	cout << "| " << setw(15) << left << client.AccountNumber;
-	cout << "| " << setw(40) << left << client.Name;
-	cout << "| " << setw(35) << left << client.AccountBalance;
-}
 void showTotalBalancesReport(const vector <strClient>& vClients) {
 	clearScreen();
 	showScreenHeader("Total Balances Report");
