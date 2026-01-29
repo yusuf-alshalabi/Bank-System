@@ -748,10 +748,16 @@ string getCurrentTimestamp() {
 }
 
 void showScreenHeader(const string& title) {
-	clearScreen();
-	cout << "\n" << string(50, '=') << "\n";
-	cout << "    " << title << "\n";
-	cout << string(50, '=') << "\n\n";
+	cout << "\n";
+	cout << "+" << string(58, '=') << "+\n";
+	cout << "|" << string(58, ' ') << "|\n";
+
+	int padding = (58 - title.length()) / 2;
+	cout << "|" << string(padding, ' ') << title
+		<< string(58 - padding - title.length(), ' ') << "|\n";
+
+	cout << "|" << string(58, ' ') << "|\n";
+	cout << "+" << string(58, '=') << "+\n\n";
 }
 void showOptions(vector<string> options) {
 	int count = 1;
