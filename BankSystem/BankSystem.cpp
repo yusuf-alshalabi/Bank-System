@@ -1533,11 +1533,14 @@ string getPermissionsAsString(int permissions) {
 
 
 void printUserCard(strUser* User) {
-	cout << "\nThe following are the User details:\n";
-	cout << "-----------------------------------";
-	cout << "\nUser Name   : " << User->UserName;
-	cout << "\nPermissions : " << getPermissionsAsString(User->Permissions); 
-	cout << "\n-----------------------------------\n";
+	cout << "\n+" << string(102, '=') << "+\n";
+	cout << "|  " << left << setw(100) << "User Information" << "|\n";
+	cout << "+" << string(102, '=') << "+\n";
+
+	cout << "|  Username    : " << left << setw(86) << User->UserName << "|\n";
+	cout << "|  Permissions : " << left << setw(86) << getPermissionsAsString(User->Permissions) << "|\n";
+
+	cout << "+" << string(102, '=') << "+\n";
 }
 
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
