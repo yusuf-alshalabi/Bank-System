@@ -1540,10 +1540,6 @@ void printUserCard(strUser* User) {
 	cout << "\n-----------------------------------\n";
 }
 
-void printUserLine(const strUser& user) {
-	cout << "|" << setw(20) << left << user.UserName;
-	cout << "|" << setw(40) << left << getPermissionsAsString(user.Permissions);
-}
 void ShowAllUsersScreen(const vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Users List");
