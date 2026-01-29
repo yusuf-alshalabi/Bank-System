@@ -1027,13 +1027,22 @@ void showDepositScreen(vector<strClient>& vClients) {
 	showScreenHeader("Deposit Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
+
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
 		customPause();
 		return;
 	}
+
 	printClientCard(*client);
 	double depositAmount = readPositiveNumber("Enter Deposit Amount: ");
+
+	if (!confirm("Confirm deposit of " + to_string(depositAmount) + "?")) {
+		showErrorMessage("Deposit cancelled");
+		customPause();
+		return;
+	}
+
 	if (depositBalanceToClient(client, depositAmount)) {
 		Transaction txn = createDepositTransaction(client->AccountNumber, depositAmount);
 		saveTransactionToFile(txn);
