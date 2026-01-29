@@ -836,23 +836,36 @@ void printClientRecordLine(const strClient& client) {
 //- Display all clients in table
 void showAllClientsReport(const vector<strClient>& vClients) {
 	clearScreen();
-	cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+	showScreenHeader("Clients List");
 
-	cout << "|" << setw(15) << left << "AccountNumber";
-	cout << "|" << setw(10) << left << "PinCode";
-	cout << "|" << setw(40) << left << "Name";
-	cout << "|" << setw(12) << left << "Phone";
-	cout << "|" << setw(12) << left << "AccountBalance";
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
-	for (const strClient& Client : vClients) {
-		printClientRecordLine(Client);
-		cout << endl;
+	cout << "Total Clients: " << vClients.size() << "\n\n";
+
+	if (vClients.size() == 0) {
+		showErrorMessage("No clients available in the system!");
+		customPause();
+		return;
 	}
-	cout << "\n________________________________________________";
-	cout << "_______________________________________________\n" << endl;
+
+	// Table header
+	cout << "+" << string(105, '-') << "+\n";
+	cout << "| " << left << setw(18) << "Account Number"
+		<< "| " << setw(12) << "PIN Code"
+		<< "| " << setw(30) << "Client Name"
+		<< "| " << setw(15) << "Phone"
+		<< "| " << setw(21) << "Balance" << "|\n";
+	cout << "+" << string(105, '-') << "+\n";
+
+	// Print each client
+	for (const strClient& Client : vClients) {
+		cout << "| " << left << setw(18) << Client.AccountNumber
+			<< "| " << setw(12) << Client.PinCode
+			<< "| " << setw(30) << Client.Name
+			<< "| " << setw(15) << Client.Phone
+			<< "| " << setw(21) << fixed << setprecision(2) << Client.AccountBalance << "|\n";
+	}
+
+	cout << "+" << string(105, '-') << "+\n\n";
+
 	customPause();
 }
 
