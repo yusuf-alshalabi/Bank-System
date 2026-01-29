@@ -1029,7 +1029,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 
 	if (!client) {
-		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
 		customPause();
 		return;
 	}
