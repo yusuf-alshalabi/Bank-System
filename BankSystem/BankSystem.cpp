@@ -1759,6 +1759,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		hasPermission = checkAccessPermission(Permissions::pTransactions);
 		if (hasPermission) {
 			ManageTransactions(vClients);
+			vClients = loadClientsDataFromFile(ClientsFileName);
 		}
 		break;
 	case MainMenuOption::ManageUsers: {
@@ -1771,7 +1772,6 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		break;
 	}
 	case MainMenuOption::Logout:
-		// NEW: Clear session on logout
 		if (confirm("Are you sure you want to logout?")) {
 			clearCurrentUserSession();
 			showSuccessMessage("You have been logged out successfully. Session cleared.");
