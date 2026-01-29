@@ -1043,10 +1043,20 @@ void showDepositScreen(vector<strClient>& vClients) {
 		return;
 	}
 
+	double originalBalance = client->AccountBalance;
+
 	if (depositBalanceToClient(client, depositAmount)) {
 		Transaction txn = createDepositTransaction(client->AccountNumber, depositAmount);
 		saveTransactionToFile(txn);
 		saveClientsToFile(ClientsFileName, vClients);
+
+		string successMessage = string("Transaction completed successfully!\n") +
+			"Transaction ID: " + txn.TransactionID + "\n" +
+			"Deposited Amount: " + to_string(depositAmount) + "\n" +
+			"Previous Balance: " + to_string(originalBalance) + "\n" +
+			"New Balance: " + to_string(originalBalance + depositAmount);
+
+		showSuccessMessage(successMessage);
 		customPause();
 	}
 }
