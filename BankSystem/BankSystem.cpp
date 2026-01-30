@@ -587,16 +587,18 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 // Save all clients to file, skip those marked for deletion
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
-	MyFile.open(FileName, ios::out | ios::trunc);
-	string DataLine;
+	MyFile.open(FileName, ios::out);
 	if (MyFile.is_open()) {
 		for (const strClient& c : vClients) {
 			if (!c.MarkForDelete) {
-				DataLine = convertClientRecordToLine(c, Separator);
+				string DataLine = convertClientRecordToLine(c, Separator);
 				MyFile << DataLine << endl;
 			}
 		}
 		MyFile.close();
+	}
+	else {
+		showErrorMessage("Could not open file for saving clients!");
 	}
 }
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
