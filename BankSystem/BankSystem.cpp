@@ -43,7 +43,7 @@ struct strClient {
 	string Name;
 	string Phone;
 	double AccountBalance;
-	bool MarkForDelete;
+	bool MarkForDelete = false;
 	vector<Transaction> Transactions;
 };
 
@@ -495,6 +495,7 @@ strClient convertLineToClientRecord(const string& Line, const string& seperator)
 		Client.Name = vClientData[2];
 		Client.Phone = vClientData[3];
 		Client.AccountBalance = stod(vClientData[4]);
+		Client.MarkForDelete - false;  
 	}
 	else {
 		throw runtime_error("Invalid client data format");
