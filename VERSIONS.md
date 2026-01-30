@@ -4,7 +4,7 @@ Complete changelog and feature details for all versions.
 
 ---
 
-## Version 1.4.0 — Transaction Management System (January 2026)
+## Version 1.4.0 — Transaction Management System (January 2026)  [v1.4.0][v140]
 
 ### 🎯 Main Focus
 Complete **Transaction Management System** with money transfers, audit trail, and transaction history.
@@ -111,7 +111,7 @@ enum TransactionType {
 
 ---
 
-## Version 1.3.0 — Binary Session Encryption (December 2025)
+## Version 1.3.0 — Binary Session Encryption (December 2025)  [v1.3.0][v130]
 
 ### 🎯 Main Focus
 Enterprise-grade **Session Management** with binary encryption using Libsodium.
@@ -177,7 +177,7 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 
 ---
 
-## Version 1.2.0 — User Management & RBAC (October 2025)
+## Version 1.2.0 — User Management & RBAC (October 2025)  [v1.2.0][v120]
 
 ### 🎯 Main Focus
 Complete **User Management System** with Role-Based Access Control (RBAC).
@@ -258,7 +258,7 @@ struct strUser {
 
 ---
 
-## Version 1.1.0 — Financial Transactions (August 2025)
+## Version 1.1.0 — Financial Transactions (August 2025)  [v1.1.0][v110]
 
 ### 🎯 Main Focus
 Core **Financial Operations** for the banking system.
@@ -311,7 +311,7 @@ Core **Financial Operations** for the banking system.
 
 ---
 
-## Version 1.0.0 — Initial Release (June 2025)
+## Version 1.0.0 — Initial Release (June 2025)  [v1.0.0][v100]
 
 ### 🎯 Main Focus
 Foundation with **CRUD Operations** for client management.
@@ -422,3 +422,9 @@ enum MainMenuOption {
 **Project:** CRUD Bank System  
 **Developer:** Yusuf Zakaria Alshalabi  
 **Part of:** Programming Advices Roadmap – Course 7
+
+[v140]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.0
+[v130]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.3.0
+[v120]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.2.0
+[v110]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.1.0
+[v100]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.0.0
