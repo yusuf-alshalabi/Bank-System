@@ -603,10 +603,10 @@ void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 }
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	fstream MyFile;
-	MyFile.open(FileName, ios::out | ios::trunc); 
+	MyFile.open(FileName, ios::out);
 
 	if (MyFile.is_open()) {
-		for (const strUser& user : vUsers) { 
+		for (const strUser& user : vUsers) {
 			if (!user.MarkForDelete) {
 				string DataLine = convertUserRecordToLine(user, Separator);
 				MyFile << DataLine << endl;
