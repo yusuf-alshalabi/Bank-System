@@ -1104,7 +1104,6 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 	client->AccountBalance -= withdrawAmount;
 	showSuccessMessage("Withdrawal successful! Remaining balance: " +
 		to_string(client->AccountBalance));
-	customPause();
 	return true;
 }
 Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
