@@ -550,18 +550,29 @@ strUser convertLineToUserRecord(string Line, const string& seperator) {
 
 // Load all clients from file, return vector of clients
 vector<strClient> loadClientsDataFromFile(const string& fileName) {
-	vector <strClient> vClients;
+	vector<strClient> vClients;
 	fstream myFile;
-	myFile.open(fileName, ios::in); //read only.
-	if (myFile.is_open()) {
+	myFile.open(fileName, ios::in);
+
+	if (!myFile.is_open()) {
+		return vClients; // File doesn't exist yet
+	}
+
+	try {
 		string Line;
-		strClient Client;
 		while (getline(myFile, Line)) {
-			Client = convertLineToClientRecord(Line, Separator);
-			vClients.push_back(Client);
+			if (!Line.empty()) {
+				strClient Client = convertLineToClientRecord(Line, Separator);
+				vClients.push_back(Client);
+			}
 		}
 		myFile.close();
 	}
+	catch (const exception& e) {
+		myFile.close();
+		throw runtime_error(string("Error loading clients: ") + e.what());
+	}
+
 	return vClients;
 }
 // Load all Transactions from file, return vector of Transactions
