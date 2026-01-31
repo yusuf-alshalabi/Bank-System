@@ -597,17 +597,25 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);
-	if (MyFile.is_open()) {
+
+	if (!MyFile.is_open()) {
+		throw runtime_error("Cannot open file for writing: " + FileName);
+	}
+
+	try {
 		for (const strClient& c : vClients) {
 			if (!c.MarkForDelete) {
-				string DataLine = convertClientRecordToLine(c, Separator);
-				MyFile << DataLine << endl;
+				MyFile << convertClientRecordToLine(c, Separator) << endl;
+				if (MyFile.fail()) {
+					throw runtime_error("Failed to write client data");
+				}
 			}
 		}
 		MyFile.close();
 	}
-	else {
-		showErrorMessage("Could not open file for saving clients!");
+	catch (const exception& e) {
+		MyFile.close();
+		throw runtime_error(string("Error saving clients: ") + e.what());
 	}
 }
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
