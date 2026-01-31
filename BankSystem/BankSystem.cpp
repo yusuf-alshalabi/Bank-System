@@ -1511,7 +1511,8 @@ strUser* findUserByUserName(const string& userName, vector<strUser>& vUsers) {
 strUser readUserData(const string& userName) {
 	strUser user;
 	user.UserName = userName;
-	user.Password = readPassword();
+	string rawPassword = readPassword();   // get raw password
+	user.Password = hashPassword(rawPassword); // hash before storing
 	user.Permissions = readPermissionsToSet();
 	return user;
 }
