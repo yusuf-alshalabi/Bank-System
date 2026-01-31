@@ -8,6 +8,8 @@
 #include <sstream>
 #include <functional>
 #include <sodium.h>
+#include <chrono>  
+
 
 #ifdef _WIN32
 #define NOMINMAX 
@@ -1045,8 +1047,18 @@ string readPassword() {
 // Handles deposits, withdrawals, and balance reports
 // ==================================================
 string generateTransactionID() {
-	static int counter = 1000;
-	return "TXN" + formatDouble(++counter) + formatDouble(time(0));
+	// Use high-resolution timestamp for uniqueness
+	auto now = chrono::high_resolution_clock::now();
+	auto timestamp = chrono::duration_cast<chrono::microseconds>(
+		now.time_since_epoch()).count();
+
+	// Add cryptographically secure random component
+	uint32_t randomNum = randombytes_random();
+
+	// Combine timestamp and random number
+	stringstream ss;
+	ss << "TXN" << timestamp << hex << setw(8) << setfill('0') << randomNum;
+	return ss.str();
 }
 
 bool depositBalanceToClient(strClient* client, double depositAmount) {
