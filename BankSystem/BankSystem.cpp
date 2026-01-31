@@ -590,18 +590,29 @@ vector<Transaction> loadTransactionsFromFile(const string& fileName) {
 }
 // Load all Users from file, return vector of Users
 vector<strUser> loadUsersDataFromFile(const string& fileName) {
-	vector <strUser> vUsers;
+	vector<strUser> vUsers;
 	fstream myFile;
-	myFile.open(fileName, ios::in); //read only.
-	if (myFile.is_open()) {
+	myFile.open(fileName, ios::in);
+
+	if (!myFile.is_open()) {
+		return vUsers;
+	}
+
+	try {
 		string Line;
-		strUser User;
 		while (getline(myFile, Line)) {
-			User = convertLineToUserRecord(Line, Separator);
-			vUsers.push_back(User);
+			if (!Line.empty()) {
+				strUser User = convertLineToUserRecord(Line, Separator);
+				vUsers.push_back(User);
+			}
 		}
 		myFile.close();
 	}
+	catch (const exception& e) {
+		myFile.close();
+		throw runtime_error(string("Error loading users: ") + e.what());
+	}
+
 	return vUsers;
 }
 // Save all clients to file, skip those marked for deletion
