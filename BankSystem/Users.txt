@@ -1,6 +1,6 @@
-Admin#//#1fabbdf10314a21d#//#-1
-Manager#//#75538e81abb06cf6#//#59
-Supervisor#//#eeda5af59ee25a38#//#63
-Cashier#//#1b487b63b6c5c1de#//#49
-Auditor#//#c0cd2bb5fa0f08f2#//#17
-Teller#//#7211199e43e7370d#//#19
+Admin#//#1fabbdf10314a21d#//#-1.00
+Manager#//#75538e81abb06cf6#//#59.00
+Supervisor#//#eeda5af59ee25a38#//#63.00
+Cashier#//#1b487b63b6c5c1de#//#49.00
+Auditor#//#c0cd2bb5fa0f08f2#//#17.00
+Teller#//#7211199e43e7370d#//#19.00
