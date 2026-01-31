@@ -18,6 +18,10 @@
 
 using namespace std;
 
+//=====================================================
+//======== struct & enums & global variables ==========
+//=====================================================
+
 const string ClientsFileName = "Clients.txt";
 const string TransactionsFileName = "Transactions.txt";
 const string UsersFileName = "Users.txt";
@@ -27,7 +31,6 @@ enum TransactionType {
 	WITHDRAWAL = 2,
 	TRANSFER = 3
 };
-
 enum MainMenuOption {
 	ShowClientList = 1,
 	AddNewClient = 2,
@@ -66,6 +69,7 @@ enum Permission {
 	pAll = -1,
 	pAllPermissions = 127
 };
+
 struct Transaction {
 	string TransactionID;
 	TransactionType Type;
@@ -76,7 +80,6 @@ struct Transaction {
 	string Timestamp;
 	string Description;
 };
-
 struct strClient {
 	string AccountNumber;
 	string PinCode;
@@ -86,7 +89,6 @@ struct strClient {
 	bool MarkForDelete = false;
 	vector<Transaction> Transactions;
 };
-
 struct strUser
 {
 	string UserName = "";
@@ -97,7 +99,12 @@ struct strUser
 
 strUser CurrentUser;
 
-// Forward Declarations (prototypes)
+//=====================================================
+
+
+//=====================================================
+//=============== Forward Declarations ================
+//=====================================================
 
 // Session & Encryption
 vector<unsigned char> getEncryptionKey();
@@ -119,6 +126,15 @@ void showMainMenu(vector<strClient>& vClients);
 void showManageUsersMenu(vector<strUser>& vUsers);
 void showExitScreen();
 void showManageUsersScreen();
+
+//=====================================================
+
+
+//=====================================================
+//==================== Utilities ======================
+// Helper functions for formatting, trimming, screen control,
+// and displaying messages.
+//=====================================================
 
 string formatDouble(double value, int precision = 2) {
 	ostringstream out;
@@ -218,10 +234,15 @@ void backToMenu() {
 	waitForEnter();
 }
 
+//=====================================================
+
 
 //=====================================================
 //============= Session Management System =============
+// Functions to manage user sessions: save, load, clear,
+// and handle session paths/folders.
 //=====================================================
+
 // Smart function to get current username (without getenv)
 string getCurrentUsernameSafe() {
 	string username = "default_user";
@@ -444,12 +465,16 @@ strUser deserializeUserData(const string& data) {
 
 	return user;
 }
-//========================================================================
+
+//=====================================================
 
 
 //=====================================================
-//===============Encryption & Decryption===============
+//=============== Encryption & Decryption =============
+// Functions for generating keys, encrypting and decrypting
+// sensitive data using libsodium.
 //=====================================================
+
 // Generate encryption key (should be stored securely)
 vector<unsigned char> generateEncryptionKey() {
 	vector<unsigned char> key(crypto_secretbox_KEYBYTES);
@@ -569,7 +594,15 @@ string decryptData(const string& encryptedData, const vector<unsigned char>& key
 
 	return string(reinterpret_cast<const char*>(plaintext.data()), plaintext.size());
 }
-//========================================================================
+
+//=====================================================
+
+
+//=====================================================
+//==================== File Manager ===================
+// Functions to serialize/deserialize Clients, Users, and
+// Transactions, and handle file I/O operations.
+//=====================================================
 
 // Split string into tokens using delimiter
 vector<string> splitStringByDelimiter(string S1, string delim) {
@@ -824,6 +857,15 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 	MyFile.close();
 }
 
+//=====================================================
+
+
+//=====================================================
+//==================== Input Manager ==================
+// Functions to read and validate user input (strings,
+// numbers, passwords, confirmations).
+//=====================================================
+
 // Read a non-empty string input
 string readNonEmptyString(string s) {
 	string line;
@@ -916,6 +958,14 @@ bool confirmAction(string s) {
 	else return false;
 }
 
+//=====================================================
+
+
+//=====================================================
+//==================== Client Manager =================
+// Functions to manage clients: add, update, delete,
+// find, and display client information.
+//=====================================================
 
 // Search for a client by account number, return pointer to client if found
 strClient* findClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
@@ -1088,11 +1138,15 @@ void showFindClientScreen(vector<strClient>& vClients) {
 	backToMenu();
 }
 
+//=====================================================
 
-// ==================================================
-// TRANSACTIONS MANAGEMENT SYSTEM
-// Handles deposits, withdrawals, and balance reports
-// ==================================================
+
+//=====================================================
+//=============== Transactions Manager ================
+// Functions to handle deposits, withdrawals, transfers,
+// balances reports, and transaction history.
+//=====================================================
+
 string generateTransactionID() {
 	// Use high-resolution timestamp for uniqueness
 	auto now = chrono::high_resolution_clock::now();
@@ -1517,8 +1571,15 @@ void manageTransactions(vector<strClient>& vClients) {
 		}
 	} while (Choice != TransactionsOption::ShowMainMenu);
 }
-//========================================================================
 
+//=====================================================
+
+
+//=====================================================
+//==================== User Manager ===================
+// Functions to manage users: add, update, delete,
+// find, list, and display user information.
+//=====================================================
 
 strUser* findUserByUsername(const string& userName, vector<strUser>& vUsers) {
 	for (auto& user : vUsers) {
@@ -1770,6 +1831,14 @@ void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>
 	}
 }
 
+//=====================================================
+
+
+//=====================================================
+//==================== Auth Manager ===================
+// Functions for authentication: hashing, verifying
+// passwords, login, and default admin creation.
+//=====================================================
 
 string hashPassword(const string& password) {
 	char hashed[crypto_pwhash_STRBYTES];
@@ -1854,7 +1923,13 @@ void createDefaultAdmin() {
 		pressEnterToContinue();
 	}
 }
+//=====================================================
 
+
+//=====================================================
+//================ Permission Manager =================
+// Functions to read and check user permissions.
+//=====================================================
 
 int readUserPermissions()
 {
@@ -1891,6 +1966,14 @@ bool hasPermission(Permission permission) {
 	return (CurrentUser.Permissions & permission) == permission;
 }
 
+//=====================================================
+
+
+//=====================================================
+//==================== Menu Manager ===================
+// Functions to build, display, and execute main menu
+// and user management menu options.
+//=====================================================
 
 vector<string> buildMainMenuOptions() {
 	vector<string> options;
@@ -2052,6 +2135,12 @@ void showExitScreen() {
 	showScreenHeader("Program Ends :-)");
 	waitForEnter();
 }
+
+//=====================================================
+
+//=====================================================
+//==================== Main Function ==================
+//=====================================================
 
 int main()
 {
