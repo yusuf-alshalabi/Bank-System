@@ -1006,12 +1006,19 @@ int readOption(int from, int to) {
 }
 
 string hashPassword(const string& password) {
-	size_t hashed = hash<string>{}(password);
-	stringstream ss;
-	ss << hex << setw(16) << setfill('0') << hashed;
-	return ss.str();
-}
+	char hashed[crypto_pwhash_STRBYTES];
 
+	if (crypto_pwhash_str(
+		hashed,
+		password.c_str(),
+		password.length(),
+		crypto_pwhash_OPSLIMIT_INTERACTIVE,
+		crypto_pwhash_MEMLIMIT_INTERACTIVE) != 0) {
+		throw runtime_error("Password hashing failed - out of memory");
+	}
+
+	return string(hashed);
+}
 string readPassword() {
 	string password;
 	do {
