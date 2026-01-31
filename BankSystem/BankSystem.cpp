@@ -695,7 +695,12 @@ void saveTransactionToFile(const Transaction& transaction) {
 		transaction.Timestamp + Separator +
 		transaction.Description;
 
-	appendLineToFile(TransactionsFileName, transactionLine);
+	try {
+		appendLineToFile(TransactionsFileName, transactionLine);
+	}
+	catch (const exception& e) {
+		throw runtime_error(string("Error saving transaction: ") + e.what());
+	}
 }
 
 // Read a non-empty string input
