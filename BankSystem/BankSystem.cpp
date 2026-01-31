@@ -1691,7 +1691,12 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 			for (strUser& u : vUsers) {
 				if (u.UserName == userName) {
 					cout << "Enter new user data:\n";
-					u = readUserData(userName);
+					u.UserName = userName;
+					if (confirm("Do you want to update password?")) {
+						string rawPassword = readPassword();
+						u.Password = hashPassword(rawPassword);
+					}
+					u.Permissions = readPermissionsToSet();
 					break;
 				}
 			}
@@ -1701,12 +1706,11 @@ bool updateUserByNameAndPassword(const string& userName, const string& password,
 		}
 		return false;
 	}
-	else { 
+	else {
 		showErrorMessage("User with name (" + userName + ") and password (" + password + ") is not found!.");
 		return false;
 	}
 }
-
 
 
 void showUpdateUserScreen(vector<strUser>& vUsers) {
