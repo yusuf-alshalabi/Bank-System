@@ -579,13 +579,27 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 vector<Transaction> loadTransactionsFromFile(const string& fileName) {
 	vector<Transaction> transactions;
 	fstream file(fileName, ios::in);
-	if (file.is_open()) {
+
+	if (!file.is_open()) {
+		// File doesn't exist yet - not an error
+		return transactions;
+	}
+
+	try {
 		string line;
 		while (getline(file, line)) {
-			transactions.push_back(convertLineToTransaction(line, Separator));
+			if (!line.empty()) {  // Skip empty lines
+				Transaction txn = convertLineToTransaction(line, Separator);
+				transactions.push_back(txn);
+			}
 		}
 		file.close();
 	}
+	catch (const exception& e) {
+		file.close();
+		throw runtime_error(string("Error loading transactions: ") + e.what());
+	}
+
 	return transactions;
 }
 // Load all Users from file, return vector of Users
