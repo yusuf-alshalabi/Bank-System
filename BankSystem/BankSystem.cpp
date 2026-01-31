@@ -64,6 +64,16 @@ string formatDouble(double value, int precision = 2) {
 	out << fixed << setprecision(precision) << value;
 	return out.str();
 }
+// Format integer safely
+string formatInt(int value) {
+	return to_string(value);
+}
+// Format currency with $ sign
+string formatCurrency(double value) {
+	ostringstream out;
+	out << "$" << fixed << setprecision(2) << value;
+	return out.str();
+}
 
 //Pause until user presses a key
 void customPause() {
@@ -321,7 +331,7 @@ string serializeUserData(const strUser& user) {
 	string data;
 	data += user.UserName + "\n";
 	data += user.Password + "\n";
-	data += formatDouble(user.Permissions);
+	data += formatInt(user.Permissions);  
 	return data;
 }
 
@@ -532,7 +542,7 @@ string convertUserRecordToLine(const strUser& userInfo, const string& separator 
 	string line = "";
 	line += userInfo.UserName + separator;
 	line += userInfo.Password + separator;
-	line += formatDouble(userInfo.Permissions);
+	line += formatInt(userInfo.Permissions); 
 	return line;
 }
 
@@ -701,11 +711,11 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 
 void saveTransactionToFile(const Transaction& transaction) {
 	string transactionLine = transaction.TransactionID + Separator +
-		formatDouble(transaction.Type) + Separator +
+		formatInt(transaction.Type) + Separator +  
 		transaction.FromAccount + Separator +
 		transaction.ToAccount + Separator +
-		formatDouble(transaction.Amount) + Separator +
-		formatDouble(transaction.Fees) + Separator +
+		formatCurrency(transaction.Amount) + Separator + 
+		formatCurrency(transaction.Fees) + Separator +   
 		transaction.Timestamp + Separator +
 		transaction.Description;
 
@@ -858,7 +868,7 @@ void printClientCard(const strClient& client) {
 	cout << "|  Phone          : " << left << setw(39)
 		<< client.Phone << "|\n";
 	cout << "|  Balance        : " << left << setw(39)
-		<< client.AccountBalance << "|\n";
+		<< formatCurrency(client.AccountBalance) << "|\n";  
 
 	cout << "+" << string(58, '=') << "+\n";
 }
@@ -1299,12 +1309,12 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 		totalBalance += Client.AccountBalance;
 		cout << "| " << left << setw(18) << Client.AccountNumber
 			<< "| " << setw(35) << Client.Name
-			<< "| " << setw(22) << fixed << setprecision(2) << Client.AccountBalance << "|\n";
+			<< "| " << left << setw(22) << formatCurrency(Client.AccountBalance) << "|\n";
 	}
 
 	cout << "+" << string(80, '-') << "+\n";
 	cout << "| " << left << setw(55) << "TOTAL BALANCE"
-		<< "| " << setw(22) << fixed << setprecision(2) << totalBalance << "|\n";
+		 << "| " << left << setw(22) << formatCurrency(totalBalance) << "|\n";
 	cout << "+" << string(80, '=') << "+\n\n";
 
 	customPause();
