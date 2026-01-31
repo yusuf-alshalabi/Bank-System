@@ -632,10 +632,19 @@ void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 void appendLineToFile(const string& FileName, const string& stDataLine) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out | ios::app);
-	if (MyFile.is_open()) {
-		MyFile << stDataLine << endl;
-		MyFile.close();
+
+	if (!MyFile.is_open()) {
+		throw runtime_error("Cannot open file: " + FileName);
 	}
+
+	MyFile << stDataLine << endl;
+
+	if (MyFile.fail()) {
+		MyFile.close();
+		throw runtime_error("Failed to write to file: " + FileName);
+	}
+
+	MyFile.close();
 }
 
 void saveTransactionToFile(const Transaction& transaction) {
