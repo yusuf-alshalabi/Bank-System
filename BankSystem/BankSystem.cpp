@@ -57,6 +57,12 @@ struct strUser
 
 strUser CurrentUser;
 
+string formatDouble(double value, int precision = 2) {
+	ostringstream out;
+	out << fixed << setprecision(precision) << value;
+	return out.str();
+}
+
 //Pause until user presses a key
 void customPause() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -313,7 +319,7 @@ string serializeUserData(const strUser& user) {
 	string data;
 	data += user.UserName + "\n";
 	data += user.Password + "\n";
-	data += to_string(user.Permissions);
+	data += formatDouble(user.Permissions);
 	return data;
 }
 
@@ -479,7 +485,7 @@ string convertClientRecordToLine(const strClient& clientData, const string& sepe
 	Line += clientData.PinCode + seperator;
 	Line += clientData.Name + seperator;
 	Line += clientData.Phone + seperator;
-	Line += to_string(clientData.AccountBalance);
+	Line += formatDouble(clientData.AccountBalance);
 
 	return Line;
 
@@ -524,7 +530,7 @@ string convertUserRecordToLine(const strUser& userInfo, const string& separator 
 	string line = "";
 	line += userInfo.UserName + separator;
 	line += userInfo.Password + separator;
-	line += to_string(userInfo.Permissions);
+	line += formatDouble(userInfo.Permissions);
 	return line;
 }
 
@@ -632,11 +638,11 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 
 void saveTransactionToFile(const Transaction& transaction) {
 	string transactionLine = transaction.TransactionID + Separator +
-		to_string(transaction.Type) + Separator +
+		formatDouble(transaction.Type) + Separator +
 		transaction.FromAccount + Separator +
 		transaction.ToAccount + Separator +
-		to_string(transaction.Amount) + Separator +
-		to_string(transaction.Fees) + Separator +
+		formatDouble(transaction.Amount) + Separator +
+		formatDouble(transaction.Fees) + Separator +
 		transaction.Timestamp + Separator +
 		transaction.Description;
 
@@ -988,7 +994,7 @@ int readOption(int from, int to) {
 		if (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			showErrorMessage("Invalid input! Please enter a number between " + to_string(from) + " and " + to_string(to)+".");
+			showErrorMessage("Invalid input! Please enter a number between " + formatDouble(from) + " and " + formatDouble(to)+".");
 			continue;
 		}
 
@@ -1023,7 +1029,7 @@ string readPassword() {
 // ==================================================
 string generateTransactionID() {
 	static int counter = 1000;
-	return "TXN" + to_string(++counter) + to_string(time(0));
+	return "TXN" + formatDouble(++counter) + formatDouble(time(0));
 }
 
 bool depositBalanceToClient(strClient* client, double depositAmount) {
@@ -1031,7 +1037,7 @@ bool depositBalanceToClient(strClient* client, double depositAmount) {
 		return false;
 	}
 	client->AccountBalance += depositAmount;
-	showSuccessMessage("Done Successfully . New Balance is : " + to_string(client->AccountBalance));
+	showSuccessMessage("Done Successfully . New Balance is : " + formatDouble(client->AccountBalance));
 	return true;
 }
 Transaction createDepositTransaction(const string& account, double amount, const string& description = "Deposit operation") {
@@ -1060,7 +1066,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 	printClientCard(*client);
 	double depositAmount = readPositiveNumber("Enter Deposit Amount: ");
 
-	if (!confirm("Confirm deposit of " + to_string(depositAmount) + "?")) {
+	if (!confirm("Confirm deposit of " + formatDouble(depositAmount) + "?")) {
 		showErrorMessage("Deposit cancelled");
 		customPause();
 		return;
@@ -1075,9 +1081,9 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 		string successMessage = string("Transaction completed successfully!\n") +
 			"Transaction ID: " + txn.TransactionID + "\n" +
-			"Deposited Amount: " + to_string(depositAmount) + "\n" +
-			"Previous Balance: " + to_string(originalBalance) + "\n" +
-			"New Balance: " + to_string(originalBalance + depositAmount);
+			"Deposited Amount: " + formatDouble(depositAmount) + "\n" +
+			"Previous Balance: " + formatDouble(originalBalance) + "\n" +
+			"New Balance: " + formatDouble(originalBalance + depositAmount);
 
 		showSuccessMessage(successMessage);
 		customPause();
@@ -1099,14 +1105,14 @@ bool withdrawBalanceToClient(strClient* client, double withdrawAmount) {
 
 	if (withdrawAmount > client->AccountBalance) {
 		showErrorMessage("Insufficient funds! Available balance: " +
-			to_string(client->AccountBalance));
+			formatDouble(client->AccountBalance));
 		customPause();
 		return false;
 	}
 
 	client->AccountBalance -= withdrawAmount;
 	showSuccessMessage("Withdrawal successful! Remaining balance: " +
-		to_string(client->AccountBalance));
+		formatDouble(client->AccountBalance));
 	return true;
 }
 Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
@@ -1137,7 +1143,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 	while (withdrawAmount > client->AccountBalance) {
 		showErrorMessage("Amount exceeds balance! Available: " +
-			to_string(client->AccountBalance));
+			formatDouble(client->AccountBalance));
 
 		if (!confirm("Enter a different amount?")) {
 			showErrorMessage("Withdrawal cancelled");
@@ -1148,7 +1154,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
 	}
 
-	if (!confirm("Confirm withdrawal of " + to_string(withdrawAmount) + "?")) {
+	if (!confirm("Confirm withdrawal of " + formatDouble(withdrawAmount) + "?")) {
 		showErrorMessage("Withdrawal cancelled");
 		customPause();
 		return;
@@ -1163,9 +1169,9 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 		string successMessage = string("Transaction completed successfully!\n") +
 			"Transaction ID: " + txn.TransactionID + "\n" +
-			"Withdrawn Amount: " + to_string(withdrawAmount) + "\n" +
-			"Previous Balance: " + to_string(originalBalance) + "\n" +
-			"New Balance: " + to_string(originalBalance - withdrawAmount);
+			"Withdrawn Amount: " + formatDouble(withdrawAmount) + "\n" +
+			"Previous Balance: " + formatDouble(originalBalance) + "\n" +
+			"New Balance: " + formatDouble(originalBalance - withdrawAmount);
 
 		showSuccessMessage(successMessage);
 	}
@@ -1284,7 +1290,7 @@ bool validateTransferAccounts(const string& fromAccount, const string& toAccount
 bool validateTransferAmount(double transferAmount, double transferFee, strClient* fromClient) {
 	if (fromClient->AccountBalance < (transferAmount + transferFee)) {
 		showErrorMessage("Insufficient balance! Total required: " +
-			to_string(transferAmount + transferFee));
+			formatDouble(transferAmount + transferFee));
 		return false;
 	}
 	return true;
@@ -1372,10 +1378,10 @@ void showTransferScreen(vector<strClient>& vClients) {
 
 	string successMessage = string("Transfer completed successfully!\n") +
 		"Transaction ID: " + transferTransaction.TransactionID + "\n" +
-		"Transferred Amount: " + to_string(transferAmount) + "\n" +
-		"Fee: " + to_string(transferFee) + "\n" +
-		"Previous Balance: " + to_string(originalBalance) + "\n" +
-		"New Balance: " + to_string(fromClient->AccountBalance);
+		"Transferred Amount: " + formatDouble(transferAmount) + "\n" +
+		"Fee: " + formatDouble(transferFee) + "\n" +
+		"Previous Balance: " + formatDouble(originalBalance) + "\n" +
+		"New Balance: " + formatDouble(fromClient->AccountBalance);
 
 	showSuccessMessage(successMessage);
 
