@@ -1037,7 +1037,7 @@ string readPassword() {
 			showErrorMessage("Password must be at least 4 characters!");
 		}
 	} while (password.length() < 4);
-	return hashPassword(password);
+	return password;  // Don't hash here - will be hashed when stored
 }
 
 // ==================================================
@@ -1515,12 +1515,11 @@ strUser readUserData(const string& userName) {
 	user.Permissions = readPermissionsToSet();
 	return user;
 }
-bool checkUserPassword(const string& inputPassword, strUser* User) {
-	if (User == nullptr)
+bool checkUserPassword(const string& password, strUser* user) {
+	if (user == nullptr) {
 		return false;
-
-	string hashInputPassword = hashPassword(inputPassword);
-	return (User->Password == hashInputPassword);
+	}
+	return verifyPassword(password, user->Password);
 }
 
 string getPermissionsAsString(int permissions) {
@@ -1939,10 +1938,10 @@ void login() {
 
 	do {
 		string name = readNonEmptyString("Please Enter UserName? ");
-		string password = readNonEmptyString("Please Enter Password? ");
+		string password = readNonEmptyString("Please Enter Password? ");  // Raw password, not hashed
 
 		strUser* user = findUserByUserName(name, vUsers);
-		found = checkUserPassword(password, user);
+		found = checkUserPassword(password, user);  // Verification happens here
 
 		if (found) {
 			CurrentUser = *user;
