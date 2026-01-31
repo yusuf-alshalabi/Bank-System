@@ -1019,6 +1019,16 @@ string hashPassword(const string& password) {
 
 	return string(hashed);
 }
+bool verifyPassword(const string& password, const string& hashedPassword) {
+	if (hashedPassword.empty()) {
+		return false;
+	}
+	
+	return crypto_pwhash_str_verify(
+		hashedPassword.c_str(),
+		password.c_str(),
+		password.length()) == 0;
+}
 string readPassword() {
 	string password;
 	do {
