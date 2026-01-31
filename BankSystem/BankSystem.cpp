@@ -80,6 +80,14 @@ void waitForEnter() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	cin.get();
 }
+void pressEnterToContinue() {
+	cout << "\n\nPress Enter to continue...";
+	waitForEnter();
+}
+void backToMenu() {
+	cout << "\n\nPress Enter to return to the main menu...";
+	waitForEnter();
+}
 //Clear console screen
 void clearScreen() {
 #ifdef _WIN32
@@ -922,7 +930,7 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 
 	if (vClients.size() == 0) {
 		showErrorMessage("No clients available in the system!");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -946,7 +954,7 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 
 	cout << "+" << string(105, '-') << "+\n\n";
 
-	waitForEnter();
+	backToMenu();
 }
 
 // Add client with unique account number
@@ -974,7 +982,7 @@ void showAddClientScreen(vector <strClient>& vClients) {
 	char AddMore = 'Y';
 	do {
 		addNewClient(vClients);
-		waitForEnter();
+		pressEnterToContinue();
 		cout << " ,do you want to add more clients? Y/N? ";
 
 		cin >> AddMore;
@@ -1005,7 +1013,7 @@ void showDeleteClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Delete Client Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 	deleteClient(accountNumber, vClients);
-	waitForEnter();
+	backToMenu();
 }
 
 // Update client information by account number
@@ -1013,6 +1021,7 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		pressEnterToContinue();
 		return false;
 	}
 
@@ -1034,9 +1043,8 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 	do {
 		string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
 		success = updateClient(accountNumber, vClients);
-		waitForEnter();
 	} while (!success);
-
+	backToMenu();
 }
 
 // Show Find Client screen and display client details
@@ -1051,7 +1059,7 @@ void showFindClientScreen(vector<strClient>& vClients) {
 	else {
 		printClientCard(*client);
 	}
-	waitForEnter();
+	backToMenu();
 }
 
 // Show exit Client screen
@@ -1164,7 +1172,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 	if (!client) {
 		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1173,7 +1181,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 	if (!confirmAction("Confirm deposit of " + formatDouble(depositAmount) + "?")) {
 		showErrorMessage("Deposit cancelled");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1191,27 +1199,27 @@ void showDepositScreen(vector<strClient>& vClients) {
 			"New Balance: " + formatDouble(originalBalance + depositAmount);
 
 		showSuccessMessage(successMessage);
-		waitForEnter();
+		backToMenu();
 	}
 }
 
 bool withdrawToClientAccount(strClient* client, double withdrawAmount) {
 	if (client == nullptr) {
 		showErrorMessage("Client not found!");
-		waitForEnter();
+		backToMenu();
 		return false;
 	}
 
 	if (withdrawAmount <= 0) {
 		showErrorMessage("Invalid amount! Please enter a positive value.");
-		waitForEnter();
+		backToMenu();
 		return false;
 	}
 
 	if (withdrawAmount > client->AccountBalance) {
 		showErrorMessage("Insufficient funds! Available balance: " +
 			formatDouble(client->AccountBalance));
-		waitForEnter();
+		backToMenu();
 		return false;
 	}
 
@@ -1239,7 +1247,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 	if (!client) {
 		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1252,7 +1260,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 		if (!confirmAction("Enter a different amount?")) {
 			showErrorMessage("Withdrawal cancelled");
-			waitForEnter();
+			backToMenu();
 			return;
 		}
 
@@ -1261,7 +1269,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 	if (!confirmAction("Confirm withdrawal of " + formatDouble(withdrawAmount) + "?")) {
 		showErrorMessage("Withdrawal cancelled");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1279,8 +1287,8 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 			"New Balance: " + formatDouble(originalBalance - withdrawAmount);
 
 		showSuccessMessage(successMessage);
+		backToMenu();
 	}
-	waitForEnter();
 }
 
 void showTotalBalancesReport(const vector <strClient>& vClients) {
@@ -1293,7 +1301,7 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 
 	if (vClients.size() == 0) {
 		showErrorMessage("No clients available in the system!");
-		waitForEnter();
+		backToMenu(); 
 		return;
 	}
 
@@ -1317,7 +1325,7 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 		 << "| " << left << setw(22) << formatCurrency(totalBalance) << "|\n";
 	cout << "+" << string(80, '=') << "+\n\n";
 
-	waitForEnter();
+	backToMenu();
 }
 
 void showTransactionsHistory(const string& accountNumber) {
@@ -1365,7 +1373,7 @@ void showTransactionsHistory(const string& accountNumber) {
 		showErrorMessage("No transactions found for this account.");
 	}
 
-	waitForEnter();
+	backToMenu();
 }
 
 bool validateTransferAccounts(const string& fromAccount, const string& toAccount,
@@ -1446,7 +1454,7 @@ void showTransferScreen(vector<strClient>& vClients) {
 	strClient* fromClient = nullptr;
 	strClient* toClient = nullptr;
 	if (!validateTransferAccounts(fromAccount, toAccount, fromClient, toClient, vClients)) {
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1456,7 +1464,7 @@ void showTransferScreen(vector<strClient>& vClients) {
 	while (!validateTransferAmount(transferAmount, transferFee, fromClient)) {
 		if (!confirmAction("Do you want to enter a different amount?")) {
 			showErrorMessage("Transfer cancelled.");
-			waitForEnter();
+			backToMenu();
 			return;
 		}
 		transferAmount = readPositiveNumber("Enter Transfer Amount: ");
@@ -1467,7 +1475,7 @@ void showTransferScreen(vector<strClient>& vClients) {
 
 	if (!confirmAction("Confirm transfer?")) {
 		showErrorMessage("Transfer cancelled.");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1492,7 +1500,7 @@ void showTransferScreen(vector<strClient>& vClients) {
 
 	vClients = loadClientsDataFromFile(ClientsFileName);
 
-	waitForEnter();
+	backToMenu();
 }
 
 void executeTransactionOption(TransactionsOption TransactionMenuOption, vector<strClient>& vClients)
@@ -1664,7 +1672,7 @@ void showUsersListScreen(const vector<strUser>& vUsers) {
 
 	if (vUsers.size() == 0) {
 		showErrorMessage("No users available in the system!");
-		waitForEnter();
+		backToMenu();
 		return;
 	}
 
@@ -1682,7 +1690,7 @@ void showUsersListScreen(const vector<strUser>& vUsers) {
 
 	cout << "+" << string(120, '-') << "+\n\n";
 
-	waitForEnter();
+	backToMenu();
 }
 
 void addNewUser(vector<strUser>& vUsers) {
@@ -1710,7 +1718,7 @@ void showAddUserScreen(vector<strUser>& vUsers) {
 	do
 	{
 		addNewUser(vUsers);
-		waitForEnter();
+		pressEnterToContinue();
 		cout << " ,do you want to add more Users? Y/N? ";
 		cin >> AddMore;
 
@@ -1752,7 +1760,7 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 	string name = readNonEmptyString("Please Enter UserName? ");
 	string password = readNonEmptyString("Please Enter Password? ");
 	deleteUserWithCredentials(name, password, vUsers);
-	waitForEnter();
+	backToMenu();
 }
 
 void showFindUserScreen(vector<strUser>& vUsers) {
@@ -1768,7 +1776,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	else {
 		showErrorMessage("User with name (" + name + ") and password (" + password + ") is not found!.");
 	}
-	waitForEnter();
+	backToMenu();
 }
 
 bool updateUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
@@ -1810,8 +1818,8 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 		string name = readNonEmptyString("Please Enter UserName? ");
 		string password = readNonEmptyString("Please Enter Password? ");
 		success = updateUserWithCredentials(name, password, vUsers);
-		waitForEnter();
 	} while (!success);
+	backToMenu();
 }
 
 void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>& vUsers) {
@@ -1959,7 +1967,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		if (confirmAction("Are you sure you want to logout?")) {
 			clearCurrentUserSession();
 			showSuccessMessage("You have been logged out successfully. Session cleared.");
-			waitForEnter();
+			pressEnterToContinue();
 			login();
 		}
 		break;
@@ -2019,7 +2027,7 @@ void login() {
 		if (confirmAction("Do you want to continue with your previous session?")) {
 			CurrentUser = sessionUser;
 			showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
-			waitForEnter();
+			pressEnterToContinue();
 			vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 			showMainMenu(vClients);
 			return;
@@ -2040,15 +2048,14 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser); 
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
-			waitForEnter();
+			pressEnterToContinue();
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
-			waitForEnter();
+			pressEnterToContinue();
 		}
 	} while (!found);
 
-	waitForEnter();
 	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 	showMainMenu(vClients);
 }
@@ -2069,7 +2076,7 @@ void createDefaultAdmin() {
 		cout << "Username: Admin\n";
 		cout << "Password: 1234\n";
 		cout << "Please change the password after first login!\n";
-		waitForEnter();
+		pressEnterToContinue();
 	}
 }
 int main()
