@@ -629,21 +629,29 @@ void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 		throw runtime_error(string("Error saving clients: ") + e.what());
 	}
 }
+// Save all Users to file, skip those marked for deletion
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);
 
-	if (MyFile.is_open()) {
+	if (!MyFile.is_open()) {
+		throw runtime_error("Cannot open file for writing: " + FileName);
+	}
+
+	try {
 		for (const strUser& user : vUsers) {
 			if (!user.MarkForDelete) {
-				string DataLine = convertUserRecordToLine(user, Separator);
-				MyFile << DataLine << endl;
+				MyFile << convertUserRecordToLine(user, Separator) << endl;
+				if (MyFile.fail()) {
+					throw runtime_error("Failed to write user data");
+				}
 			}
 		}
 		MyFile.close();
 	}
-	else {
-		showErrorMessage("Could not open file for saving users!");
+	catch (const exception& e) {
+		MyFile.close();
+		throw runtime_error(string("Error saving users: ") + e.what());
 	}
 }
 
