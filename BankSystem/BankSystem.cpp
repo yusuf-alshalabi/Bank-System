@@ -521,7 +521,7 @@ strClient deserializeClientRecord(const string& Line, const string& seperator) {
 		Client.Name = vClientData[2];
 		Client.Phone = vClientData[3];
 		Client.AccountBalance = stod(vClientData[4]);
-		Client.MarkForDelete - false;  
+		Client.MarkForDelete = false;  
 	}
 	else {
 		throw runtime_error("Invalid client data format");
