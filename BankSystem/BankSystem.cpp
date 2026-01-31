@@ -72,15 +72,15 @@ void clearScreen() {
 }
 
 void showSuccessMessage(string message) {
-	cout << "\n" << string(50, '=') << "\n";
+	cout << "\n" << string(60, '=') << "\n";
 	cout << "   SUCCESS: " << message << "\n";
-	cout << string(50, '=') << "\n\n";
+	cout << string(60, '=') << "\n\n";
 }
 
 void showErrorMessage(string message) {
-	cout << "\n" << string(50, '-') << "\n";
+	cout << "\n" << string(60, '-') << "\n";
 	cout << "   ERROR: " << message << "\n";
-	cout << string(50, '-') << "\n\n";
+	cout << string(60, '-') << "\n\n";
 }
 
 string trim(const string& str) {
