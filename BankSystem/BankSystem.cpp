@@ -854,8 +854,8 @@ void saveTransactionToFile(const Transaction& transaction) {
 		formatInt(transaction.Type) + Separator +
 		transaction.FromAccount + Separator +
 		transaction.ToAccount + Separator +
-		formatCurrency(transaction.Amount) + Separator +
-		formatCurrency(transaction.Fees) + Separator +
+		formatDouble(transaction.Amount) + Separator +
+		formatDouble(transaction.Fees) + Separator +
 		transaction.Timestamp + Separator +
 		transaction.Description;
 
