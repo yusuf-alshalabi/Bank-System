@@ -1,4 +1,24 @@
 ﻿
+//  ||========================================================||
+//  || BankSystem Project - Version v1.4.0 (Procedural Final) ||
+//  ||========================================================||
+//  || Table of Contents:									  ||
+//  ||  1. Structs, Enums & Global Variables				  ||
+//  ||  2. Forward Declarations								  ||
+//  ||  3. Utilities										  ||
+//  ||  4. Session Management System						  ||
+//  ||  5. Encryption & Decryption							  ||
+//  ||  6. File Manager										  ||
+//  ||  7. Input Manager									  ||
+//  ||  8. Client Manager									  ||
+//  ||  9. Transactions Manager								  ||
+//  || 10. User Manager										  ||
+//  || 11. Auth Manager										  ||
+//  || 12. Permission Manager								  ||
+//  || 13. Menu Manager										  ||
+//  || 14. Main Function									  ||
+//  ||========================================================||
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
