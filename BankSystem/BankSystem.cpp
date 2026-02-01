@@ -73,11 +73,11 @@ enum Permission {
 
 struct Transaction {
 	string TransactionID;
-	TransactionType Type;
+	TransactionType Type = TransactionType::DEPOSIT;  // default
 	string FromAccount;
 	string ToAccount;
-	double Amount;
-	double Fees;
+	double Amount = 0.0;   // default
+	double Fees = 0.0;	   // default
 	string Timestamp;
 	string Description;
 };
@@ -86,7 +86,7 @@ struct strClient {
 	string PinCode;
 	string Name;
 	string Phone;
-	double AccountBalance;
+	double AccountBalance = 0.0;   // default
 	bool MarkForDelete = false;
 	vector<Transaction> Transactions;
 };
