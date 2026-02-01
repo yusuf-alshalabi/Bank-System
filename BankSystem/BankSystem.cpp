@@ -139,12 +139,13 @@ void showManageUsersScreen();
 //=====================================================
 #pragma region Utilities
 
+// Format double with fixed precision
 string formatDouble(double value, int precision = 2) {
 	ostringstream out;
 	out << fixed << setprecision(precision) << value;
 	return out.str();
 }
-// Format integer safely
+// Convert integer safely to string
 string formatInt(int value) {
 	return to_string(value);
 }
@@ -154,7 +155,7 @@ string formatCurrency(double value) {
 	out << "$" << fixed << setprecision(2) << value;
 	return out.str();
 }
-
+// Remove leading and trailing whitespace from string
 string trim(const string& str) {
 	size_t start = str.find_first_not_of(" \t\n\r\f\v");
 	if (start == string::npos) return "";
@@ -162,7 +163,7 @@ string trim(const string& str) {
 	size_t end = str.find_last_not_of(" \t\n\r\f\v");
 	return str.substr(start, end - start + 1);
 }
-
+// Get current date and time as formatted string
 string getCurrentTimestamp() {
 	time_t now = time(0);
 
@@ -182,7 +183,7 @@ string getCurrentTimestamp() {
 	return ss.str();
 }
 
-//Clear console screen
+//Clear console screen (Windows/Linux)
 void clearScreen() {
 #ifdef _WIN32
 	system("cls");
@@ -190,19 +191,19 @@ void clearScreen() {
 	system("clear");
 #endif
 }
-
+// Display formatted success message
 void showSuccessMessage(string message) {
 	cout << "\n" << string(60, '=') << "\n";
 	cout << "   SUCCESS: " << message << "\n";
 	cout << string(60, '=') << "\n\n";
 }
-
+// Display formatted error message
 void showErrorMessage(string message) {
 	cout << "\n" << string(60, '-') << "\n";
 	cout << "   ERROR: " << message << "\n";
 	cout << string(60, '-') << "\n\n";
 }
-
+// Display centered header with borders
 void showScreenHeader(const string& title) {
 	cout << "\n";
 	cout << "+" << string(58, '=') << "+\n";
@@ -215,7 +216,7 @@ void showScreenHeader(const string& title) {
 	cout << "|" << string(58, ' ') << "|\n";
 	cout << "+" << string(58, '=') << "+\n\n";
 }
-
+// Display numbered list of options
 void showOptions(const vector<string>& options) {
 	cout << "\n";
 	for (size_t i = 0; i < options.size(); i++) {
@@ -223,15 +224,17 @@ void showOptions(const vector<string>& options) {
 	}
 	cout << "\n" << string(60, '-') << "\n";
 }
-//Pause until user presses a key
+// Pause until user presses Enter
 void waitForEnter() {
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	cin.get();
 }
+// Prompt user to press Enter to continue
 void pressEnterToContinue() {
 	cout << "\n\nPress Enter to continue...";
 	waitForEnter();
 }
+// prompt user to press Enter to return to menu
 void backToMenu() {
 	cout << "\n\nPress Enter to return to the main menu...";
 	waitForEnter();
@@ -247,7 +250,7 @@ void backToMenu() {
 //=====================================================
 #pragma region Session Management System
 
-// Smart function to get current username (without getenv)
+// Get current system username safely
 string getCurrentUsernameSafe() {
 	string username = "default_user";
 
@@ -280,7 +283,7 @@ string getCurrentUsernameSafe() {
 
 	return username;
 }
-// Smart function to get LOCALAPPDATA path safely
+// Get local application data path
 string getLocalAppDataPath() {
 	string localAppDataPath;
 
@@ -307,11 +310,13 @@ string getLocalAppDataPath() {
 	return localAppDataPath;
 }
 #ifdef _WIN32
+// Build full path for session file
 string getSessionPath() {
 	string localAppData = getLocalAppDataPath();
 	string username = getCurrentUsernameSafe();
 	return localAppData + "\\BankSystem\\session_" + username + ".bsess";
 }
+// Get folder path for session files
 string getSessionFolder() {
 	string localAppData = getLocalAppDataPath();
 	return localAppData + "\\BankSystem\\";
@@ -339,7 +344,7 @@ void createSessionFolder() {
 #endif
 	system(command.c_str());
 }
-// Save current user session to encrypted binary file
+// Save current user session encrypted to file
 void saveCurrentUserSession(const strUser& user) {
 	createSessionFolder();
 	string sessionPath = getSessionPath();
@@ -361,7 +366,7 @@ void saveCurrentUserSession(const strUser& user) {
 		// showErrorMessage("Failed to encrypt session data: " + string(e.what()));
 	}
 }
-// Enhanced session loading with integrity checks
+// Load and decrypt current user session from file
 bool loadCurrentUserSession(strUser& user) {
 	string sessionPath = getSessionPath();
 
@@ -412,7 +417,7 @@ bool loadCurrentUserSession(strUser& user) {
 		return false;
 	}
 }
-// Enhanced secure session clearing
+// Securely clear and remove session file
 void clearCurrentUserSession() {
 	string sessionPath = getSessionPath();
 
@@ -447,7 +452,7 @@ void clearCurrentUserSession() {
 
 	CurrentUser = strUser();
 }
-// Serialize user data to string
+// Convert user struct to string for session storage
 string serializeUserData(const strUser& user) {
 	string data;
 	data += user.UserName + "\n";
@@ -455,7 +460,7 @@ string serializeUserData(const strUser& user) {
 	data += formatInt(user.Permissions);
 	return data;
 }
-// Deserialize user data from string
+// Convert string back to user struct
 strUser deserializeUserData(const string& data) {
 	strUser user;
 	stringstream ss(data);
@@ -480,13 +485,13 @@ strUser deserializeUserData(const string& data) {
 //=====================================================
 #pragma region Encryption & Decryption
 
-// Generate encryption key (should be stored securely)
+// Generate random encryption key
 vector<unsigned char> generateEncryptionKey() {
 	vector<unsigned char> key(crypto_secretbox_KEYBYTES);
 	randombytes_buf(key.data(), key.size());
 	return key;
 }
-// Get or create encryption key
+// Load or create encryption key file securely
 vector<unsigned char> getEncryptionKey() {
 	vector<unsigned char> key(crypto_secretbox_KEYBYTES);
 	string keyFolder = getSessionFolder();
@@ -532,7 +537,7 @@ vector<unsigned char> getEncryptionKey() {
 
 	return key;
 }
-// Encrypt data with better error handling
+// Encrypt plaintext using libsodium secretbox
 string encryptData(const string& plaintext, const vector<unsigned char>& key) {
 	if (key.size() != crypto_secretbox_KEYBYTES) {
 		throw runtime_error("Invalid key size for encryption");
@@ -567,7 +572,7 @@ string encryptData(const string& plaintext, const vector<unsigned char>& key) {
 		throw runtime_error(string("Encryption error: ") + e.what());
 	}
 }
-// Decrypt data
+// Decrypt ciphertext using libsudium secretbox
 string decryptData(const string& encryptedData, const vector<unsigned char>& key) {
 	if (key.size() != crypto_secretbox_KEYBYTES) {
 		throw runtime_error("Invalid key size");
@@ -626,7 +631,7 @@ vector<string> splitStringByDelimiter(string S1, string delim) {
 	return split;
 
 }
-// Convert a client struct to a single line for file
+// Convert a client struct to file line
 string serializeClientRecord(const strClient& clientData, const string& seperator) {
 	string Line = "";
 	Line += clientData.AccountNumber + seperator;
@@ -638,7 +643,7 @@ string serializeClientRecord(const strClient& clientData, const string& seperato
 	return Line;
 
 }
-// Convert a line from file into a Client struct
+// Convert file line to Client struct
 strClient deserializeClientRecord(const string& Line, const string& seperator) {
 	strClient Client;
 	vector<string> vClientData = splitStringByDelimiter(Line, seperator);
@@ -656,7 +661,7 @@ strClient deserializeClientRecord(const string& Line, const string& seperator) {
 	}
 	return Client;
 }
-// Convert a User struct to a single line for file
+// Convert User struct to file line
 string serializeUserRecord(const strUser& userInfo, const string& separator = "#//#") {
 	string line = "";
 	line += userInfo.UserName + separator;
@@ -664,7 +669,7 @@ string serializeUserRecord(const strUser& userInfo, const string& separator = "#
 	line += formatInt(userInfo.Permissions);
 	return line;
 }
-// Convert a line from file into a User struct
+// Convert file line to User struct
 strUser deserializeUserRecord(string Line, const string& seperator) {
 	strUser userInfo;
 	vector<string> vUsersData;
@@ -675,7 +680,7 @@ strUser deserializeUserRecord(string Line, const string& seperator) {
 
 	return userInfo;
 }
-// Convert aline from file into a Transaction struct
+// Convert file line to Transaction struct
 Transaction deserializeTransactionRecord(const string& line, const string& separator) {
 	Transaction txn;
 	vector<string> parts = splitStringByDelimiter(line, separator);
@@ -719,7 +724,7 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 
 	return vClients;
 }
-// Save all clients to file, skip those marked for deletion
+// Save all clients to file, (skip those marked for deletion)
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);
@@ -771,7 +776,7 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 
 	return vUsers;
 }
-// Save all Users to file, skip those marked for deletion
+// Save all Users to file, (skip those marked for deletion)
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out);
@@ -823,7 +828,7 @@ vector<Transaction> loadTransactionsFromFile(const string& fileName) {
 
 	return transactions;
 }
-// 
+// Save all transaction to file, (skip those marked for deletion)
 void saveTransactionToFile(const Transaction& transaction) {
 	string transactionLine = transaction.TransactionID + Separator +
 		formatInt(transaction.Type) + Separator +
@@ -841,7 +846,7 @@ void saveTransactionToFile(const Transaction& transaction) {
 		throw runtime_error(string("Error saving transaction: ") + e.what());
 	}
 }
-// Append a client line to file
+// Append  line to file
 void appendLineToFile(const string& FileName, const string& stDataLine) {
 	fstream MyFile;
 	MyFile.open(FileName, ios::out | ios::app);
@@ -870,7 +875,7 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 //=====================================================
 #pragma region Input Manager
 
-// Read a non-empty string input
+// Read non-empty string input from user
 string readNonEmptyString(string s) {
 	string line;
 	do {
@@ -880,7 +885,7 @@ string readNonEmptyString(string s) {
 	} while (line.empty());
 	return line;
 }
-// Read a positive double input
+// Read a positive number input from user
 double readPositiveNumber(string prompt) {
 	double num = 0;
 	bool validInput = false;
@@ -917,7 +922,7 @@ strClient readClientData(const string& AccountNumber) {
 	Client.AccountBalance = readPositiveNumber("Enter AccountBalance? ");
 	return Client;
 }
-// Read choice from menu (form "from" to "to")
+// Read menu choice between given range
 int readMenuOption(int from, int to) {
 	int choice;
 	do {
@@ -937,7 +942,7 @@ int readMenuOption(int from, int to) {
 
 	return choice;
 }
-//
+// Read password input (min 4 chars)
 string readPassword() {
 	string password;
 	do {
@@ -988,6 +993,7 @@ bool markClientForDelete(strClient* client) {
 	client->MarkForDelete = true;
 	return true;
 }
+// Display client information in formatted card
 void printClientCard(const strClient& client) {
 	cout << "\n+" << string(58, '=') << "+\n";
 	cout << "|  " << left << setw(56) << "Client Information" << "|\n";
@@ -1006,7 +1012,7 @@ void printClientCard(const strClient& client) {
 
 	cout << "+" << string(58, '=') << "+\n";
 }
-//- Display all clients in table
+//- Display all clients in table format
 void showAllClientsReport(const vector<strClient>& vClients) {
 	clearScreen();
 	showScreenHeader("Clients List");
@@ -1058,7 +1064,7 @@ void addNewClient(vector<strClient>& vClients) {
 	appendLineToFile(ClientsFileName, serializeClientRecord(newClient, Separator));
 	showSuccessMessage("Client Added Successfully!");
 }
-// Show Add New Client screen
+// Show Add New Client screen (loop for multiple)
 void showAddClientScreen(vector <strClient>& vClients) {
 	showScreenHeader("Add New Client Screen");
 	cout << "Adding New Client :\n";
@@ -1128,7 +1134,7 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 	} while (!success);
 	backToMenu();
 }
-// Show Find Client screen and display client details
+// Show Find Client screen and display information
 void showFindClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Find Client Screen");
 
@@ -1153,6 +1159,7 @@ void showFindClientScreen(vector<strClient>& vClients) {
 //=====================================================
 #pragma region Transactions Manager
 
+// Generate unique transaction ID
 string generateTransactionID() {
 	// Use high-resolution timestamp for uniqueness
 	auto now = chrono::high_resolution_clock::now();
@@ -1167,6 +1174,7 @@ string generateTransactionID() {
 	ss << "TXN" << timestamp << hex << setw(8) << setfill('0') << randomNum;
 	return ss.str();
 }
+// Deposit amount to client account
 bool depositToClientAccount(strClient* client, double depositAmount) {
 	if (client == nullptr) {
 		return false;
@@ -1175,6 +1183,7 @@ bool depositToClientAccount(strClient* client, double depositAmount) {
 	showSuccessMessage("Done Successfully . New Balance is : " + formatDouble(client->AccountBalance));
 	return true;
 }
+// Create deposit transaction record 
 Transaction createDepositTransaction(const string& account, double amount, const string& description = "Deposit operation") {
 	Transaction txn;
 	txn.TransactionID = generateTransactionID();
@@ -1187,6 +1196,7 @@ Transaction createDepositTransaction(const string& account, double amount, const
 	txn.Description = description;
 	return txn;
 }
+// Show deposit screen and process transaction
 void showDepositScreen(vector<strClient>& vClients) {
 	showScreenHeader("Deposit Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
@@ -1224,6 +1234,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 		backToMenu();
 	}
 }
+// Withdraw amount from client account
 bool withdrawToClientAccount(strClient* client, double withdrawAmount) {
 	if (client == nullptr) {
 		showErrorMessage("Client not found!");
@@ -1249,6 +1260,7 @@ bool withdrawToClientAccount(strClient* client, double withdrawAmount) {
 		formatDouble(client->AccountBalance));
 	return true;
 }
+// Create withdrawal transaction record
 Transaction createWithdrawTransaction(const string& account, double amount, const string& description = "Withdrawal operation") {
 	Transaction txn;
 	txn.TransactionID = generateTransactionID();
@@ -1261,6 +1273,7 @@ Transaction createWithdrawTransaction(const string& account, double amount, cons
 	txn.Description = description;
 	return txn;
 }
+// Show withdraw screen and process transaction
 void showWithdrawScreen(vector<strClient>& vClients) {
 	showScreenHeader("Withdraw Screen");
 	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
@@ -1311,6 +1324,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		backToMenu();
 	}
 }
+// Validate source and destination accounts
 bool validateTransferAccounts(const string& fromAccount, const string& toAccount,
 	strClient*& fromClient, strClient*& toClient,
 	vector<strClient>& vClients) {
@@ -1334,6 +1348,7 @@ bool validateTransferAccounts(const string& fromAccount, const string& toAccount
 
 	return true;
 }
+// Validate transfer amount and fees
 bool validateTransferAmount(double transferAmount, double transferFee, strClient* fromClient) {
 	if (fromClient->AccountBalance < (transferAmount + transferFee)) {
 		showErrorMessage("Insufficient balance! Total required: " +
@@ -1342,12 +1357,14 @@ bool validateTransferAmount(double transferAmount, double transferFee, strClient
 	}
 	return true;
 }
+// Execute transfer between accounts
 bool executeTransfer(strClient* fromClient, strClient* toClient,
 	double transferAmount, double transferFee) {
 	fromClient->AccountBalance -= (transferAmount + transferFee);
 	toClient->AccountBalance += transferAmount;
 	return true;
 }
+// Display transfer details befor confirm
 void showTransferConfirmation(strClient* fromClient, strClient* toClient,
 	const string& fromAccount, const string& toAccount,
 	double transferAmount, double transferFee) {
@@ -1359,6 +1376,7 @@ void showTransferConfirmation(strClient* fromClient, strClient* toClient,
 	cout << "Fee: " << transferFee << "\n";
 	cout << "Total: " << (transferAmount + transferFee) << "\n";
 }
+// Create transfer transaction record
 Transaction createTransferTransaction(const string& fromAccount,
 	const string& toAccount,
 	double transferAmount,
@@ -1375,6 +1393,7 @@ Transaction createTransferTransaction(const string& fromAccount,
 	transaction.Description = description;
 	return transaction;
 }
+// Show transfer screen and process transaction
 void showTransferScreen(vector<strClient>& vClients) {
 	showScreenHeader("Transfer Screen");
 
@@ -1432,6 +1451,7 @@ void showTransferScreen(vector<strClient>& vClients) {
 
 	backToMenu();
 }
+// Show report of total balances for all clients
 void showTotalBalancesReport(const vector <strClient>& vClients) {
 	clearScreen();
 	showScreenHeader("Total Balances Report");
@@ -1468,6 +1488,7 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 
 	backToMenu();
 }
+// Show transaction history for account
 void showTransactionsHistory(const string& accountNumber) {
 	vector<Transaction> transactions = loadTransactionsFromFile("Transactions.txt");
 
@@ -1515,6 +1536,7 @@ void showTransactionsHistory(const string& accountNumber) {
 
 	backToMenu();
 }
+// Execute selected transaction option
 void executeTransactionOption(TransactionsOption TransactionMenuOption, vector<strClient>& vClients)
 {
 	switch (TransactionMenuOption)
@@ -1560,12 +1582,14 @@ void executeTransactionOption(TransactionsOption TransactionMenuOption, vector<s
 	}
 
 }
+// Show transactions menu options
 void showTransactionsMenuScreen() {
 	clearScreen();
 	showScreenHeader("Transactions Menu Screen");
 	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History","Main Menu" };
 	showOptions(options);
 }
+// Manage transactions menu loop
 void manageTransactions(vector<strClient>& vClients) {
 	TransactionsOption Choice;
 	do {
@@ -1588,6 +1612,7 @@ void manageTransactions(vector<strClient>& vClients) {
 //=====================================================
 #pragma region User Manager
 
+// Find user by username
 strUser* findUserByUsername(const string& userName, vector<strUser>& vUsers) {
 	for (auto& user : vUsers) {
 		if (user.UserName == userName)
@@ -1603,6 +1628,7 @@ bool markUserForDelete(strUser* user) {
 	user->MarkForDelete = true;
 	return true;
 }
+// Read user data interactively (with password & permissions)
 strUser readUserData(const string& userName) {
 	strUser user;
 	user.UserName = userName;
@@ -1611,6 +1637,7 @@ strUser readUserData(const string& userName) {
 	user.Permissions = readUserPermissions();
 	return user;
 }
+// Verify raw password against hashed password
 bool verifyPassword(const string& password, const string& hashedPassword) {
 	if (hashedPassword.empty()) {
 		return false;
@@ -1621,6 +1648,7 @@ bool verifyPassword(const string& password, const string& hashedPassword) {
 		password.c_str(),
 		password.length()) == 0;
 }
+// Format permissions integer to readable string
 string formatPermissions(int permissions) {
 	if (permissions == Permission::pAll)
 		return "Full Access";
@@ -1653,6 +1681,7 @@ string formatPermissions(int permissions) {
 	}
 	return result;
 }
+// Display user info in formatted card
 void printUserCard(strUser* User) {
 	cout << "\n+" << string(102, '=') << "+\n";
 	cout << "|  " << left << setw(100) << "User Information" << "|\n";
@@ -1663,6 +1692,7 @@ void printUserCard(strUser* User) {
 
 	cout << "+" << string(102, '=') << "+\n";
 }
+// Display all users in table format
 void showUsersListScreen(const vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Users List");
@@ -1691,6 +1721,7 @@ void showUsersListScreen(const vector<strUser>& vUsers) {
 
 	backToMenu();
 }
+// Add new user with unique username
 void addNewUser(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Add New User Screen");
@@ -1710,6 +1741,7 @@ void addNewUser(vector<strUser>& vUsers) {
 
 	showSuccessMessage("User Added Successfully!");
 }
+// Show add user screen (loop for multiple)
 void showAddUserScreen(vector<strUser>& vUsers) {
 
 	char AddMore = 'Y';
@@ -1722,6 +1754,7 @@ void showAddUserScreen(vector<strUser>& vUsers) {
 
 	} while (toupper(AddMore) == 'Y');
 }
+// Delete user with username & password
 bool deleteUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
 	if (userName == "Admin")
 	{
@@ -1749,6 +1782,7 @@ bool deleteUserWithCredentials(const string& userName, const string& password, v
 		return false;
 	}
 }
+// Show delete user screen
 void showDeleteUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Delete User Screen");
@@ -1758,6 +1792,7 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 	deleteUserWithCredentials(name, password, vUsers);
 	backToMenu();
 }
+// Update user information with credentials
 bool updateUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
 	strUser* user = findUserByUsername(userName, vUsers);
 	if (verifyUserPassword(password, user)) {
@@ -1786,6 +1821,7 @@ bool updateUserWithCredentials(const string& userName, const string& password, v
 		return false;
 	}
 }
+// Show update user screen
 void showUpdateUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Update User Screen");
@@ -1798,6 +1834,7 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 	} while (!success);
 	backToMenu();
 }
+// Show find user screen and display information
 void showFindUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Find User Screen");
@@ -1813,6 +1850,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	}
 	backToMenu();
 }
+// Execute selected user managment option
 void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>& vUsers) {
 	switch (manageUsersOptions) {
 	case UserManagementOption::ListUser:
@@ -1848,6 +1886,7 @@ void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>
 //=====================================================
 #pragma region Auth Manager
 
+// Hash password securely using libsodium
 string hashPassword(const string& password) {
 	char hashed[crypto_pwhash_STRBYTES];
 
@@ -1862,12 +1901,14 @@ string hashPassword(const string& password) {
 
 	return string(hashed);
 }
+// Verify user password against stored hash
 bool verifyUserPassword(const string& password, strUser* user) {
 	if (user == nullptr) {
 		return false;
 	}
 	return verifyPassword(password, user->Password);
 }
+// Handle user login and session management
 void login() {
 	clearScreen();
 	showScreenHeader("Login Screen");
@@ -1912,6 +1953,7 @@ void login() {
 	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 	showMainMenu(vClients);
 }
+// Create default admin user if none exists
 void createDefaultAdmin() {
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
@@ -1941,6 +1983,7 @@ void createDefaultAdmin() {
 //=====================================================
 #pragma region Permission Manager
 
+// Read user permissions interactively
 int readUserPermissions()
 {
 	int Permissions = 0;
@@ -1969,6 +2012,7 @@ int readUserPermissions()
 	return Permissions;
 
 }
+// Check if current user has specific permission
 bool hasPermission(Permission permission) {
 	if (CurrentUser.Permissions == Permission::pAll)
 		return true;
@@ -1986,6 +2030,7 @@ bool hasPermission(Permission permission) {
 //=====================================================
 #pragma region Menu Manager
 
+// Build main menu options based on permissions
 vector<string> buildMainMenuOptions() {
 	vector<string> options;
 	if (hasPermission(Permission::pAll) || hasPermission(Permission::pAllPermissions))
@@ -2011,6 +2056,7 @@ vector<string> buildMainMenuOptions() {
 
 	return options;
 }
+// Convert numeric choice to menu option enum
 MainMenuOption convertChoiceToMainMenuOption(int choice, const vector<string>& options) {
 	string selectedOption = options[choice - 1];
 
@@ -2026,7 +2072,7 @@ MainMenuOption convertChoiceToMainMenuOption(int choice, const vector<string>& o
 
 	return MainMenuOption::Exit;
 }
-// Execute main menu option
+// Execute selected main menu option
 void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vClients) {
 	clearScreen();
 	bool userHasPermission = true;
@@ -2122,7 +2168,7 @@ void showMainMenu(vector<strClient>& vClients) {
 
 	} while (Choice != MainMenuOption::Exit);
 }
-// Display Manage Users menu options
+// Show manage users menu loop
 void showManageUsersMenu(vector<strUser>& vUsers) {
 	UserManagementOption choice;
 	do
@@ -2134,13 +2180,14 @@ void showManageUsersMenu(vector<strUser>& vUsers) {
 
 	} while (choice != UserManagementOption::MainMenu);
 }
+// Show manage users menu options
 void showManageUsersScreen() {
 	clearScreen();
 	showScreenHeader("Manage Users Menu Screen");
 	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User","Main Menu" };
 	showOptions(options);
 }
-// Show exit Client screen
+// Show exit screen
 void showExitScreen() {
 	clearScreen();
 	showScreenHeader("Program Ends :-)");
@@ -2153,6 +2200,8 @@ void showExitScreen() {
 //=====================================================
 //==================== Main Function ==================
 //=====================================================
+
+// Program entry point: initialize system, create admin, logi, run menus
 int main()
 {
 	cout << fixed << setprecision(2);
@@ -2174,3 +2223,4 @@ int main()
 	waitForEnter();
 	return 0;
 }
+//=====================================================
