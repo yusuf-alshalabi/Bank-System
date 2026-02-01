@@ -21,6 +21,7 @@ using namespace std;
 //=====================================================
 //======== struct & enums & global variables ==========
 //=====================================================
+#pragma region struct & enums & global variables
 
 const string ClientsFileName = "Clients.txt";
 const string TransactionsFileName = "Transactions.txt";
@@ -98,13 +99,14 @@ struct strUser
 };
 
 strUser CurrentUser;
-
+#pragma endregion
 //=====================================================
 
 
 //=====================================================
 //=============== Forward Declarations ================
 //=====================================================
+#pragma region Forward Declarations
 
 // Session & Encryption
 vector<unsigned char> getEncryptionKey();
@@ -126,7 +128,7 @@ void showMainMenu(vector<strClient>& vClients);
 void showManageUsersMenu(vector<strUser>& vUsers);
 void showExitScreen();
 void showManageUsersScreen();
-
+#pragma endregion
 //=====================================================
 
 
@@ -135,6 +137,7 @@ void showManageUsersScreen();
 // Helper functions for formatting, trimming, screen control,
 // and displaying messages.
 //=====================================================
+#pragma region Utilities
 
 string formatDouble(double value, int precision = 2) {
 	ostringstream out;
@@ -233,7 +236,7 @@ void backToMenu() {
 	cout << "\n\nPress Enter to return to the main menu...";
 	waitForEnter();
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -242,6 +245,7 @@ void backToMenu() {
 // Functions to manage user sessions: save, load, clear,
 // and handle session paths/folders.
 //=====================================================
+#pragma region Session Management System
 
 // Smart function to get current username (without getenv)
 string getCurrentUsernameSafe() {
@@ -465,7 +469,7 @@ strUser deserializeUserData(const string& data) {
 
 	return user;
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -474,6 +478,7 @@ strUser deserializeUserData(const string& data) {
 // Functions for generating keys, encrypting and decrypting
 // sensitive data using libsodium.
 //=====================================================
+#pragma region Encryption & Decryption
 
 // Generate encryption key (should be stored securely)
 vector<unsigned char> generateEncryptionKey() {
@@ -481,7 +486,6 @@ vector<unsigned char> generateEncryptionKey() {
 	randombytes_buf(key.data(), key.size());
 	return key;
 }
-
 // Get or create encryption key
 vector<unsigned char> getEncryptionKey() {
 	vector<unsigned char> key(crypto_secretbox_KEYBYTES);
@@ -528,8 +532,6 @@ vector<unsigned char> getEncryptionKey() {
 
 	return key;
 }
-
-
 // Encrypt data with better error handling
 string encryptData(const string& plaintext, const vector<unsigned char>& key) {
 	if (key.size() != crypto_secretbox_KEYBYTES) {
@@ -594,7 +596,7 @@ string decryptData(const string& encryptedData, const vector<unsigned char>& key
 
 	return string(reinterpret_cast<const char*>(plaintext.data()), plaintext.size());
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -603,6 +605,7 @@ string decryptData(const string& encryptedData, const vector<unsigned char>& key
 // Functions to serialize/deserialize Clients, Users, and
 // Transactions, and handle file I/O operations.
 //=====================================================
+#pragma region File Manager
 
 // Split string into tokens using delimiter
 vector<string> splitStringByDelimiter(string S1, string delim) {
@@ -856,7 +859,7 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 
 	MyFile.close();
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -865,6 +868,7 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 // Functions to read and validate user input (strings,
 // numbers, passwords, confirmations).
 //=====================================================
+#pragma region Input Manager
 
 // Read a non-empty string input
 string readNonEmptyString(string s) {
@@ -957,7 +961,7 @@ bool confirmAction(string s) {
 	}
 	else return false;
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -966,6 +970,7 @@ bool confirmAction(string s) {
 // Functions to manage clients: add, update, delete,
 // find, and display client information.
 //=====================================================
+#pragma region Client Manager
 
 // Search for a client by account number, return pointer to client if found
 strClient* findClientByAccountNumber(const string& accountNumber, vector<strClient>& vClients) {
@@ -1137,7 +1142,7 @@ void showFindClientScreen(vector<strClient>& vClients) {
 	}
 	backToMenu();
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -1146,6 +1151,7 @@ void showFindClientScreen(vector<strClient>& vClients) {
 // Functions to handle deposits, withdrawals, transfers,
 // balances reports, and transaction history.
 //=====================================================
+#pragma region Transactions Manager
 
 string generateTransactionID() {
 	// Use high-resolution timestamp for uniqueness
@@ -1571,7 +1577,7 @@ void manageTransactions(vector<strClient>& vClients) {
 		}
 	} while (Choice != TransactionsOption::ShowMainMenu);
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -1580,6 +1586,7 @@ void manageTransactions(vector<strClient>& vClients) {
 // Functions to manage users: add, update, delete,
 // find, list, and display user information.
 //=====================================================
+#pragma region User Manager
 
 strUser* findUserByUsername(const string& userName, vector<strUser>& vUsers) {
 	for (auto& user : vUsers) {
@@ -1830,7 +1837,7 @@ void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>
 
 	}
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -1839,6 +1846,7 @@ void executeUserOption(UserManagementOption manageUsersOptions, vector <strUser>
 // Functions for authentication: hashing, verifying
 // passwords, login, and default admin creation.
 //=====================================================
+#pragma region Auth Manager
 
 string hashPassword(const string& password) {
 	char hashed[crypto_pwhash_STRBYTES];
@@ -1923,6 +1931,7 @@ void createDefaultAdmin() {
 		pressEnterToContinue();
 	}
 }
+#pragma endregion
 //=====================================================
 
 
@@ -1930,6 +1939,7 @@ void createDefaultAdmin() {
 //================ Permission Manager =================
 // Functions to read and check user permissions.
 //=====================================================
+#pragma region Permission Manager
 
 int readUserPermissions()
 {
@@ -1965,7 +1975,7 @@ bool hasPermission(Permission permission) {
 
 	return (CurrentUser.Permissions & permission) == permission;
 }
-
+#pragma endregion
 //=====================================================
 
 
@@ -1974,6 +1984,7 @@ bool hasPermission(Permission permission) {
 // Functions to build, display, and execute main menu
 // and user management menu options.
 //=====================================================
+#pragma region Menu Manager
 
 vector<string> buildMainMenuOptions() {
 	vector<string> options;
@@ -2135,13 +2146,13 @@ void showExitScreen() {
 	showScreenHeader("Program Ends :-)");
 	waitForEnter();
 }
-
+#pragma endregion
 //=====================================================
+
 
 //=====================================================
 //==================== Main Function ==================
 //=====================================================
-
 int main()
 {
 	cout << fixed << setprecision(2);
