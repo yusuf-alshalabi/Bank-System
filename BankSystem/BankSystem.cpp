@@ -632,7 +632,7 @@ vector<string> splitStringByDelimiter(string S1, string delim) {
 
 }
 // Convert a client struct to file line
-string serializeClientRecord(const strClient& clientData, const string& seperator) {
+string serializeClientRecord(const strClient& clientData, const string& seperator = "#//#") {
 	string Line = "";
 	Line += clientData.AccountNumber + seperator;
 	Line += clientData.PinCode + seperator;
@@ -644,7 +644,7 @@ string serializeClientRecord(const strClient& clientData, const string& seperato
 
 }
 // Convert file line to Client struct
-strClient deserializeClientRecord(const string& Line, const string& seperator) {
+strClient deserializeClientRecord(const string& Line, const string& seperator = "#//#") {
 	strClient Client;
 	vector<string> vClientData = splitStringByDelimiter(Line, seperator);
 
@@ -670,7 +670,7 @@ string serializeUserRecord(const strUser& userInfo, const string& separator = "#
 	return line;
 }
 // Convert file line to User struct
-strUser deserializeUserRecord(string Line, const string& seperator) {
+strUser deserializeUserRecord(string Line, const string& seperator = "#//#") {
 	strUser userInfo;
 	vector<string> vUsersData;
 	vUsersData = splitStringByDelimiter(Line, seperator);
@@ -681,7 +681,7 @@ strUser deserializeUserRecord(string Line, const string& seperator) {
 	return userInfo;
 }
 // Convert file line to Transaction struct
-Transaction deserializeTransactionRecord(const string& line, const string& separator) {
+Transaction deserializeTransactionRecord(const string& line, const string& separator = "#//#") {
 	Transaction txn;
 	vector<string> parts = splitStringByDelimiter(line, separator);
 
@@ -711,7 +711,7 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 		string Line;
 		while (getline(myFile, Line)) {
 			if (!Line.empty()) {
-				strClient Client = deserializeClientRecord(Line, Separator);
+				strClient Client = deserializeClientRecord(Line);
 				vClients.push_back(Client);
 			}
 		}
@@ -736,7 +736,7 @@ void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 	try {
 		for (const strClient& c : vClients) {
 			if (!c.MarkForDelete) {
-				MyFile << serializeClientRecord(c, Separator) << endl;
+				MyFile << serializeClientRecord(c) << endl;
 				if (MyFile.fail()) {
 					throw runtime_error("Failed to write client data");
 				}
@@ -763,7 +763,7 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 		string Line;
 		while (getline(myFile, Line)) {
 			if (!Line.empty()) {
-				strUser User = deserializeUserRecord(Line, Separator);
+				strUser User = deserializeUserRecord(Line);
 				vUsers.push_back(User);
 			}
 		}
@@ -788,7 +788,7 @@ void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
 	try {
 		for (const strUser& user : vUsers) {
 			if (!user.MarkForDelete) {
-				MyFile << serializeUserRecord(user, Separator) << endl;
+				MyFile << serializeUserRecord(user) << endl;
 				if (MyFile.fail()) {
 					throw runtime_error("Failed to write user data");
 				}
@@ -815,7 +815,7 @@ vector<Transaction> loadTransactionsFromFile(const string& fileName) {
 		string line;
 		while (getline(file, line)) {
 			if (!line.empty()) {  // Skip empty lines
-				Transaction txn = deserializeTransactionRecord(line, Separator);
+				Transaction txn = deserializeTransactionRecord(line);
 				transactions.push_back(txn);
 			}
 		}
@@ -1061,7 +1061,7 @@ void addNewClient(vector<strClient>& vClients) {
 
 	newClient = readClientData(accountNumber);
 	vClients.push_back(newClient);
-	appendLineToFile(ClientsFileName, serializeClientRecord(newClient, Separator));
+	appendLineToFile(ClientsFileName, serializeClientRecord(newClient));
 	showSuccessMessage("Client Added Successfully!");
 }
 // Show Add New Client screen (loop for multiple)
@@ -1737,7 +1737,7 @@ void addNewUser(vector<strUser>& vUsers) {
 
 	strUser newUser = readUserData(name);
 	vUsers.push_back(newUser);
-	appendLineToFile(UsersFileName, serializeUserRecord(newUser, Separator));
+	appendLineToFile(UsersFileName, serializeUserRecord(newUser));
 
 	showSuccessMessage("User Added Successfully!");
 }
