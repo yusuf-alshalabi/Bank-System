@@ -363,7 +363,7 @@ void saveCurrentUserSession(const strUser& user) {
 		}
 	}
 	catch (const exception& e) {
-		// showErrorMessage("Failed to encrypt session data: " + string(e.what()));
+		showErrorMessage("Error: " + string(e.what()));
 	}
 }
 // Load and decrypt current user session from file
