@@ -1490,7 +1490,7 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 }
 // Show transaction history for account
 void showTransactionsHistory(const string& accountNumber) {
-	vector<Transaction> transactions = loadTransactionsFromFile("Transactions.txt");
+	vector<Transaction> transactions = loadTransactionsFromFile(TransactionsFileName);
 
 	clearScreen();
 	showScreenHeader("Transaction History");
