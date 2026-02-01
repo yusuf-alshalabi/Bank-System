@@ -613,7 +613,7 @@ string decryptData(const string& encryptedData, const vector<unsigned char>& key
 #pragma region File Manager
 
 // Split string into tokens using delimiter
-vector<string> splitStringByDelimiter(string S1, string delim) {
+vector<string> splitStringByDelimiter(string S1, string delim = Separator) {
 	vector <string> split;
 	size_t pos = 0;
 	string sWord;
@@ -646,7 +646,7 @@ string serializeClientRecord(const strClient& clientData, const string& seperato
 // Convert file line to Client struct
 strClient deserializeClientRecord(const string& Line, const string& seperator = "#//#") {
 	strClient Client;
-	vector<string> vClientData = splitStringByDelimiter(Line, seperator);
+	vector<string> vClientData = splitStringByDelimiter(Line);
 
 	if (vClientData.size() >= 5) {
 		Client.AccountNumber = vClientData[0];
@@ -673,7 +673,7 @@ string serializeUserRecord(const strUser& userInfo, const string& separator = "#
 strUser deserializeUserRecord(string Line, const string& seperator = "#//#") {
 	strUser userInfo;
 	vector<string> vUsersData;
-	vUsersData = splitStringByDelimiter(Line, seperator);
+	vUsersData = splitStringByDelimiter(Line);
 	userInfo.UserName = vUsersData[0];
 	userInfo.Password = vUsersData[1];
 	userInfo.Permissions = stoi(vUsersData[2]);
@@ -683,7 +683,7 @@ strUser deserializeUserRecord(string Line, const string& seperator = "#//#") {
 // Convert file line to Transaction struct
 Transaction deserializeTransactionRecord(const string& line, const string& separator = "#//#") {
 	Transaction txn;
-	vector<string> parts = splitStringByDelimiter(line, separator);
+	vector<string> parts = splitStringByDelimiter(line);
 
 	if (parts.size() >= 8) {
 		txn.TransactionID = parts[0];
