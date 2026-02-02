@@ -1014,7 +1014,7 @@ bool markClientForDelete(strClient* client) {
 	return true;
 }
 // Display client information in formatted card
-void printClientCard(const strClient& client) {
+void showClientCard(const strClient& client) {
 	cout << "\n+" << string(58, '=') << "+\n";
 	cout << "|  " << left << setw(56) << "Client Information" << "|\n";
 	cout << "+" << string(58, '=') << "+\n";
@@ -1107,7 +1107,7 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 		return false;
 	}
 
-	printClientCard(*client);
+	showClientCard(*client);
 	if (confirmAction("Are you sure you want delete this client ?")) {
 		markClientForDelete(client);
 		saveClientsToFile(ClientsFileName, vClients);
@@ -1133,7 +1133,7 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 		return false;
 	}
 
-	printClientCard(*client);
+	showClientCard(*client);
 	if (confirmAction("Are you sure you want update this client ?")) {
 		*client = readClientData(accountNumber);
 		saveClientsToFile(ClientsFileName, vClients);
@@ -1164,7 +1164,7 @@ void showFindClientScreen(vector<strClient>& vClients) {
 		showErrorMessage("Client with account Number [" + accountNumber + "] is not found!");
 	}
 	else {
-		printClientCard(*client);
+		showClientCard(*client);
 	}
 	backToMenu();
 }
@@ -1228,7 +1228,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 		return;
 	}
 
-	printClientCard(*client);
+	showClientCard(*client);
 	double depositAmount = readPositiveNumber("Enter Deposit Amount: ");
 
 	if (!confirmAction("Confirm deposit of " + formatDouble(depositAmount) + "?")) {
@@ -1305,7 +1305,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 		return;
 	}
 
-	printClientCard(*client);
+	showClientCard(*client);
 	double withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
 
 	while (withdrawAmount > client->AccountBalance) {
@@ -1702,7 +1702,7 @@ string formatPermissions(int permissions) {
 	return result;
 }
 // Display user info in formatted card
-void printUserCard(strUser* User) {
+void showUserCard(strUser* User) {
 	cout << "\n+" << string(102, '=') << "+\n";
 	cout << "|  " << left << setw(100) << "User Information" << "|\n";
 	cout << "+" << string(102, '=') << "+\n";
@@ -1785,7 +1785,7 @@ bool deleteUserWithCredentials(const string& userName, const string& password, v
 	strUser* user = findUserByUsername(userName, vUsers);
 
 	if (verifyUserPassword(password, user)) {
-		printUserCard(user);
+		showUserCard(user);
 		if (confirmAction("Are you sure you want delete this user ?")) {
 			markUserForDelete(user);
 			saveUsersToFile(UsersFileName, vUsers);
@@ -1816,7 +1816,7 @@ void showDeleteUserScreen(vector<strUser>& vUsers) {
 bool updateUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
 	strUser* user = findUserByUsername(userName, vUsers);
 	if (verifyUserPassword(password, user)) {
-		printUserCard(user);
+		showUserCard(user);
 		if (confirmAction("Are you sure you want update this User ?")) {
 			for (strUser& u : vUsers) {
 				if (u.UserName == userName) {
@@ -1863,7 +1863,7 @@ void showFindUserScreen(vector<strUser>& vUsers) {
 	strUser* user = findUserByUsername(name, vUsers);
 	string password = readNonEmptyString("Please Enter Password? ");
 	if (verifyUserPassword(password, user)) {
-		printUserCard(user);
+		showUserCard(user);
 	}
 	else {
 		showErrorMessage("User with name (" + name + ") and password (" + password + ") is not found!.");
