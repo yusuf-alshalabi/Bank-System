@@ -2221,7 +2221,7 @@ void showExitScreen() {
 //==================== Main Function ==================
 //=====================================================
 
-// Program entry point: initialize system, create admin, logi, run menus
+// Program entry point: initialize system, create admin, login, run menus
 int main()
 {
 	cout << fixed << setprecision(2);
