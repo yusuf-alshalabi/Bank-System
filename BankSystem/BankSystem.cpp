@@ -1798,7 +1798,7 @@ bool deleteUserWithCredentials(const string& userName, const string& password, v
 		}
 	}
 	else {
-		showErrorMessage("Users with name (" + userName + ") with the password (" + password + ") is not Found!");
+		showErrorMessage("Invalid username or password.");
 		return false;
 	}
 }
