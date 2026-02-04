@@ -4,7 +4,7 @@ Complete changelog and feature details for all versions.
 
 ---
 
-## Version 1.4.0 — Transaction Management System (January 2026)  [v1.4.0][v140]
+## Version 1.4.0 — Transaction Management System (February 2026)  [v1.4.0][v140]
 
 ### 🎯 Main Focus
 Complete **Transaction Management System** with money transfers, audit trail, and transaction history.
@@ -24,7 +24,7 @@ Complete **Transaction Management System** with money transfers, audit trail, an
 
 #### 📝 Transaction Logging System
 - Every financial operation receives a unique Transaction ID
-- Transaction ID format: `TXN` + counter + Unix timestamp
+- Transaction ID format: `TXN` + timestamp + random component
 - Complete audit trail for all operations
 - Persistent storage in `Transactions.txt`
 - Support for three transaction types:
@@ -101,6 +101,9 @@ enum TransactionType {
 #### File Structure Updates
 - New file: `Transactions.txt`
 - Transaction record format: `ID#//#Type#//#FromAcc#//#ToAcc#//#Amount#//#Fees#//#Timestamp#//#Desc`
+
+#### 🔐 Security Enhancements
+- Password hashing upgraded from `std::hash` (used in v1.2.0–v1.3.0) to **Libsodium Argon2id** in v1.4.0, providing modern, memory-hard, and secure password storage.
 
 ### 📈 Improvements
 - Real-time transaction logging
@@ -196,7 +199,7 @@ Complete **User Management System** with Role-Based Access Control (RBAC).
   - Password: `1234`
 
 #### 🔐 Password Security
-- Password hashing using `std::hash`
+- Password hashing using `std::hash` (basic hashing, later replaced with Libsodium Argon2id in v1.4.0)
 - Minimum 4-character password requirement
 - No plain-text password storage
 - Hexadecimal hash representation

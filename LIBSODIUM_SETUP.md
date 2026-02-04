@@ -127,6 +127,9 @@ g++ -o test_sodium test_sodium.cpp -lsodium
 ✓ Version: 1.0.18
 ```
 (Note: The version number may vary)
+
+⚠️ Note: Always call `sodium_init()` at the start of your program before using any Libsodium functions.
+
 ## 🐛 Troubleshooting
 Error: sodium.h: No such file or directory
 Solution: Install the development packages (-dev or -devel).

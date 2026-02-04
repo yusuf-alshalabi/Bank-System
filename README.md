@@ -24,7 +24,7 @@ This version introduces a comprehensive **Transaction Management System** with m
 
 ### 📊 Transaction Management System (NEW in v1.4.0)
 - **Complete Audit Trail** – Every deposit, withdrawal, and transfer is logged
-- **Unique Transaction IDs** – Format: TXN + counter + timestamp
+- **Unique Transaction IDs** – Format: TXN + timestamp + random component
 - **Fee Management** – Automatic 1% fee calculation for transfers
 - **Transaction Records** – Stored persistently in `Transactions.txt`
 - **History Reports** – Detailed transaction history per account
@@ -33,7 +33,7 @@ This version introduces a comprehensive **Transaction Management System** with m
 - **User CRUD Operations** – Add, Delete, Update, Find system users
 - **Role-Based Access Control (RBAC)** – Bitwise permission flags for granular access
 - **Dynamic Menus** – Menu adapts based on user permissions
-- **Password Hashing** – Secure password storage using `std::hash`
+- **Password Hashing** – Secure password storage using Libsodium Argon2id hashing
 - **Default Admin** – Auto-created on first run (Username: Admin, Password: 1234)
 
 ### 🔒 Security & Session Management
@@ -180,7 +180,7 @@ This project follows **Procedural Programming** with emphasis on clean code, eff
 
 ```cpp
 struct Transaction {
-    string TransactionID;      // TXN10011738425600
+    string TransactionID;      // Format: TXN + timestamp + random component
     TransactionType Type;       // DEPOSIT (1) / WITHDRAWAL (2) / TRANSFER (3)
     string FromAccount;         // Source account number
     string ToAccount;           // Destination account number
@@ -197,7 +197,7 @@ struct Transaction {
 
 | Feature Area | Implementation Details |
 | :--- | :--- |
-| **Password Security** | One-way hashing (std::hash), minimum 4-char enforcement, no plain-text storage |
+| **Password Security** | Libsodium Argon2id hashing, minimum 4-char enforcement, no plain-text storage |
 | **Session Security** | Encryption (Libsodium XChaCha20-Poly1305), OS-protected key storage, 3-pass secure overwrite |
 | **Transaction Security** | Unique transaction IDs, timestamp validation, balance verification |
 | **Access Control** | Bitwise permission flags (7 levels + admin), dynamic menu system |
@@ -304,4 +304,4 @@ Feel free to fork the repository, submit pull requests, or open issues.
 **Built with:** C++ | Libsodium | File-based Persistence  
 **Developer:** Yusuf Zakaria Alshalabi  
 **Version:** 1.4.0  
-**Last Update:** January 2026
+**Last Update:** February 2026
