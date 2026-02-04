@@ -2117,16 +2117,23 @@ void login() {
 
 	strUser sessionUser;
 	if (loadCurrentUserSession(sessionUser)) {
+		if (sessionUser.UserName == "Admin" && verifyPassword("1234", sessionUser.Password)) {
+			cout << "\n" << string(60, '=') << "\n";
+			cout << RED <<  " -  Default Admin detected with unchanged password.\n" << RESET << "\n";
+			cout << RED <<  " -  Please login manually to confirm and change the password.\n" << RESET << "\n";
 
-		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
-
-		if (confirmAction("Do you want to continue with your previous session?")) {
-			CurrentUser = sessionUser;
-			showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
-			pressEnterToContinue();
-			vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-			showMainMenu(vClients);
-			return;
+			cout << string(60, '=') << "\n\n";
+		}
+		else {
+			cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
+			if (confirmAction("Do you want to continue with your previous session?")) {
+				CurrentUser = sessionUser;
+				showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
+				pressEnterToContinue();
+				vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+				showMainMenu(vClients);
+				return;
+			}
 		}
 	}
 
@@ -2144,7 +2151,11 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser);
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
-
+			if (CurrentUser.UserName == "Admin" && CurrentUser.Password == "1234") {
+				cout << "\n" << string(60, '-') << "\n";
+				cout << RED << "Don't forget to change the password to be safe!\n" << RESET << "\n";
+				cout << string(60, '-') << "\n\n";
+			}
 			logLoginAttempt(CurrentUser.UserName, true);
 
 			pressEnterToContinue();
