@@ -1228,7 +1228,6 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 	backToMenu();
 }
 // Add client with unique account number
-// Add client with unique account number
 void addNewClient(vector<strClient>& vClients) {
 	strClient newClient;
 	string accountNumber = readValidatedAccountNumber("\nPlease enter AccountNumber? ");
@@ -1236,7 +1235,7 @@ void addNewClient(vector<strClient>& vClients) {
 
 	while (findClient != nullptr) {
 		showErrorMessage("Client with accountNumber [" + accountNumber + "] already exists, enter another account number?");
-		accountNumber = readValidatedAccountNumber("\nPlease enter AccountNumber? ");  // ✅ التصحيح هنا
+		accountNumber = readValidatedAccountNumber("\nPlease enter AccountNumber? ");
 		findClient = findClientByAccountNumber(accountNumber, vClients);
 	}
 
@@ -1244,6 +1243,8 @@ void addNewClient(vector<strClient>& vClients) {
 	vClients.push_back(newClient);
 	appendLineToFile(ClientsFileName, serializeClientRecord(newClient));
 	showSuccessMessage("Client Added Successfully!");
+
+	logUserAction("ADD_CLIENT", "Account: " + newClient.AccountNumber + " - Name: " + newClient.Name);
 }
 // Show Add New Client screen (loop for multiple)
 void showAddClientScreen(vector <strClient>& vClients) {
@@ -1265,6 +1266,7 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		logUserAction("DELETE_CLIENT_FAILED", "Account not found: " + accountNumber);
 		return false;
 	}
 
@@ -1274,6 +1276,8 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
 		showSuccessMessage("Client Deleted Successfully.");
+
+		logUserAction("DELETE_CLIENT", "Account: " + accountNumber);
 		return true;
 	}
 	return false;
@@ -1290,6 +1294,7 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
 		showErrorMessage("Client with Account Number (" + accountNumber + ") is not Found!");
+		logUserAction("UPDATE_CLIENT_FAILED", "Account not found: " + accountNumber);
 		pressEnterToContinue();
 		return false;
 	}
@@ -1300,6 +1305,8 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 		saveClientsToFile(ClientsFileName, vClients);
 		vClients = loadClientsDataFromFile(ClientsFileName);
 		showSuccessMessage("Client Updated Successfully.");
+
+		logUserAction("UPDATE_CLIENT", "Account: " + accountNumber);
 		return true;
 	}
 	return false;
@@ -2137,10 +2144,16 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser);
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
+
+			logLoginAttempt(CurrentUser.UserName, true);
+
 			pressEnterToContinue();
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
+
+			logLoginAttempt(name, false);
+
 			pressEnterToContinue();
 		}
 	} while (!found);
@@ -2324,6 +2337,9 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		if (confirmAction("Are you sure you want to logout?")) {
 			clearCurrentUserSession();
 			showSuccessMessage("You have been logged out successfully. Session cleared.");
+
+			logUserAction("LOGOUT", "User: " + CurrentUser.UserName);
+
 			pressEnterToContinue();
 			login();
 		}
