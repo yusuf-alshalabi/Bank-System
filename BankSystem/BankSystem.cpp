@@ -1385,6 +1385,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 	if (!client) {
 		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
+		logUserAction("DEPOSIT_FAILED", "Account not found: " + accountNumber);
 		backToMenu();
 		return;
 	}
@@ -1394,6 +1395,7 @@ void showDepositScreen(vector<strClient>& vClients) {
 
 	if (!confirmAction("Confirm deposit of " + formatDouble(depositAmount) + "?")) {
 		showErrorMessage("Deposit cancelled");
+		logUserAction("DEPOSIT_CANCELLED", "Account: " + accountNumber); 
 		backToMenu();
 		return;
 	}
@@ -1401,12 +1403,15 @@ void showDepositScreen(vector<strClient>& vClients) {
 	double originalBalance = client->AccountBalance;
 
 	if (depositToClientAccount(client, depositAmount)) {
-		Transaction txn = createDepositTransaction(client->AccountNumber, depositAmount);
-		saveTransactionToFile(txn);
+		Transaction depositTransaction = createDepositTransaction(client->AccountNumber, depositAmount);
+		saveTransactionToFile(depositTransaction);
 		saveClientsToFile(ClientsFileName, vClients);
 
+		logTransaction(depositTransaction);
+		logUserAction("DEPOSIT", "Account: " + accountNumber + " - Amount: " + formatDouble(depositAmount));
+
 		string successMessage = string("Transaction completed successfully!\n") +
-			"Transaction ID: " + txn.TransactionID + "\n" +
+			"Transaction ID: " + depositTransaction.TransactionID + "\n" +
 			"Deposited Amount: " + formatDouble(depositAmount) + "\n" +
 			"Previous Balance: " + formatDouble(originalBalance) + "\n" +
 			"New Balance: " + formatDouble(originalBalance + depositAmount);
@@ -1462,6 +1467,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 	if (!client) {
 		showErrorMessage("Account " + accountNumber + " not found. Please check the account number.");
+		logUserAction("WITHDRAWAL_FAILED", "Account not found: " + accountNumber);  
 		backToMenu();
 		return;
 	}
@@ -1470,9 +1476,8 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	double withdrawAmount = readPositiveNumber("Enter Withdraw Amount: ");
 
 	while (withdrawAmount > client->AccountBalance) {
-		showErrorMessage("Amount exceeds balance! Available: " +
-			formatDouble(client->AccountBalance));
-
+		showErrorMessage("Amount exceeds balance! Available: " + formatCurrency(client->AccountBalance));
+		logUserAction("WITHDRAWAL_FAILED", "Insufficient funds - Account: " + accountNumber);
 		if (!confirmAction("Enter a different amount?")) {
 			showErrorMessage("Withdrawal cancelled");
 			backToMenu();
@@ -1484,6 +1489,7 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 
 	if (!confirmAction("Confirm withdrawal of " + formatDouble(withdrawAmount) + "?")) {
 		showErrorMessage("Withdrawal cancelled");
+		logUserAction("WITHDRAWAL_CANCELLED", "Account: " + accountNumber);  
 		backToMenu();
 		return;
 	}
@@ -1491,12 +1497,15 @@ void showWithdrawScreen(vector<strClient>& vClients) {
 	double originalBalance = client->AccountBalance;
 
 	if (withdrawToClientAccount(client, withdrawAmount)) {
-		Transaction txn = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
-		saveTransactionToFile(txn);
+		Transaction withdrawalTransaction = createWithdrawTransaction(client->AccountNumber, withdrawAmount);
+		saveTransactionToFile(withdrawalTransaction);
 		saveClientsToFile(ClientsFileName, vClients);
+		
+		logTransaction(withdrawalTransaction);
+		logUserAction("WITHDRAWAL", "Account: " + accountNumber + " - Amount: " + formatCurrency(withdrawalTransaction.Amount));
 
 		string successMessage = string("Transaction completed successfully!\n") +
-			"Transaction ID: " + txn.TransactionID + "\n" +
+			"Transaction ID: " + withdrawalTransaction.TransactionID + "\n" +
 			"Withdrawn Amount: " + formatDouble(withdrawAmount) + "\n" +
 			"Previous Balance: " + formatDouble(originalBalance) + "\n" +
 			"New Balance: " + formatDouble(originalBalance - withdrawAmount);
@@ -1618,6 +1627,9 @@ void showTransferScreen(vector<strClient>& vClients) {
 	saveTransactionToFile(transferTransaction);
 
 	saveClientsToFile(ClientsFileName, vClients);
+
+	logTransaction(transferTransaction);
+	logUserAction("TRANSFER", "From: " + fromAccount + " To: " + toAccount + " - Amount: " + formatCurrency(transferAmount));
 
 	string successMessage = string("Transfer completed successfully!\n") +
 		"Transaction ID: " + transferTransaction.TransactionID + "\n" +
