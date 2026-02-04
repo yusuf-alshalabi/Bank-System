@@ -9,14 +9,15 @@
 //  ||  4. Session Management System						  ||
 //  ||  5. Encryption & Decryption							  ||
 //  ||  6. File Manager										  ||
-//  ||  7. Input Manager									  ||
-//  ||  8. Client Manager									  ||
-//  ||  9. Transactions Manager								  ||
-//  || 10. User Manager										  ||
-//  || 11. Auth Manager										  ||
-//  || 12. Permission Manager								  ||
-//  || 13. Menu Manager										  ||
-//  || 14. Main Function									  ||
+//  ||  7. Logging System									  ||  
+//  ||  8. Input Manager									  ||
+//  ||  9. Client Manager									  ||
+//  || 10. Transactions Manager								  ||
+//  || 11. User Manager										  ||
+//  || 12. Auth Manager										  ||
+//  || 13. Permission Manager								  ||
+//  || 14. Menu Manager										  ||
+//  || 15. Main Function									  ||
 //  ||========================================================||
 
 #include <iostream>
@@ -46,6 +47,7 @@ using namespace std;
 const string ClientsFileName = "Clients.txt";
 const string TransactionsFileName = "Transactions.txt";
 const string UsersFileName = "Users.txt";
+const string LogFileName = "SystemLog.txt";
 const string Separator = "#//#";
 
 const string RED = "\033[31m";
@@ -99,6 +101,12 @@ enum Permission {
 	pAll = -1,
 	pAllPermissions = 127
 };
+enum LogLevel {
+	INFO,
+	WARNING,
+	ERROR_LOG,  
+	CRITICAL
+};
 
 struct Transaction {
 	string TransactionID;
@@ -146,6 +154,13 @@ strUser deserializeUserData(const string& data);
 
 // File & Append
 void appendLineToFile(const string& FileName, const string& stDataLine);
+
+// Logging
+string logLevelToString(LogLevel level);
+void logMessage(const string& message, LogLevel level);
+void logTransaction(const Transaction& txn);
+void logLoginAttempt(const string& username, bool success);
+void logUserAction(const string& action, const string& details);
 
 // User & Auth
 string hashPassword(const string& password);
@@ -897,6 +912,75 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 #pragma endregion
 //=====================================================
 
+//=====================================================
+//================== Logging System ===================
+// Functions to log system activities, transactions,
+// and errors for audit trail and debugging.
+//=====================================================
+#pragma region Logging System
+
+// Convert log level enum to readable string
+string logLevelToString(LogLevel level) {
+	switch (level) {
+	case INFO: return "INFO";
+	case WARNING: return "WARNING";
+	case ERROR_LOG: return "ERROR";
+	case CRITICAL: return "CRITICAL";
+	default: return "UNKNOWN";
+	}
+}
+// Log message to file with timestamp, level, and user context
+void logMessage(const string& message, LogLevel level = INFO) {
+	try {
+		string logEntry = "[" + getCurrentTimestamp() + "] " +
+			"[" + logLevelToString(level) + "] " +
+			"[User: " + (CurrentUser.UserName.empty() ? "SYSTEM" : CurrentUser.UserName) + "] " +
+			message;
+
+		appendLineToFile(LogFileName, logEntry);
+	}
+	catch (const exception& e) {
+		// Silent fail - don't disrupt program flow
+		// Optionally could write to stderr for debugging
+		cerr << "Logging failed: " << e.what() << endl;
+	}
+}
+// Log transaction activity with full details
+void logTransaction(const Transaction& txn) {
+	string typeStr;
+	switch (txn.Type) {
+	case DEPOSIT: typeStr = "DEPOSIT"; break;
+	case WITHDRAWAL: typeStr = "WITHDRAWAL"; break;
+	case TRANSFER: typeStr = "TRANSFER"; break;
+	default: typeStr = "UNKNOWN"; break;
+	}
+
+	string message = "Transaction " + txn.TransactionID +
+		" - Type: " + typeStr +
+		" - Amount: " + formatDouble(txn.Amount) +
+		" - From: " + txn.FromAccount +
+		" - To: " + txn.ToAccount +
+		" - Fees: " + formatDouble(txn.Fees);
+
+	logMessage(message, INFO);
+}
+// Log authentication attempts (successful or failed)
+void logLoginAttempt(const string& username, bool success) {
+	string message = "Login attempt for user '" + username + "' - " +
+		(success ? "SUCCESS" : "FAILED");
+	logMessage(message, success ? INFO : WARNING);
+}
+// Log general user actions with optional details
+void logUserAction(const string& action, const string& details = "") {
+	string message = "Action: " + action;
+	if (!details.empty()) {
+		message += " - Details: " + details;
+	}
+	logMessage(message, INFO);
+}
+
+#pragma endregion
+//=====================================================
 
 //=====================================================
 //==================== Input Manager ==================
