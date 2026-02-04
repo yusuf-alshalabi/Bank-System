@@ -47,6 +47,15 @@ const string ClientsFileName = "Clients.txt";
 const string TransactionsFileName = "Transactions.txt";
 const string UsersFileName = "Users.txt";
 const string Separator = "#//#";
+
+const string RED = "\033[31m";
+const string GREEN = "\033[32m";
+const string YELLOW = "\033[33m";
+const string BLUE = "\033[34m";
+const string MAGENTA = "\033[35m";
+const string CYAN = "\033[36m";
+const string RESET = "\033[0m";
+
 enum TransactionType {
 	DEPOSIT = 1,
 	WITHDRAWAL = 2,
@@ -214,19 +223,19 @@ void clearScreen() {
 // Display formatted success message
 void showSuccessMessage(string message) {
 	cout << "\n" << string(60, '=') << "\n";
-	cout << "   SUCCESS: " << message << "\n";
+	cout << GREEN << "   SUCCESS: " << message << RESET << "\n";
 	cout << string(60, '=') << "\n\n";
 }
 // Display formatted error message
 void showErrorMessage(string message) {
 	cout << "\n" << string(60, '-') << "\n";
-	cout << "   ERROR: " << message << "\n";
+	cout << RED << "   ERROR: " << message << RESET << "\n";
 	cout << string(60, '-') << "\n\n";
 }
 // Display centered header with borders
 void showScreenHeader(const string& title) {
 	cout << "\n";
-	cout << "+" << string(58, '=') << "+\n";
+	cout << CYAN << "+" << string(58, '=') << "+\n";
 	cout << "|" << string(58, ' ') << "|\n";
 
 	int padding = (58 - title.length()) / 2;
@@ -234,13 +243,14 @@ void showScreenHeader(const string& title) {
 		<< string(58 - padding - title.length(), ' ') << "|\n";
 
 	cout << "|" << string(58, ' ') << "|\n";
-	cout << "+" << string(58, '=') << "+\n\n";
+	cout << "+" << string(58, '=') << "+" << RESET << "\n\n";
 }
 // Display numbered list of options
 void showOptions(const vector<string>& options) {
 	cout << "\n";
 	for (size_t i = 0; i < options.size(); i++) {
-		cout << "  [" << (i + 1) << "]  " << options[i] << ".\n";
+		cout << CYAN << "  [" << (i + 1) << "]  " << RESET
+			<< YELLOW << options[i] << RESET << ".\n";
 	}
 	cout << "\n" << string(60, '-') << "\n";
 }
@@ -251,12 +261,12 @@ void waitForEnter() {
 }
 // Prompt user to press Enter to continue
 void pressEnterToContinue() {
-	cout << "\n\nPress Enter to continue...";
+	cout << "\n\n" << CYAN << "Press Enter to continue..." << RESET;
 	waitForEnter();
 }
 // prompt user to press Enter to return to menu
 void backToMenu() {
-	cout << "\n\nPress Enter to return to the main menu...";
+	cout << "\n\n" << YELLOW << "Press Enter to return to the main menu..." << RESET;
 	waitForEnter();
 }
 #pragma endregion
@@ -526,7 +536,7 @@ vector<unsigned char> getEncryptionKey() {
 	if (file.is_open()) {
 		file.read(reinterpret_cast<char*>(key.data()), key.size());
 		file.close();
-		
+
 		return key;
 	}
 
@@ -977,14 +987,13 @@ string readPassword() {
 bool confirmAction(string s) {
 	char c;
 	do {
-		cout << s << " y/n?\n";
+		cout << MAGENTA << s << RESET << " "
+			<< GREEN << "y" << RESET << "/"
+			<< RED << "n" << RESET << " ?\n";
 		cin >> c;
 		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	} while (c != 'y' && c != 'Y' && c != 'n' && c != 'N');
-	if (c == 'Y' || c == 'y') {
-		return true;
-	}
-	else return false;
+	return (c == 'Y' || c == 'y');
 }
 #pragma endregion
 //=====================================================
@@ -1046,24 +1055,27 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 	}
 
 	// Table header
-	cout << "+" << string(105, '-') << "+\n";
+	cout << CYAN << "+" << string(105, '-') << "+\n";
 	cout << "| " << left << setw(18) << "Account Number"
 		<< "| " << setw(12) << "PIN Code"
 		<< "| " << setw(30) << "Client Name"
 		<< "| " << setw(15) << "Phone"
 		<< "| " << setw(21) << "Balance" << "|\n";
-	cout << "+" << string(105, '-') << "+\n";
+	cout << "+" << string(105, '-') << "+" << RESET << "\n";
 
 	// Print each client
 	for (const strClient& Client : vClients) {
+		string balanceColor = (Client.AccountBalance >= 0) ? GREEN : RED;
 		cout << "| " << left << setw(18) << Client.AccountNumber
 			<< "| " << setw(12) << Client.PinCode
 			<< "| " << setw(30) << Client.Name
 			<< "| " << setw(15) << Client.Phone
-			<< "| " << setw(21) << fixed << setprecision(2) << Client.AccountBalance << "|\n";
+			<< "| " << balanceColor << setw(21)
+			<< fixed << setprecision(2) << formatCurrency(Client.AccountBalance)
+			<< RESET << "|\n";
 	}
 
-	cout << "+" << string(105, '-') << "+\n\n";
+	cout << CYAN << "+" << string(105, '-') << "+" << RESET << "\n\n";
 
 	backToMenu();
 }
@@ -1487,24 +1499,26 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	}
 
 	// Table header
-	cout << "+" << string(80, '-') << "+\n";
+	cout << CYAN << "+" << string(80, '-') << "+\n";
 	cout << "| " << left << setw(18) << "Account Number"
 		<< "| " << setw(35) << "Client Name"
 		<< "| " << setw(22) << "Balance" << "|\n";
-	cout << "+" << string(80, '-') << "+\n";
+	cout << "+" << string(80, '-') << "+" << RESET << "\n";
 
 	// Print each client
 	for (const strClient& Client : vClients) {
 		totalBalance += Client.AccountBalance;
+		string balanceColor = (Client.AccountBalance >= 0) ? GREEN : RED;
 		cout << "| " << left << setw(18) << Client.AccountNumber
 			<< "| " << setw(35) << Client.Name
-			<< "| " << left << setw(22) << formatCurrency(Client.AccountBalance) << "|\n";
+			<< "| " << balanceColor << setw(22)
+			<< formatCurrency(Client.AccountBalance) << RESET << "|\n";
 	}
 
-	cout << "+" << string(80, '-') << "+\n";
+	cout << CYAN << "+" << string(80, '-') << "+\n";
 	cout << "| " << left << setw(55) << "TOTAL BALANCE"
-		<< "| " << left << setw(22) << formatCurrency(totalBalance) << "|\n";
-	cout << "+" << string(80, '=') << "+\n\n";
+		<< "| " << YELLOW << setw(22) << formatCurrency(totalBalance) << RESET << "|\n";
+	cout << "+" << string(80, '=') << "+" << RESET << "\n\n";
 
 	backToMenu();
 }
@@ -1518,7 +1532,7 @@ void showTransactionsHistory(const string& accountNumber) {
 	cout << "Account Number: " << accountNumber << "\n\n";
 
 	// Table header
-	cout << "+" << string(140, '-') << "+\n";
+	cout << CYAN << "+" << string(140, '-') << "+\n";
 	cout << "| " << left << setw(18) << "Transaction ID"
 		<< "| " << setw(12) << "Type"
 		<< "| " << setw(15) << "From Account"
@@ -1527,27 +1541,27 @@ void showTransactionsHistory(const string& accountNumber) {
 		<< "| " << setw(8) << "Fees"
 		<< "| " << setw(20) << "Timestamp"
 		<< "| " << setw(25) << "Description" << "|\n";
-	cout << "+" << string(140, '-') << "+\n";
+	cout << "+" << string(140, '-') << "+" << RESET << "\n";
 
 	bool found = false;
 	for (const Transaction& txn : transactions) {
 		if (txn.FromAccount == accountNumber || txn.ToAccount == accountNumber) {
 			found = true;
-			string type = (txn.Type == DEPOSIT ? "Deposit" :
-				txn.Type == WITHDRAWAL ? "Withdraw" : "Transfer");
+			string typeColor = (txn.Type == DEPOSIT) ? GREEN : (txn.Type == WITHDRAWAL) ? RED : YELLOW;
+			string type = (txn.Type == DEPOSIT ? "Deposit" : txn.Type == WITHDRAWAL ? "Withdraw" : "Transfer");
 
 			cout << "| " << left << setw(18) << txn.TransactionID
-				<< "| " << setw(12) << type
+				<< "| " << typeColor << setw(12) << type << RESET
 				<< "| " << setw(15) << txn.FromAccount
 				<< "| " << setw(15) << txn.ToAccount
-				<< "| " << setw(12) << fixed << setprecision(2) << txn.Amount
-				<< "| " << setw(8) << txn.Fees
+				<< "| " << GREEN << setw(12) << fixed << setprecision(2) << formatCurrency(txn.Amount) << RESET
+				<< "| " << YELLOW << setw(8) << txn.Fees << RESET
 				<< "| " << setw(20) << txn.Timestamp
 				<< "| " << setw(25) << txn.Description << "|\n";
 		}
 	}
 
-	cout << "+" << string(140, '-') << "+\n";
+	cout << CYAN << "+" << string(140, '-') << "+\n";
 
 	if (!found) {
 		cout << "\n";
