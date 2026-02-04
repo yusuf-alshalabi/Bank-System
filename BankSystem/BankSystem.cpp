@@ -942,13 +942,77 @@ double readPositiveNumber(string prompt) {
 
 	return num;
 }
-// Read client data from user except AccountNumber ; it is passed as parameter
+// Validate account number format (alphanumeric, specific length)
+bool isValidAccountNumber(const string& accountNumber) {
+	if (accountNumber.empty() || accountNumber.length() < 5 || accountNumber.length() > 20) {
+		return false;
+	}
+
+	// Check if alphanumeric only
+	for (char c : accountNumber) {
+		if (!isalnum(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+// Validate phone number format (digits only, 10-15 chars)
+bool isValidPhoneNumber(const string& phone) {
+	if (phone.empty() || phone.length() < 10 || phone.length() > 15) {
+		return false;
+	}
+
+	// Allow digits, spaces, +, -, ()
+	for (char c : phone) {
+		if (!isdigit(c) && c != ' ' && c != '+' && c != '-' && c != '(' && c != ')') {
+			return false;
+		}
+	}
+	return true;
+}
+// Read validated account number with format checking
+string readValidatedAccountNumber(const string& prompt) {
+	string accountNumber;
+	bool valid = false;
+
+	do {
+		accountNumber = readNonEmptyString(prompt);
+
+		if (!isValidAccountNumber(accountNumber)) {
+			showErrorMessage("Invalid account number format! Must be 5-20 alphanumeric characters.");
+		}
+		else {
+			valid = true;
+		}
+	} while (!valid);
+
+	return accountNumber;
+}
+// Read validated phone number
+string readValidatedPhoneNumber(const string& prompt) {
+	string phone;
+	bool valid = false;
+
+	do {
+		phone = readNonEmptyString(prompt);
+
+		if (!isValidPhoneNumber(phone)) {
+			showErrorMessage("Invalid phone number! Must be 10-15 characters with digits, +, -, (), space only.");
+		}
+		else {
+			valid = true;
+		}
+	} while (!valid);
+
+	return phone;
+}
+// Enhanced readClientData with validation
 strClient readClientData(const string& AccountNumber) {
 	strClient Client;
 	Client.AccountNumber = AccountNumber;
 	Client.PinCode = readNonEmptyString("Enter PinCode? ");
 	Client.Name = readNonEmptyString("Enter Name? ");
-	Client.Phone = readNonEmptyString("Enter Phone? ");
+	Client.Phone = readValidatedPhoneNumber("Enter Phone? ");
 	Client.AccountBalance = readPositiveNumber("Enter AccountBalance? ");
 	return Client;
 }
@@ -1080,14 +1144,15 @@ void showAllClientsReport(const vector<strClient>& vClients) {
 	backToMenu();
 }
 // Add client with unique account number
+// Add client with unique account number
 void addNewClient(vector<strClient>& vClients) {
 	strClient newClient;
-	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+	string accountNumber = readValidatedAccountNumber("\nPlease enter AccountNumber? ");
 	strClient* findClient = findClientByAccountNumber(accountNumber, vClients);
 
 	while (findClient != nullptr) {
-		showErrorMessage("Client with accountNumber [" + accountNumber + "] already Exits, enter another account number?");
-		accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+		showErrorMessage("Client with accountNumber [" + accountNumber + "] already exists, enter another account number?");
+		accountNumber = readValidatedAccountNumber("\nPlease enter AccountNumber? ");  // ✅ التصحيح هنا
 		findClient = findClientByAccountNumber(accountNumber, vClients);
 	}
 
