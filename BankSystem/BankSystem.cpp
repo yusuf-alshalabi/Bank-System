@@ -1896,6 +1896,16 @@ void showUserCard(strUser* User) {
 
 	cout << "+" << string(102, '=') << "+\n";
 }
+// Count how many users have full access permissions
+int countFullAccessUsers(const vector<strUser>& vUsers) {
+	int count = 0;
+	for (const strUser& user : vUsers) {
+		if (user.Permissions == Permission::pAll) {
+			count++;
+		}
+	}
+	return count;
+}
 // Display all users in table format
 void showUsersListScreen(const vector<strUser>& vUsers) {
 	clearScreen();
@@ -1960,13 +1970,18 @@ void showAddUserScreen(vector<strUser>& vUsers) {
 }
 // Delete user with username & password
 bool deleteUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
-	if (userName == "Admin")
-	{
-		showErrorMessage("You cannot Delete This User.");
-		return false;
-
-	}
 	strUser* user = findUserByUsername(userName, vUsers);
+
+	if (user == nullptr) {
+		showErrorMessage("User not found.");
+		return false;
+	}
+
+	// Prevent deleting the last remaining full access user
+	if (user->Permissions == Permission::pAll && countFullAccessUsers(vUsers) <= 1) {
+		showErrorMessage("You cannot delete the last Admin user. At least one full access user must remain.");
+		return false;
+	}
 
 	if (verifyUserPassword(password, user)) {
 		showUserCard(user);
