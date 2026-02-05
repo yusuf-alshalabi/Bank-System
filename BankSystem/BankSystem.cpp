@@ -2143,27 +2143,21 @@ void login() {
 	showScreenHeader("Login Screen");
 
 	strUser sessionUser;
-	if (loadCurrentUserSession(sessionUser)) {
-		if (sessionUser.Password.length()<8) {
-			cout << "\n" << string(60, '-') << "\n";
-			cout << YELLOW << "Warning: Your password is weak. Please change it for better security.\n" << RESET << "\n";
-			cout << string(60, '-') << "\n\n";
-		}
-		else {
-			cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
-			if (confirmAction("Do you want to continue with your previous session?")) {
-				CurrentUser = sessionUser;
-				showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
-				pressEnterToContinue();
-				vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-				showMainMenu(vClients);
-				return;
-			}
+	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
+
+	if (!vUsers.empty() && loadCurrentUserSession(sessionUser)) {
+		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
+		if (confirmAction("Do you want to continue with your previous session?")) {
+			CurrentUser = sessionUser;
+			showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
+			pressEnterToContinue();
+			vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+			showMainMenu(vClients);
+			return;
 		}
 	}
 
 	bool found = false;
-	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
 	do {
 		string name = readNonEmptyString("Please Enter UserName? ");
@@ -2176,21 +2170,14 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser);
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
-			if (CurrentUser.UserName == "Admin" && verifyPassword("1234", CurrentUser.Password)) {
-				cout << "\n" << string(60, '-') << "\n";
-				cout << RED << "Default Admin detected with unchanged password!\n" << RESET << "\n";
-				cout << RED << "Please change the password immediately for security.\n" << RESET << "\n";
-				cout << string(60, '-') << "\n\n";
-			}
+
 			logLoginAttempt(CurrentUser.UserName, true);
 
 			pressEnterToContinue();
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
-
 			logLoginAttempt(name, false);
-
 			pressEnterToContinue();
 		}
 	} while (!found);
@@ -2198,7 +2185,6 @@ void login() {
 	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
 	showMainMenu(vClients);
 }
-// Create default admin user if none exists
 // Create first admin user interactively if none exists
 void createDefaultAdmin() {
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
@@ -2216,10 +2202,17 @@ void createDefaultAdmin() {
 		vUsers.push_back(adminUser);
 		saveUsersToFile(UsersFileName, vUsers);
 
+		CurrentUser = adminUser;
+		saveCurrentUserSession(CurrentUser);
+
 		showSuccessMessage("Admin user created successfully!");
 		cout << "Username: " << adminUser.UserName << "\n";
 		cout << "Please remember your password securely.\n";
+
 		pressEnterToContinue();
+
+		vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+		showMainMenu(vClients);
 	}
 }
 #pragma endregion
