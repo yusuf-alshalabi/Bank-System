@@ -1126,15 +1126,27 @@ int readMenuOption(int from, int to) {
 
 	return choice;
 }
-// Read password input (min 4 chars)
+// Read password input (min 8 chars, stronger policy)
 string readPassword() {
 	string password;
 	do {
 		password = readNonEmptyString("Please Enter Password? ");
-		if (password.length() < 4) {
-			showErrorMessage("Password must be at least 4 characters!");
+		if (password.length() < 8) {
+			showErrorMessage("Password must be at least 8 characters!");
 		}
-	} while (password.length() < 4);
+		else {
+			bool hasUpper = false, hasLower = false, hasDigit = false;
+			for (char c : password) {
+				if (isupper(c)) hasUpper = true;
+				else if (islower(c)) hasLower = true;
+				else if (isdigit(c)) hasDigit = true;
+			}
+			if (!hasUpper || !hasLower || !hasDigit) {
+				showErrorMessage("Password must contain uppercase, lowercase, and a digit!");
+				password.clear(); // force retry
+			}
+		}
+	} while (password.empty() || password.length() < 8);
 	return password;  // Don't hash here - will be hashed when stored
 }
 // Ask user for confirmation (y/n)
