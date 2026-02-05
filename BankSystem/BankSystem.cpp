@@ -2158,9 +2158,10 @@ void login() {
 			CurrentUser = *user;
 			saveCurrentUserSession(CurrentUser);
 			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
-			if (CurrentUser.UserName == "Admin" && verifyPassword("1234",sessionUser.Password)) {
+			if (CurrentUser.UserName == "Admin" && verifyPassword("1234", CurrentUser.Password)) {
 				cout << "\n" << string(60, '-') << "\n";
-				cout << RED << "Don't forget to change the password to be safe!\n" << RESET << "\n";
+				cout << RED << "Default Admin detected with unchanged password!\n" << RESET << "\n";
+				cout << RED << "Please change the password immediately for security.\n" << RESET << "\n";
 				cout << string(60, '-') << "\n\n";
 			}
 			logLoginAttempt(CurrentUser.UserName, true);
