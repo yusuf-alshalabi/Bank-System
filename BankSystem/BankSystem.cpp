@@ -2119,12 +2119,10 @@ void login() {
 
 	strUser sessionUser;
 	if (loadCurrentUserSession(sessionUser)) {
-		if (sessionUser.UserName == "Admin" && verifyPassword("1234", sessionUser.Password)) {
-			cout << "\n" << string(60, '=') << "\n";
-			cout << RED <<  " -  Default Admin detected with unchanged password.\n" << RESET << "\n";
-			cout << RED <<  " -  Please login manually to confirm and change the password.\n" << RESET << "\n";
-
-			cout << string(60, '=') << "\n\n";
+		if (sessionUser.Password.length()<8) {
+			cout << "\n" << string(60, '-') << "\n";
+			cout << YELLOW << "Warning: Your password is weak. Please change it for better security.\n" << RESET << "\n";
+			cout << string(60, '-') << "\n\n";
 		}
 		else {
 			cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
@@ -2176,22 +2174,26 @@ void login() {
 	showMainMenu(vClients);
 }
 // Create default admin user if none exists
+// Create first admin user interactively if none exists
 void createDefaultAdmin() {
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
 	if (vUsers.empty()) {
+		cout << "\nNo users found in the system.\n";
+		cout << "Please create the first Admin account:\n";
+
 		strUser adminUser;
-		adminUser.UserName = "Admin";
-		adminUser.Password = hashPassword("1234");
-		adminUser.Permissions = Permission::pAll;
+		adminUser.UserName = readNonEmptyString("Enter Admin Username: ");
+		string rawPassword = readPassword();
+		adminUser.Password = hashPassword(rawPassword);
+		adminUser.Permissions = Permission::pAll; // Full access
 
 		vUsers.push_back(adminUser);
 		saveUsersToFile(UsersFileName, vUsers);
 
-		cout << "Default admin user created:\n";
-		cout << "Username: Admin\n";
-		cout << "Password: 1234\n";
-		cout << "Please change the password after first login!\n";
+		showSuccessMessage("Admin user created successfully!");
+		cout << "Username: " << adminUser.UserName << "\n";
+		cout << "Please remember your password securely.\n";
 		pressEnterToContinue();
 	}
 }
