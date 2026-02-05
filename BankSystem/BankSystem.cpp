@@ -696,17 +696,17 @@ strClient deserializeClientRecord(const string& Line, const string& seperator = 
 	strClient Client;
 	vector<string> vClientData = splitStringByDelimiter(Line);
 
-	if (vClientData.size() >= 5) {
-		Client.AccountNumber = vClientData[0];
-		Client.PinCode = vClientData[1];
-		Client.Name = vClientData[2];
-		Client.Phone = vClientData[3];
-		Client.AccountBalance = stod(vClientData[4]);
-		Client.MarkForDelete = false;
-	}
-	else {
+	if (vClientData.size() < 5) {
 		throw runtime_error("Invalid client data format");
 	}
+
+	Client.AccountNumber = vClientData[0];
+	Client.PinCode = vClientData[1];
+	Client.Name = vClientData[2];
+	Client.Phone = vClientData[3];
+	Client.AccountBalance = stod(vClientData[4]);
+	Client.MarkForDelete = false;
+
 	return Client;
 }
 // Convert User struct to file line
@@ -720,8 +720,12 @@ string serializeUserRecord(const strUser& userInfo, const string& separator = "#
 // Convert file line to User struct
 strUser deserializeUserRecord(string Line, const string& seperator = "#//#") {
 	strUser userInfo;
-	vector<string> vUsersData;
-	vUsersData = splitStringByDelimiter(Line);
+	vector<string> vUsersData = splitStringByDelimiter(Line);
+
+	if (vUsersData.size() < 3) {
+		throw runtime_error("Invalid user data format");
+	}
+
 	userInfo.UserName = vUsersData[0];
 	userInfo.Password = vUsersData[1];
 	userInfo.Permissions = stoi(vUsersData[2]);
