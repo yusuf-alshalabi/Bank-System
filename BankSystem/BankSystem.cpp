@@ -949,7 +949,7 @@ void logMessage(const string& message, LogLevel level = INFO) {
 	catch (const exception& e) {
 		// Silent fail - don't disrupt program flow
 		// Optionally could write to stderr for debugging
-		cerr << "Logging failed: " << e.what() << endl;
+		cerr << "[LOGGING ERROR] " << e.what() << endl;
 	}
 }
 // Log transaction activity with full details
