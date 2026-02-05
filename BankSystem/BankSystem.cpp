@@ -98,8 +98,7 @@ enum Permission {
 	pFindClient = 16,
 	pTransactions = 32,
 	pManageUsers = 64,
-	pAllPermissions = 127,
-	pAll = pAllPermissions
+	pAll = 127   // Full Access
 };
 enum LogLevel {
 	INFO,
@@ -1862,31 +1861,27 @@ string formatPermissions(int permissions) {
 	if (permissions == Permission::pAll)
 		return "Full Access";
 
-	vector<string> permissionList;
+	vector<pair<int, string>> mapping = {
+		{Permission::pListClients, "List Clients"},
+		{Permission::pAddClient, "Add Clients"},
+		{Permission::pDeleteClient, "Delete Clients"},
+		{Permission::pUpdateClient, "Update Clients"},
+		{Permission::pFindClient, "Find Clients"},
+		{Permission::pTransactions, "Transactions"},
+		{Permission::pManageUsers, "Manage Users"}
+	};
 
-	if (permissions & Permission::pListClients)
-		permissionList.push_back("List Clients");
-	if (permissions & Permission::pAddClient)
-		permissionList.push_back("Add Clients");
-	if (permissions & Permission::pDeleteClient)
-		permissionList.push_back("Delete Clients");
-	if (permissions & Permission::pUpdateClient)
-		permissionList.push_back("Update Clients");
-	if (permissions & Permission::pFindClient)
-		permissionList.push_back("Find Clients");
-	if (permissions & Permission::pTransactions)
-		permissionList.push_back("Transactions");
-	if (permissions & Permission::pManageUsers)
-		permissionList.push_back("Manage Users");
+	vector<string> resultList;
+	for (auto& m : mapping) {
+		if (permissions & m.first) resultList.push_back(m.second);
+	}
 
-	if (permissionList.empty())
-		return "No Permissions";
+	if (resultList.empty()) return "No Permissions";
 
 	string result;
-	for (size_t i = 0; i < permissionList.size(); i++) {
-		result += permissionList[i];
-		if (i < permissionList.size() - 1)
-			result += ", ";
+	for (size_t i = 0; i < resultList.size(); i++) {
+		result += resultList[i];
+		if (i < resultList.size() - 1) result += ", ";
 	}
 	return result;
 }
@@ -2233,9 +2228,6 @@ int readUserPermissions()
 	if (confirmAction("Manage Users? "))
 		Permissions += Permission::pManageUsers;
 
-	if (Permissions == Permission::pAllPermissions)
-		return Permission::pAll;
-
 	return Permissions;
 
 }
@@ -2260,7 +2252,7 @@ bool hasPermission(Permission permission) {
 // Build main menu options based on permissions
 vector<string> buildMainMenuOptions() {
 	vector<string> options;
-	if (hasPermission(Permission::pAll) || hasPermission(Permission::pAllPermissions))
+	if (hasPermission(Permission::pAll))
 		options = { "Show Client List","Add New Client","Delete Client","Update Client","Find Client","Transactions","Manage Users" };
 	else {
 		if (hasPermission(Permission::pListClients))
