@@ -2025,7 +2025,17 @@ bool updateUserWithCredentials(const string& userName, const string& password, v
 						string rawPassword = readPassword();
 						u.Password = hashPassword(rawPassword);
 					}
-					u.Permissions = readUserPermissions();
+
+					int newPermissions = readUserPermissions();
+
+					// Prevent removing full access from the last Admin
+					if (u.Permissions == Permission::pAll && newPermissions != Permission::pAll
+						&& countFullAccessUsers(vUsers) <= 1) {
+						showErrorMessage("You cannot remove full access from the last Admin user.");
+						return false;
+					}
+
+					u.Permissions = newPermissions;
 					break;
 				}
 			}
