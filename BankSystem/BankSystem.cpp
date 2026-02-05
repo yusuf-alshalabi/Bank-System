@@ -268,17 +268,18 @@ void showOptions(const vector<string>& options) {
 	}
 	cout << "\n" << string(60, '-') << "\n";
 }
-// Wait for a single Enter key press
+// Wait until user presses Enter once
 void waitForEnter() {
 	cin.clear();
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	cin.get();
 }
-// Prompt user to press Enter to continue
+// Show message and wait for Enter to continue
 void pressEnterToContinue() {
 	cout << "\n\n" << CYAN << "Press Enter to continue..." << RESET;
 	waitForEnter();
 }
-// Prompt user to press Enter to return to the main menu
+// Show message and wait for Enter to return to main menu
 void backToMenu() {
 	cout << "\n\n" << YELLOW << "Press Enter to return to the main menu..." << RESET;
 	waitForEnter();
