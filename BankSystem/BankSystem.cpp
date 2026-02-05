@@ -98,8 +98,8 @@ enum Permission {
 	pFindClient = 16,
 	pTransactions = 32,
 	pManageUsers = 64,
-	pAll = -1,
-	pAllPermissions = 127
+	pAllPermissions = 127,
+	pAll = pAllPermissions
 };
 enum LogLevel {
 	INFO,
