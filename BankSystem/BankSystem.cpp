@@ -2137,6 +2137,14 @@ bool verifyUserPassword(const string& password, strUser* user) {
 	}
 	return verifyPassword(password, user->Password);
 }
+// Helper to start a user session and open main menu
+void startSession(const strUser& user) {
+	CurrentUser = user;
+	saveCurrentUserSession(CurrentUser);
+
+	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
+	showMainMenu(vClients);
+}
 // Handle user login and session management
 void login() {
 	clearScreen();
@@ -2148,11 +2156,9 @@ void login() {
 	if (!vUsers.empty() && loadCurrentUserSession(sessionUser)) {
 		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
 		if (confirmAction("Do you want to continue with your previous session?")) {
-			CurrentUser = sessionUser;
-			showSuccessMessage("Welcome back, " + CurrentUser.UserName + "!");
+			showSuccessMessage("Welcome back, " + sessionUser.UserName + "!");
 			pressEnterToContinue();
-			vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-			showMainMenu(vClients);
+			startSession(sessionUser);
 			return;
 		}
 	}
@@ -2167,13 +2173,12 @@ void login() {
 		found = verifyUserPassword(password, user);  // Verification happens here
 
 		if (found) {
-			CurrentUser = *user;
-			saveCurrentUserSession(CurrentUser);
-			showSuccessMessage("Login successful! Welcome, " + CurrentUser.UserName + "!");
-
-			logLoginAttempt(CurrentUser.UserName, true);
-
+			logLoginAttempt(user->UserName, true);
+			showSuccessMessage("Login successful! Welcome, " + user->UserName + "!");
 			pressEnterToContinue();
+
+			startSession(*user);
+			return;
 		}
 		else {
 			showErrorMessage("Invalid username or password, try again.");
@@ -2181,9 +2186,6 @@ void login() {
 			pressEnterToContinue();
 		}
 	} while (!found);
-
-	vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-	showMainMenu(vClients);
 }
 // Create first admin user interactively if none exists
 void createDefaultAdmin() {
@@ -2202,17 +2204,12 @@ void createDefaultAdmin() {
 		vUsers.push_back(adminUser);
 		saveUsersToFile(UsersFileName, vUsers);
 
-		CurrentUser = adminUser;
-		saveCurrentUserSession(CurrentUser);
-
 		showSuccessMessage("Admin user created successfully!");
 		cout << "Username: " << adminUser.UserName << "\n";
 		cout << "Please remember your password securely.\n";
-
 		pressEnterToContinue();
 
-		vector<strClient> vClients = loadClientsDataFromFile(ClientsFileName);
-		showMainMenu(vClients);
+		startSession(adminUser);
 	}
 }
 #pragma endregion
