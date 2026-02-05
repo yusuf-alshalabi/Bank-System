@@ -469,8 +469,11 @@ void clearCurrentUserSession() {
 	fstream file(sessionPath, ios::binary | ios::out | ios::in);
 	if (file.is_open()) {
 		file.seekp(0);
+		streamsize fileSize = file.tellg();
+		file.seekp(0, ios::beg);
+
 		for (int pass = 0; pass < 3; pass++) {
-			vector<char> randomData(1024);
+			vector<char> randomData(fileSize);
 			if (pass == 0) {
 				fill(randomData.begin(), randomData.end(), 0);
 			}
