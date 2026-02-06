@@ -2159,25 +2159,21 @@ void startSession(const strUser& user) {
 }
 // Handle user login and session management
 void login() {
-	clearScreen();
-	showScreenHeader("Login Screen");
 
 	strUser sessionUser;
 	vector<strUser> vUsers = loadUsersDataFromFile(UsersFileName);
 
 	if (!vUsers.empty() && loadCurrentUserSession(sessionUser)) {
-		cout << "Welcome back, " << sessionUser.UserName << "!" << endl;
-		if (confirmAction("Do you want to continue with your previous session?")) {
-			showSuccessMessage("Welcome back, " + sessionUser.UserName + "!");
-			pressEnterToContinue();
-			startSession(sessionUser);
-			return;
-		}
+		startSession(sessionUser);
+		return;
+		
 	}
 
 	bool found = false;
 
 	do {
+		clearScreen();
+		showScreenHeader("Login Screen");
 		string name = readNonEmptyString("Please Enter UserName? ");
 		string password = readNonEmptyString("Please Enter Password? ");  // Raw password, not hashed
 
@@ -2401,9 +2397,12 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 // Main loop: show menu, execute options, repeat until exit
 void showMainMenu(vector<strClient>& vClients) {
 	MainMenuOption Choice;
-
+	strUser sessionUser;
 	do {
 		clearScreen();
+		if (loadCurrentUserSession(sessionUser)) {
+			showSuccessMessage( "Welcome back, " + sessionUser.UserName + "!");
+		}
 		showScreenHeader("Main Menu Screen");
 		vector<string> options = buildMainMenuOptions();
 		showOptions(options);
