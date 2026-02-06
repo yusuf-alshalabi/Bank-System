@@ -1106,23 +1106,23 @@ strClient readClientData(const string& AccountNumber) {
 	Client.AccountBalance = readPositiveNumber("Enter AccountBalance? ");
 	return Client;
 }
-// Read menu choice between given range
+// Read menu choice between given range or zero for return
 int readMenuOption(int from, int to) {
 	int choice;
 	do {
-		cout << "Choose what do you want to do? [" << from << " to " << to << "] ? ";
+		cout << "Choose option [0 for Back, " << from << " to " << to << "] ? ";
 		cin >> choice;
 
 		if (cin.fail()) {
 			cin.clear();
 			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			showErrorMessage("Invalid input! Please enter a number between " + formatDouble(from) + " and " + formatDouble(to) + ".");
+			showErrorMessage("Invalid input! Please enter 0 for Back or a number between " + formatInt(from) + " and " + formatInt(to) + ".");
 			continue;
 		}
 
 		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	} while ((choice < from) || (choice > to));
+	} while (((choice < from) || (choice > to)) && choice != 0);
 
 	return choice;
 }
