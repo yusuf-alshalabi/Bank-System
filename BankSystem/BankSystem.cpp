@@ -2411,10 +2411,6 @@ void showMainMenu(vector<strClient>& vClients) {
 		int choiceNum = readMenuOption(1, options.size());
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
-		if (Choice == MainMenuOption::Exit) {
-			showExitScreen();
-			break;
-		}
 		executeMainMenuOption(Choice, vClients);
 
 	} while (Choice != MainMenuOption::Exit);
