@@ -270,9 +270,8 @@ void showOptions(const vector<string>& options) {
 }
 // Wait until user presses Enter once
 void waitForEnter() {
-	cin.clear();
-	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	cin.get();
+	string dummy;
+	getline(cin, dummy);
 }
 // Show message and wait for Enter to continue
 void pressEnterToContinue() {
