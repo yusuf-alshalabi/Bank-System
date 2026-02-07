@@ -1438,8 +1438,14 @@ Transaction createDepositTransaction(const string& account, double amount, const
 }
 // Show deposit screen and process transaction
 void showDepositScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Deposit Screen");
-	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+	showBackOrExit();
+	showLine();
+
+	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+	if (accountNumber == "0") return;
+
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 
 	if (!client) {
@@ -1520,8 +1526,14 @@ Transaction createWithdrawTransaction(const string& account, double amount, cons
 }
 // Show withdraw screen and process transaction
 void showWithdrawScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Withdraw Screen");
-	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+	showBackOrExit();
+	showLine();
+
+	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+	if (accountNumber == "0") return;
+
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 
 	if (!client) {
@@ -1644,10 +1656,17 @@ Transaction createTransferTransaction(const string& fromAccount,
 }
 // Show transfer screen and process transaction
 void showTransferScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Transfer Screen");
+	showBackOrExit();
+	showLine();
 
-	string fromAccount = readNonEmptyString("Enter Your Account Number: ");
-	string toAccount = readNonEmptyString("Enter Recipient Account Number: ");
+	string fromAccount = readNonEmptyString("Enter Your Account Number (or 0 to Back)? ");
+	if (fromAccount == "0") return;
+
+	string toAccount = readNonEmptyString("Enter Recipient Account Number (or 0 to Back)? ");
+	if (toAccount == "0") return;
+
 
 	strClient* fromClient = nullptr;
 	strClient* toClient = nullptr;
@@ -1743,11 +1762,16 @@ void showTotalBalancesReport(const vector <strClient>& vClients) {
 	backToMenu();
 }
 // Show transaction history for account
-void showTransactionsHistory(const string& accountNumber) {
+void showTransactionsHistory() {
 	vector<Transaction> transactions = loadTransactionsFromFile(TransactionsFileName);
 
 	clearScreen();
 	showScreenHeader("Transaction History");
+	showBackOrExit(false);
+	showLine();
+
+	string accountNumber = readNonEmptyString("Enter Account Number (or 0 to Back)? ");
+	if (accountNumber == "0") return;
 
 	cout << "Account Number: " << accountNumber << "\n\n";
 
@@ -1823,8 +1847,7 @@ void executeTransactionOption(TransactionsOption TransactionMenuOption, vector<s
 	}
 
 	case TransactionsOption::ShowTransactionsHistory: {
-		string accountNumber = readNonEmptyString("Enter Account Number: ");
-		showTransactionsHistory(accountNumber);
+		showTransactionsHistory();
 		break;
 	}
 
