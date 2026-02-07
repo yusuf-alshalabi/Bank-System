@@ -234,6 +234,10 @@ void clearScreen() {
 	system("clear");
 #endif
 }
+// Print a separator line (customizable length)
+void showLine(int length = 60) {
+	cout << "\n" << string(length, '-') << "\n";
+}
 // Display formatted success message
 void showSuccessMessage(string message) {
 	cout << "\n" << string(60, '=') << "\n";
@@ -266,7 +270,6 @@ void showOptions(const vector<string>& options) {
 		cout << CYAN << "  [" << (i + 1) << "]  " << RESET
 			<< YELLOW << options[i] << RESET << ".\n";
 	}
-	cout << "\n" << string(60, '-') << "\n";
 }
 // Wait until user presses Enter once
 void waitForEnter() {
@@ -1808,6 +1811,7 @@ void showTransactionsMenuScreen() {
 	showScreenHeader("Transactions Menu Screen");
 	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History","Main Menu" };
 	showOptions(options);
+	showLine();
 }
 // Manage transactions menu loop
 void manageTransactions(vector<strClient>& vClients) {
@@ -2406,6 +2410,7 @@ void showMainMenu(vector<strClient>& vClients) {
 		showScreenHeader("Main Menu Screen");
 		vector<string> options = buildMainMenuOptions();
 		showOptions(options);
+		showLine();
 
 		int choiceNum = readMenuOption(1, options.size());
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
@@ -2432,6 +2437,7 @@ void showManageUsersScreen() {
 	showScreenHeader("Manage Users Menu Screen");
 	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User","Main Menu" };
 	showOptions(options);
+	showLine();
 }
 // Show exit screen
 void showExitScreen() {
