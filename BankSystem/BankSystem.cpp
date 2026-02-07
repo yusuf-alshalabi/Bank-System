@@ -1910,7 +1910,7 @@ void showTransactionsMenuScreen() {
 	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History"};
 	showOptions(options);
 	showBackOrExit();
-	showLine();
+	showLine(60,'-',CYAN);
 }
 // Manage transactions menu loop
 void manageTransactions(vector<strClient>& vClients) {
@@ -2569,7 +2569,7 @@ void showManageUsersScreen() {
 	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User"};
 	showOptions(options);
 	showBackOrExit();
-	showLine();
+	showLine(60, '-', CYAN);
 }
 // Show exit screen
 void showExitScreen() {
