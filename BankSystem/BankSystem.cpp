@@ -271,6 +271,11 @@ void showOptions(const vector<string>& options) {
 			<< YELLOW << options[i] << RESET << ".\n";
 	}
 }
+// Display Back or Exit option
+void showBackOrExit(bool isMain = false) {
+	string back = (isMain ? "Exit" : "Back");
+	cout << "\n" << CYAN << "  [0]  " << RESET << YELLOW << back << RESET << ".\n";
+}
 // Wait until user presses Enter once
 void waitForEnter() {
 	string dummy;
