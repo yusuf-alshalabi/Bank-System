@@ -2000,6 +2000,7 @@ void addNewUser(vector<strUser>& vUsers) {
 }
 // Show add user screen (loop for multiple)
 void showAddUserScreen(vector<strUser>& vUsers) {
+	clearScreen();
 	showScreenHeader("Add New User Screen");
 	showBackOrExit(false);
 	showLine();
