@@ -252,16 +252,16 @@ void showBorderLine(int length = 60, char symbol = '-', string color = RESET) {
 }
 // Display formatted success message
 void showSuccessMessage(string message) {
-	showLine(60,'=',RESET);
+	showLine(60,'=',GREEN);
 	cout << GREEN << "   SUCCESS: " << message << RESET;
-	showLine(60, '=', RESET);
+	showLine(60, '=', GREEN);
     cout << "\n";
 }
 // Display formatted error message
 void showErrorMessage(string message) {
-	showLine();
+	showLine(60, '=', RED);
 	cout << RED << "   ERROR: " << message << RESET;
-	showLine();
+	showLine(60, '=', RED);
 	cout << "\n";
 }
 // Display centered header with borders
@@ -2503,14 +2503,14 @@ void showMainMenu(vector<strClient>& vClients) {
 	MainMenuOption Choice;
 	do {
 		clearScreen();
+		showScreenHeader("Main Menu Screen");
 		if (loadCurrentUserSession(sessionUser)) {
 			showSuccessMessage("Welcome back, " + sessionUser.UserName + "!");
 		}
-		showScreenHeader("Main Menu Screen");
 		vector<string> options = buildMainMenuOptions();
 		showOptions(options);
 		showBackOrExit(true); // Exit option
-		showLine();
+		showLine(60,'-',CYAN);
 
 		choiceNum = readMenuOption(1, options.size()); // 0 for Exit
 		if (choiceNum == 0) {
