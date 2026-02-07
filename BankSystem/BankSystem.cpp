@@ -235,8 +235,8 @@ void clearScreen() {
 #endif
 }
 // Print a separator line (customizable length)
-void showLine(int length = 60) {
-	cout << "\n" << string(length, '-') << "\n";
+void showLine(int length = 60, char symbol = '-', string color = RESET) {
+	cout << "\n" << color << string(length, symbol) << RESET << "\n";
 }
 // Display formatted success message
 void showSuccessMessage(string message) {
