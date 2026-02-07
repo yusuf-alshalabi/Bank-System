@@ -244,6 +244,12 @@ void showLine(int length = 60, char symbol = '-', string color = RESET) {
 	drawLine(length, symbol, color);
 	cout << "\n";
 }
+// Show a bordered line (+ at start and end)
+void showBorderLine(int length = 60, char symbol = '-', string color = RESET) {
+	cout << color << "+";
+	drawLine(length, symbol, color);
+	cout << "+" << RESET << "\n";
+}
 // Display formatted success message
 void showSuccessMessage(string message) {
 	cout << "\n" << string(60, '=') << "\n";
