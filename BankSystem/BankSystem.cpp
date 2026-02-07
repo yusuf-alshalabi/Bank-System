@@ -234,9 +234,15 @@ void clearScreen() {
 	system("clear");
 #endif
 }
-// Print a separator line (customizable length)
+// Draw a line with given length, symbol, and color (no newlines)
+void drawLine(int length = 60, char symbol = '-', string color = RESET) {
+	cout << color << string(length, symbol) << RESET;
+}
+// Show a separator line with newlines before and after
 void showLine(int length = 60, char symbol = '-', string color = RESET) {
-	cout << "\n" << color << string(length, symbol) << RESET << "\n";
+	cout << "\n";
+	drawLine(length, symbol, color);
+	cout << "\n";
 }
 // Display formatted success message
 void showSuccessMessage(string message) {
