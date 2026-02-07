@@ -1814,8 +1814,9 @@ void executeTransactionOption(TransactionsOption TransactionMenuOption, vector<s
 void showTransactionsMenuScreen() {
 	clearScreen();
 	showScreenHeader("Transactions Menu Screen");
-	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History","Main Menu" };
+	vector<string> options = { "Deposit","Withdraw","Transfer","Total Balances","Transactions History"};
 	showOptions(options);
+	showBackOrExit();
 	showLine();
 }
 // Manage transactions menu loop
@@ -2305,7 +2306,6 @@ vector<string> buildMainMenuOptions() {
 			options.push_back("Manage Users");
 	}
 	options.push_back("Logout");
-	options.push_back("Exit");
 
 	return options;
 }
@@ -2415,9 +2415,11 @@ void showMainMenu(vector<strClient>& vClients) {
 		showScreenHeader("Main Menu Screen");
 		vector<string> options = buildMainMenuOptions();
 		showOptions(options);
+		showBackOrExit(true); // Exit option
 		showLine();
 
 		int choiceNum = readMenuOption(1, options.size());
+		if (choiceNum == 0) break; // Exit from main menu
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
 		executeMainMenuOption(Choice, vClients);
@@ -2440,8 +2442,9 @@ void showManageUsersMenu(vector<strUser>& vUsers) {
 void showManageUsersScreen() {
 	clearScreen();
 	showScreenHeader("Manage Users Menu Screen");
-	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User","Main Menu" };
+	vector<string> options = { "List Users","Add New User","Delete User","Update User","Find User"};
 	showOptions(options);
+	showBackOrExit();
 	showLine();
 }
 // Show exit screen
