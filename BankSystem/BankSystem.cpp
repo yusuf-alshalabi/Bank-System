@@ -1821,15 +1821,14 @@ void showTransactionsMenuScreen() {
 }
 // Manage transactions menu loop
 void manageTransactions(vector<strClient>& vClients) {
-	TransactionsOption Choice;
+	int choice;
 	do {
 		showTransactionsMenuScreen();
-		Choice = (TransactionsOption)readMenuOption(1, 6);
-		if (Choice != TransactionsOption::ShowMainMenu) {
-			executeTransactionOption(Choice, vClients);
-			vClients = loadClientsDataFromFile(ClientsFileName);
-		}
-	} while (Choice != TransactionsOption::ShowMainMenu);
+		choice = readMenuOption(1, 5); // 0 for Back
+		if (choice == 0) break; // Back to main menu
+		executeTransactionOption((TransactionsOption)choice, vClients);
+		vClients = loadClientsDataFromFile(ClientsFileName);
+	} while (choice != 0);
 }
 #pragma endregion
 //=====================================================
@@ -2405,12 +2404,13 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 }
 // Main loop: show menu, execute options, repeat until exit
 void showMainMenu(vector<strClient>& vClients) {
-	MainMenuOption Choice;
+	int choiceNum;
 	strUser sessionUser;
+	MainMenuOption Choice;
 	do {
 		clearScreen();
 		if (loadCurrentUserSession(sessionUser)) {
-			showSuccessMessage( "Welcome back, " + sessionUser.UserName + "!");
+			showSuccessMessage("Welcome back, " + sessionUser.UserName + "!");
 		}
 		showScreenHeader("Main Menu Screen");
 		vector<string> options = buildMainMenuOptions();
@@ -2418,25 +2418,23 @@ void showMainMenu(vector<strClient>& vClients) {
 		showBackOrExit(true); // Exit option
 		showLine();
 
-		int choiceNum = readMenuOption(1, options.size());
-		if (choiceNum == 0) break; // Exit from main menu
+		choiceNum = readMenuOption(1, options.size()); // 0 for Exit
+		if (choiceNum == 0) break; // Exit program
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
 		executeMainMenuOption(Choice, vClients);
 
-	} while (Choice != MainMenuOption::Exit);
+	} while (choiceNum != 0 && Choice != MainMenuOption::Exit);
 }
 // Show manage users menu loop
 void showManageUsersMenu(vector<strUser>& vUsers) {
-	UserManagementOption choice;
-	do
-	{
+	int choice;
+	do {
 		showManageUsersScreen();
-		choice = (UserManagementOption)readMenuOption(1, 6);
-		if (choice != UserManagementOption::MainMenu)
-			executeUserOption(choice, vUsers);
-
-	} while (choice != UserManagementOption::MainMenu);
+		choice = readMenuOption(1, 5); // 0 for Back
+		if (choice == 0) break; // Back to main menu
+		executeUserOption((UserManagementOption)choice, vUsers);
+	} while (choice != 0);
 }
 // Show manage users menu options
 void showManageUsersScreen() {
