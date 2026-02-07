@@ -1275,17 +1275,27 @@ void addNewClient(vector<strClient>& vClients) {
 // Show Add New Client screen (loop for multiple)
 void showAddClientScreen(vector <strClient>& vClients) {
 	showScreenHeader("Add New Client Screen");
-	cout << "Adding New Client :\n";
+	showBackOrExit(); 
+	showLine();
 
-	char AddMore = 'Y';
-	do {
-		addNewClient(vClients);
+	while (true) {
+		string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+		if (accountNumber == "0") break;
+
+		strClient* findClient = findClientByAccountNumber(accountNumber, vClients);
+		while (findClient != nullptr) {
+			showErrorMessage("Client with accountNumber [" + accountNumber + "] already exists, enter another account number?");
+			accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+			if (accountNumber == "0") return; 
+			findClient = findClientByAccountNumber(accountNumber, vClients);
+		}
+
+		strClient newClient = readClientData(accountNumber);
+		vClients.push_back(newClient);
+		appendLineToFile(ClientsFileName, serializeClientRecord(newClient));
+		showSuccessMessage("Client Added Successfully!");
 		pressEnterToContinue();
-		cout << " ,do you want to add more clients? Y/N? ";
-
-		cin >> AddMore;
-	} while (toupper(AddMore) == 'Y');
-
+	}
 }
 // Delete a client by account number
 bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
@@ -1311,7 +1321,12 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 // Show Delete Client screen
 void showDeleteClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Delete Client Screen");
-	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+	showBackOrExit();
+	showLine();
+
+	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+	if (accountNumber == "0") return;
+
 	deleteClient(accountNumber, vClients);
 	backToMenu();
 }
@@ -1340,10 +1355,13 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 // Show Update Client screen
 void showUpdateClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Update Info Client Screen");
+	showBackOrExit(false);
+	showLine();
 
 	bool success = false;
 	do {
-		string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+		string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+		if (accountNumber == "0") return;
 		success = updateClient(accountNumber, vClients);
 	} while (!success);
 	backToMenu();
@@ -1351,8 +1369,12 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 // Show Find Client screen and display information
 void showFindClientScreen(vector<strClient>& vClients) {
 	showScreenHeader("Find Client Screen");
+	showBackOrExit(false);
+	showLine();
 
-	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber? ");
+	string accountNumber = readNonEmptyString("\nPlease enter AccountNumber (or 0 to Back)? ");
+	if (accountNumber == "0") return;
+
 	strClient* client = findClientByAccountNumber(accountNumber, vClients);
 	if (!client) {
 		showErrorMessage("Client with account Number [" + accountNumber + "] is not found!");
@@ -1978,16 +2000,28 @@ void addNewUser(vector<strUser>& vUsers) {
 }
 // Show add user screen (loop for multiple)
 void showAddUserScreen(vector<strUser>& vUsers) {
+	showScreenHeader("Add New User Screen");
+	showBackOrExit(false);
+	showLine();
 
-	char AddMore = 'Y';
-	do
-	{
-		addNewUser(vUsers);
+	while (true) {
+		string name = readNonEmptyString("Please Enter UserName (or 0 to Back)? ");
+		if (name == "0") break;
+
+		strUser* existingUser = findUserByUsername(name, vUsers);
+		while (existingUser != nullptr) {
+			showErrorMessage("User with name [" + name + "] already exists, enter a different username?");
+			name = readNonEmptyString("Please Enter UserName (or 0 to Back)? ");
+			if (name == "0") return;
+			existingUser = findUserByUsername(name, vUsers);
+		}
+
+		strUser newUser = readUserData(name);
+		vUsers.push_back(newUser);
+		appendLineToFile(UsersFileName, serializeUserRecord(newUser));
+		showSuccessMessage("User Added Successfully!");
 		pressEnterToContinue();
-		cout << " ,do you want to add more Users? Y/N? ";
-		cin >> AddMore;
-
-	} while (toupper(AddMore) == 'Y');
+	}
 }
 // Delete user with username & password
 bool deleteUserWithCredentials(const string& userName, const string& password, vector<strUser>& vUsers) {
@@ -2026,9 +2060,14 @@ bool deleteUserWithCredentials(const string& userName, const string& password, v
 void showDeleteUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Delete User Screen");
+	showBackOrExit(false);
+	showLine();
 
-	string name = readNonEmptyString("Please Enter UserName? ");
-	string password = readNonEmptyString("Please Enter Password? ");
+	string name = readNonEmptyString("Please Enter UserName (or 0 to Back)? ");
+	if (name == "0") return;
+	string password = readNonEmptyString("Please Enter Password (or 0 to Back)? ");
+	if (password == "0") return;
+
 	deleteUserWithCredentials(name, password, vUsers);
 	backToMenu();
 }
@@ -2075,11 +2114,16 @@ bool updateUserWithCredentials(const string& userName, const string& password, v
 void showUpdateUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Update User Screen");
+	showBackOrExit(false);
+	showLine();
 
 	bool success = false;
 	do {
-		string name = readNonEmptyString("Please Enter UserName? ");
-		string password = readNonEmptyString("Please Enter Password? ");
+		string name = readNonEmptyString("Please Enter UserName (or 0 to Back)? ");
+		if (name == "0") return;
+		string password = readNonEmptyString("Please Enter Password (or 0 to Back)? ");
+		if (password == "0") return;
+
 		success = updateUserWithCredentials(name, password, vUsers);
 	} while (!success);
 	backToMenu();
@@ -2088,10 +2132,16 @@ void showUpdateUserScreen(vector<strUser>& vUsers) {
 void showFindUserScreen(vector<strUser>& vUsers) {
 	clearScreen();
 	showScreenHeader("Find User Screen");
+	showBackOrExit(false);
+	showLine();
 
-	string name = readNonEmptyString("Please Enter UserName? ");
+	string name = readNonEmptyString("Please Enter UserName (or 0 to Back)? ");
+	if (name == "0") return;
+
 	strUser* user = findUserByUsername(name, vUsers);
-	string password = readNonEmptyString("Please Enter Password? ");
+	string password = readNonEmptyString("Please Enter Password (or 0 to Back)? ");
+	if (password == "0") return;
+
 	if (verifyUserPassword(password, user)) {
 		showUserCard(user);
 	}
