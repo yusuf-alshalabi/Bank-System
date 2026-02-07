@@ -2419,7 +2419,10 @@ void showMainMenu(vector<strClient>& vClients) {
 		showLine();
 
 		choiceNum = readMenuOption(1, options.size()); // 0 for Exit
-		if (choiceNum == 0) break; // Exit program
+		if (choiceNum == 0) {
+			showExitScreen();
+			break;
+		}// Exit program
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
 		executeMainMenuOption(Choice, vClients);
