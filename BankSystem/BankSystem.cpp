@@ -252,15 +252,17 @@ void showBorderLine(int length = 60, char symbol = '-', string color = RESET) {
 }
 // Display formatted success message
 void showSuccessMessage(string message) {
-	cout << "\n" << string(60, '=') << "\n";
-	cout << GREEN << "   SUCCESS: " << message << RESET << "\n";
-	cout << string(60, '=') << "\n\n";
+	showLine(60,'=',RESET);
+	cout << GREEN << "   SUCCESS: " << message << RESET;
+	showLine(60, '=', RESET);
+    cout << "\n";
 }
 // Display formatted error message
 void showErrorMessage(string message) {
-	cout << "\n" << string(60, '-') << "\n";
-	cout << RED << "   ERROR: " << message << RESET << "\n";
-	cout << string(60, '-') << "\n\n";
+	showLine();
+	cout << RED << "   ERROR: " << message << RESET;
+	showLine();
+	cout << "\n";
 }
 // Display centered header with borders
 void showScreenHeader(const string& title) {
