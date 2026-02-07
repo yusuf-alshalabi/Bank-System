@@ -1274,6 +1274,7 @@ void addNewClient(vector<strClient>& vClients) {
 }
 // Show Add New Client screen (loop for multiple)
 void showAddClientScreen(vector <strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Add New Client Screen");
 	showBackOrExit(); 
 	showLine();
@@ -1320,6 +1321,7 @@ bool deleteClient(const string& accountNumber, vector<strClient>& vClients) {
 }
 // Show Delete Client screen
 void showDeleteClientScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Delete Client Screen");
 	showBackOrExit();
 	showLine();
@@ -1354,6 +1356,7 @@ bool updateClient(const string& accountNumber, vector<strClient>& vClients) {
 }
 // Show Update Client screen
 void showUpdateClientScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Update Info Client Screen");
 	showBackOrExit(false);
 	showLine();
@@ -1368,6 +1371,7 @@ void showUpdateClientScreen(vector<strClient>& vClients) {
 }
 // Show Find Client screen and display information
 void showFindClientScreen(vector<strClient>& vClients) {
+	clearScreen();
 	showScreenHeader("Find Client Screen");
 	showBackOrExit(false);
 	showLine();
@@ -2377,7 +2381,6 @@ MainMenuOption convertChoiceToMainMenuOption(int choice, const vector<string>& o
 }
 // Execute selected main menu option
 void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vClients) {
-	clearScreen();
 	bool userHasPermission = true;
 	switch (MainMenuOption) {
 	case MainMenuOption::ShowClientList:
