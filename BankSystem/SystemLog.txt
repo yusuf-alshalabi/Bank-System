@@ -1,0 +1,59 @@
+[2026-02-06 09:32:23] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A11111 - Name: Ahmad
+[2026-02-06 09:32:58] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A22222 - Name: Mohamed
+[2026-02-06 09:33:37] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A33333 - Name: Rami
+[2026-02-06 09:34:33] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A44444 - Name: Karim
+[2026-02-06 09:35:35] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A55555 - Name: Zakaria
+[2026-02-06 09:36:20] [INFO] [User: Yusuf] Action: ADD_CLIENT - Details: Account: A12345 - Name: Yusuf
+[2026-02-06 09:37:29] [INFO] [User: Yusuf] Action: UPDATE_CLIENT - Details: Account: A11111
+[2026-02-06 09:38:15] [INFO] [User: Yusuf] Transaction TXN728255073282c708abd6 - Type: DEPOSIT - Amount: 5000.00 - From: A12345 - To: A12345 - Fees: 0.00
+[2026-02-06 09:38:15] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A12345 - Amount: 5000.00
+[2026-02-06 09:38:37] [INFO] [User: Yusuf] Transaction TXN7282769879296717c57b - Type: WITHDRAWAL - Amount: 500.00 - From: A11111 - To: A11111 - Fees: 0.00
+[2026-02-06 09:38:37] [INFO] [User: Yusuf] Action: WITHDRAWAL - Details: Account: A11111 - Amount: $500.00
+[2026-02-06 09:39:07] [INFO] [User: Yusuf] Transaction TXN72830664812604b3887d - Type: TRANSFER - Amount: 2000.00 - From: A33333 - To: A55555 - Fees: 20.00
+[2026-02-06 09:39:07] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A33333 To: A55555 - Amount: $2000.00
+[2026-02-07 06:15:57] [INFO] [User: Yusuf] Action: DELETE_CLIENT - Details: Account: A1
+[2026-02-08 00:25:17] [INFO] [User: Yusuf] Transaction TXN86788643126596766cd3 - Type: DEPOSIT - Amount: 1500.00 - From: A11111 - To: A11111 - Fees: 0.00
+[2026-02-08 00:25:17] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A11111 - Amount: 1500.00
+[2026-02-08 00:25:38] [INFO] [User: Yusuf] Transaction TXN86790651965317bb83e4 - Type: WITHDRAWAL - Amount: 2000.00 - From: A22222 - To: A22222 - Fees: 0.00
+[2026-02-08 00:25:38] [INFO] [User: Yusuf] Action: WITHDRAWAL - Details: Account: A22222 - Amount: $2000.00
+[2026-02-08 00:25:57] [INFO] [User: Yusuf] Transaction TXN8679260779970a035a14 - Type: TRANSFER - Amount: 3000.00 - From: A33333 - To: A44444 - Fees: 30.00
+[2026-02-08 00:25:57] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A33333 To: A44444 - Amount: $3000.00
+[2026-02-08 00:26:33] [INFO] [User: Yusuf] Transaction TXN86796236639910f9f85b - Type: TRANSFER - Amount: 10000.00 - From: A44444 - To: A55555 - Fees: 100.00
+[2026-02-08 00:26:33] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A44444 To: A55555 - Amount: $10000.00
+[2026-02-08 00:27:18] [INFO] [User: Yusuf] Transaction TXN86800716915799e515fe - Type: TRANSFER - Amount: 7500.00 - From: A55555 - To: A12345 - Fees: 75.00
+[2026-02-08 00:27:18] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A55555 To: A12345 - Amount: $7500.00
+[2026-02-08 00:28:01] [INFO] [User: Yusuf] Transaction TXN868049765604d40cb511 - Type: TRANSFER - Amount: 2500.00 - From: A12345 - To: A54321 - Fees: 25.00
+[2026-02-08 00:28:01] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A12345 To: A54321 - Amount: $2500.00
+[2026-02-08 00:29:28] [INFO] [User: Yusuf] Transaction TXN868136734044baf95c5e - Type: TRANSFER - Amount: 1000.00 - From: 012121 - To: A12345 - Fees: 10.00
+[2026-02-08 00:29:28] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: 012121 To: A12345 - Amount: $1000.00
+[2026-02-08 00:29:54] [INFO] [User: Yusuf] Transaction TXN8681629587505cfc1351 - Type: TRANSFER - Amount: 4000.00 - From: A44444 - To: 012121 - Fees: 40.00
+[2026-02-08 00:29:54] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A44444 To: 012121 - Amount: $4000.00
+[2026-02-08 03:17:43] [INFO] [User: SYSTEM] Action: LOGOUT - Details: User: 
+[2026-02-08 03:18:12] [INFO] [User: SYSTEM] Login attempt for user 'Cashier' - SUCCESS
+[2026-02-08 03:18:55] [INFO] [User: SYSTEM] Action: LOGOUT - Details: User: 
+[2026-02-08 03:19:21] [WARNING] [User: SYSTEM] Login attempt for user 'Supervisor' - FAILED
+[2026-02-08 03:20:50] [WARNING] [User: SYSTEM] Login attempt for user 'Supervisor' - FAILED
+[2026-02-08 03:21:38] [WARNING] [User: SYSTEM] Login attempt for user 'Supervisor' - FAILED
+[2026-02-08 03:21:50] [WARNING] [User: SYSTEM] Login attempt for user 'Supervisor' - FAILED
+[2026-02-08 03:22:00] [WARNING] [User: SYSTEM] Login attempt for user 'Supervisor' - FAILED
+[2026-02-08 03:22:36] [INFO] [User: SYSTEM] Login attempt for user 'Manager' - SUCCESS
+[2026-02-08 03:22:57] [INFO] [User: SYSTEM] Action: LOGOUT - Details: User: 
+[2026-02-08 03:23:10] [INFO] [User: SYSTEM] Login attempt for user 'Admin' - SUCCESS
+[2026-02-08 03:25:50] [INFO] [User: SYSTEM] Action: LOGOUT - Details: User: 
+[2026-02-08 03:25:59] [INFO] [User: SYSTEM] Login attempt for user 'Yusuf' - SUCCESS
+[2026-02-08 03:30:12] [INFO] [User: Yusuf] Transaction TXN87898136858263dfd6b8 - Type: DEPOSIT - Amount: 200.00 - From: A33333 - To: A33333 - Fees: 0.00
+[2026-02-08 03:30:12] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A33333 - Amount: 200.00
+[2026-02-08 03:30:36] [INFO] [User: Yusuf] Transaction TXN879004690797bef394d6 - Type: WITHDRAWAL - Amount: 450.00 - From: 012121 - To: 012121 - Fees: 0.00
+[2026-02-08 03:30:36] [INFO] [User: Yusuf] Action: WITHDRAWAL - Details: Account: 012121 - Amount: $450.00
+[2026-02-08 03:30:54] [INFO] [User: Yusuf] Transaction TXN87902258505355ad856a - Type: TRANSFER - Amount: 500.00 - From: A22222 - To: A55555 - Fees: 5.00
+[2026-02-08 03:30:54] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A22222 To: A55555 - Amount: $500.00
+[2026-02-08 03:32:48] [INFO] [User: Yusuf] Transaction TXN879136733329a37b8131 - Type: DEPOSIT - Amount: 1800.00 - From: A54321 - To: A54321 - Fees: 0.00
+[2026-02-08 03:32:48] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A54321 - Amount: 1800.00
+[2026-02-08 03:33:06] [INFO] [User: Yusuf] Transaction TXN8791552320455a584cc9 - Type: WITHDRAWAL - Amount: 400.00 - From: A54321 - To: A54321 - Fees: 0.00
+[2026-02-08 03:33:06] [INFO] [User: Yusuf] Action: WITHDRAWAL - Details: Account: A54321 - Amount: $400.00
+[2026-02-08 03:33:24] [INFO] [User: Yusuf] Transaction TXN8791735015698b9e1b99 - Type: TRANSFER - Amount: 3500.00 - From: A22222 - To: A11111 - Fees: 35.00
+[2026-02-08 03:33:24] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A22222 To: A11111 - Amount: $3500.00
+[2026-02-08 03:33:50] [INFO] [User: Yusuf] Transaction TXN879198647373b7b78491 - Type: TRANSFER - Amount: 500.00 - From: A33333 - To: A11111 - Fees: 5.00
+[2026-02-08 03:33:50] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A33333 To: A11111 - Amount: $500.00
+[2026-02-08 03:34:04] [INFO] [User: Yusuf] Transaction TXN8792130161557ea3c5bb - Type: DEPOSIT - Amount: 200.00 - From: A33333 - To: A33333 - Fees: 0.00
+[2026-02-08 03:34:04] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A33333 - Amount: 200.00
