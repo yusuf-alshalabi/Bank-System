@@ -1,6 +1,6 @@
-Admin#//#1fabbdf10314a21d#//#-1.00
-Manager#//#75538e81abb06cf6#//#59.00
-Supervisor#//#eeda5af59ee25a38#//#63.00
-Cashier#//#1b487b63b6c5c1de#//#49.00
-Auditor#//#c0cd2bb5fa0f08f2#//#17.00
-Teller#//#7211199e43e7370d#//#19.00
+Yusuf#//#$argon2id$v=19$m=65536,t=2,p=1$M2I0vyHyD+eiD07cJYx+8g$9RaLv7Ih3StOZgrQVipm/+6WRtIuCp49nz/w5au0OnI#//#127
+Admin#//#$argon2id$v=19$m=65536,t=2,p=1$xVZlvAcFkpBzdq6oKAeFVQ$upUxjOKv6YnAtfxmmLcLiNOcTwvRV+vh0OrOkOHDNP8#//#127
+Manager#//#$argon2id$v=19$m=65536,t=2,p=1$6OcNOrpYZdE9UXO3Z0cvxg$Giw34I3ctH6d1Ce0gWbbiGUQosyjcqLrEU9etFCbGEQ#//#63
+Cashier#//#$argon2id$v=19$m=65536,t=2,p=1$QXuB2lgxxQJl2RtCdnzEeQ$LvLyZS2b4ih3zL8/PlZyNMHTqnkx2mJ0VdVw0LuvuKc#//#32
+Teller#//#$argon2id$v=19$m=65536,t=2,p=1$wShcW/tq/AIinSic3t9aFg$Izj/TFdZNpQT7EIf68N6w20815bgvvbWO9fJiCtGXMQ#//#32
+Supervisor#//#$argon2id$v=19$m=65536,t=2,p=1$Oiio3c2W6YTKxVGgZ//38Q$LcDMNiAebcsIhAHUe4vYHjPnX0P6LDklefIND06slYE#//#49
