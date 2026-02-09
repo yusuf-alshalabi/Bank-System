@@ -2513,6 +2513,7 @@ void executeMainMenuOption(MainMenuOption MainMenuOption, vector<strClient>& vCl
 		break;
 	case MainMenuOption::Exit:
 		showExitScreen();
+		exit(0);
 		break;
 	default:
 		showErrorMessage("Invalid option.");
@@ -2544,7 +2545,7 @@ void showMainMenu(vector<strClient>& vClients) {
 		choiceNum = readMenuOption(1, options.size()); // 0 for Exit
 		if (choiceNum == 0) {
 			showExitScreen();
-			break;
+			exit(0);
 		}// Exit program
 		Choice = convertChoiceToMainMenuOption(choiceNum, options);
 
