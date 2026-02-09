@@ -2576,7 +2576,7 @@ void showManageUsersScreen() {
 void showExitScreen() {
 	clearScreen();
 	showScreenHeader("Program Ends :-)");
-	waitForEnter();
+	showSuccessMessage("Thank you for using BankSystem. Goodbye!");
 }
 #pragma endregion
 //=====================================================
