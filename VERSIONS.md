@@ -448,7 +448,7 @@ enum MainMenuOption {
 ## 📊 Cumulative Feature Count
 
 - **Total Structs:** 3 (strClient, strUser, Transaction)
-- **Total Enums:** 4 (MainMenuOption, TransactionsOptions, ManageUsersOptions, Permissions, TransactionType)
+- **Total Enums:** 6 (TransactionType, MainMenuOption, TransactionsOption, UserManagementOption, Permission, LogLevel)
 - **Total Functions:** 80+ (across all modules)
 - **Data Files:** 3 (Clients.txt, Users.txt, Transactions.txt)
 - **External Dependencies:** 1 (Libsodium)
