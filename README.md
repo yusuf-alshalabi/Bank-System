@@ -1,5 +1,12 @@
 # 🏦 CRUD Bank System — Version 1.4.0
 
+> ⚠️ **PRODUCTION WARNING**  
+> This is an **educational project** demonstrating procedural programming concepts.  
+> **NOT RECOMMENDED FOR PRODUCTION USE** - See [LIMITATIONS.md](docs/LIMITATIONS.md) for details.  
+> For production banking software, use established frameworks with proper security audits.
+
+---
+
 A professional console-based Bank Management System built in C++ as part of the Programming Advices Roadmap (Course 7).
 
 This version introduces a comprehensive **Transaction Management System** with money transfers, complete audit trail, and transaction history tracking.
@@ -79,6 +86,31 @@ This version introduces a comprehensive **Transaction Management System** with m
 
 ---
 
+## 📊 Version Comparison
+
+| Feature | v1.0 | v1.1 | v1.2 | v1.3 | v1.4 |
+|---------|:----:|:----:|:----:|:----:|:----:|
+| Client CRUD | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Deposit/Withdraw | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Money Transfers | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Total Balances Report | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Transaction History | ❌ | ❌ | ❌ | ❌ | ✅ |
+| User Management | ❌ | ❌ | ✅ | ✅ | ✅ |
+| RBAC Permissions | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Session Encryption | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Password Hashing | ❌ | ❌ | ⚠️ Weak | ⚠️ Weak | ✅ Argon2id |
+| Transaction Logging | ❌ | ❌ | ❌ | ❌ | ✅ |
+| System Logging | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Color-coded UI | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Data Loss Protection | ❌ | ❌ | ❌ | ❌ | ✅ |
+
+**Legend:**  
+✅ Fully Implemented | ⚠️ Implemented (Weak/Insecure) | ❌ Not Available
+
+**Security Note:** v1.2.0 and v1.3.0 used `std::hash` for password hashing, which is NOT cryptographically secure. Only v1.4.0 uses proper Argon2id hashing.
+
+---
+
 ## ⚙ How to Run
 
 ### Prerequisites
@@ -123,16 +155,36 @@ This version introduces a comprehensive **Transaction Management System** with m
 For detailed setup instructions, see the full guide here:  
 [Libsodium Setup Instructions](LIBSODIUM_SETUP.md)
 
-### First-Time Login
+### 🔐 First-Time Setup
 
-On the first run, the system no longer creates a default administrator with preset credentials.  
-Instead, the application **forces the user to create a secure username and password** before accessing the system.
+#### Important Version Differences
 
-- The chosen password is immediately stored using **Libsodium Argon2id hashing**.
-- This ensures strong protection and eliminates the risk of weak default credentials.
+**v1.4.0 (Current - Secure):**
+- ✅ System forces you to create administrator account on first run
+- ✅ No default credentials - you choose username and password
+- ✅ Password immediately hashed with **Argon2id** (cryptographically secure)
+- ⚠️ Minimum 4 characters required (recommend 8+ for production)
 
-⚠️ **Important:** Choose a strong password (uppercase, lowercase, numbers, symbols, length ≥ 8).
+**v1.2.0 & v1.3.0 (Previous - Insecure):**
+- ❌ Created default admin: Username `Admin`, Password `1234`
+- ❌ Used weak hashing (`std::hash` - NOT cryptographically secure)
+- ❌ **Do NOT use these versions in any real scenario**
 
+#### First Run Process (v1.4.0)
+
+1. Program detects no users exist in `Users.txt`
+2. Prompts you to create first administrator account
+3. Enter desired username (minimum 4 characters)
+4. Enter password (minimum 4 chars, **recommend 8+ with complexity**)
+5. Password is immediately hashed using Argon2id
+6. Account created with full permissions (pAll = 127)
+
+**Security Recommendations:**
+- Use minimum 8 characters (current minimum is 4)
+- Mix of uppercase and lowercase letters
+- Include numbers and symbols
+- Avoid dictionary words
+- Don't reuse passwords from other systems
 ---
 
 ## 💻 Code Quality & Architecture
