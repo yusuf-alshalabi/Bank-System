@@ -66,3 +66,6 @@
 [2026-02-10 08:26:44] [INFO] [User: Yusuf] Backup created: Clients.txt.bak
 [2026-02-10 08:26:44] [INFO] [User: Yusuf] Clients saved successfully (11 records)
 [2026-02-10 08:26:44] [INFO] [User: Yusuf] Action: DELETE_CLIENT - Details: Account: A443322
+[2026-02-10 08:50:18] [INFO] [User: SYSTEM] Loaded 6 users (0 skipped)
+[2026-02-10 08:50:18] [INFO] [User: SYSTEM] Loaded 6 users (0 skipped)
+[2026-02-10 08:50:18] [INFO] [User: Yusuf] Loaded 10 clients (0 skipped)

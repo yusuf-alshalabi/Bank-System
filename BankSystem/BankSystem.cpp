@@ -902,29 +902,87 @@ bool saveUsersToFileAtomic(const string& fileName, const vector<strUser>& vUsers
 		return false;
 	}
 }
+// Validate file exists and is readable
+bool validateFileBeforeLoad(const string& fileName, const string& fileType) {
+	// Check if file exists
+	ifstream file(fileName);
+	if (!file.good()) {
+		logMessage(fileType + " file not found: " + fileName + " (will create new)", INFO);
+		return false;  // Not an error - file will be created
+	}
+
+	// Check file size
+	file.seekg(0, ios::end);
+	streamsize fileSize = file.tellg();
+	file.seekg(0, ios::beg);
+
+	// Empty file is OK (no data yet)
+	if (fileSize == 0) {
+		logMessage(fileType + " file is empty (will initialize)", INFO);
+		file.close();
+		return false;
+	}
+
+	// File too large (potential corruption or attack)
+	const streamsize MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+	if (fileSize > MAX_FILE_SIZE) {
+		logMessage(fileType + " file suspiciously large: " + formatInt(fileSize) + " bytes", WARNING);
+		file.close();
+		return false;
+	}
+
+	file.close();
+	return true;  // File is valid and ready to load
+}
 // Load all clients from file, return vector of clients
 vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	vector<strClient> vClients;
+
+	// Validate file first
+	if (!validateFileBeforeLoad(fileName, "Clients")) {
+		return vClients;  // Return empty vector
+	}
+
 	fstream myFile;
 	myFile.open(fileName, ios::in);
 
-	if (!myFile.is_open()) {
-		return vClients; // File doesn't exist yet
-	}
-
-	try {
+	if (myFile.is_open()) {
 		string Line;
+		strClient Client;
+		int lineNumber = 0;
+		int validRecords = 0;
+		int skippedRecords = 0;
+
 		while (getline(myFile, Line)) {
-			if (!Line.empty()) {
-				strClient Client = deserializeClientRecord(Line);
-				vClients.push_back(Client);
+			lineNumber++;
+
+			// Skip empty lines
+			if (trim(Line).empty()) {
+				continue;
+			}
+
+			try {
+				Client = deserializeClientRecord(Line, Separator);
+
+				// Only add valid clients (not marked for delete due to parse errors)
+				if (!Client.MarkForDelete || !Client.AccountNumber.empty()) {
+					vClients.push_back(Client);
+					validRecords++;
+				}
+				else {
+					skippedRecords++;
+					logMessage("Skipped invalid client record at line " + formatInt(lineNumber), WARNING);
+				}
+			}
+			catch (const exception& e) {
+				skippedRecords++;
+				logMessage("Error parsing line " + formatInt(lineNumber) + ": " + string(e.what()), ERROR_LOG);
 			}
 		}
 		myFile.close();
-	}
-	catch (const exception& e) {
-		myFile.close();
-		throw runtime_error(string("Error loading clients: ") + e.what());
+
+		logMessage("Loaded " + formatInt(validRecords) + " clients (" +
+			formatInt(skippedRecords) + " skipped)", INFO);
 	}
 
 	return vClients;
@@ -940,26 +998,50 @@ void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
 // Load all Users from file, return vector of Users
 vector<strUser> loadUsersDataFromFile(const string& fileName) {
 	vector<strUser> vUsers;
-	fstream myFile;
-	myFile.open(fileName, ios::in);
 
-	if (!myFile.is_open()) {
+	// Validate file first
+	if (!validateFileBeforeLoad(fileName, "Users")) {
 		return vUsers;
 	}
 
-	try {
+	fstream myFile;
+	myFile.open(fileName, ios::in);
+
+	if (myFile.is_open()) {
 		string Line;
+		strUser User;
+		int lineNumber = 0;
+		int validRecords = 0;
+		int skippedRecords = 0;
+
 		while (getline(myFile, Line)) {
-			if (!Line.empty()) {
-				strUser User = deserializeUserRecord(Line);
-				vUsers.push_back(User);
+			lineNumber++;
+
+			if (trim(Line).empty()) {
+				continue;
+			}
+
+			try {
+				User = deserializeUserRecord(Line, Separator);
+
+				if (!User.MarkForDelete || !User.UserName.empty()) {
+					vUsers.push_back(User);
+					validRecords++;
+				}
+				else {
+					skippedRecords++;
+					logMessage("Skipped invalid user record at line " + formatInt(lineNumber), WARNING);
+				}
+			}
+			catch (const exception& e) {
+				skippedRecords++;
+				logMessage("Error parsing user line " + formatInt(lineNumber) + ": " + string(e.what()), ERROR_LOG);
 			}
 		}
 		myFile.close();
-	}
-	catch (const exception& e) {
-		myFile.close();
-		throw runtime_error(string("Error loading users: ") + e.what());
+
+		logMessage("Loaded " + formatInt(validRecords) + " users (" +
+			formatInt(skippedRecords) + " skipped)", INFO);
 	}
 
 	return vUsers;
