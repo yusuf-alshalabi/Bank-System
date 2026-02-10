@@ -49,6 +49,34 @@ This version introduces a comprehensive **Transaction Management System** with m
 - **Real-Time Updates** – Instant file updates after modifications
 - **Automatic File Creation** – Generates data files if not exists
 
+### 📜 Logging System (NEW in v1.4.0)
+- Logs all system activities in `SystemLog.txt`
+- Levels: **INFO, WARNING, ERROR, CRITICAL**
+- Context-aware: includes current user and timestamp
+- Transaction logs automatically generated
+- Functions:
+  - `logMessage()` – General logging
+  - `logTransaction()` – Logs financial operations
+  - `logLoginAttempt()` – Records login success/failure
+  - `logUserAction()` – Tracks user actions
+
+### 🎨 Enhanced User Interface (NEW in v1.4.0)
+- **Color-coded messages** (success, error, info) using ANSI escape codes
+- **Centered headers** and **bordered separators** for professional console output
+- **Dynamic console width detection** with `getConsoleWidth()`
+- **Utility functions**:
+  - `showLine()` – Separator lines
+  - `showBorderLine()` – Bordered lines
+  - `printCentered()` – Centered text display
+- Clear navigation prompts (`pressEnterToContinue()`, `backToMenu()`)
+
+### 🛡 Defensive Programming & Error Handling (NEW in v1.4.0)
+- Validates file size and format before reading
+- Prevents corrupted or tampered session files from loading
+- Secure overwrite of session files (3-pass random data) before deletion
+- Silent fail design in logging (errors don’t disrupt program flow)
+- Comprehensive input validation for transactions and user actions
+
 ---
 
 ## ⚙ How to Run
@@ -97,11 +125,13 @@ For detailed setup instructions, see the full guide here:
 
 ### First-Time Login
 
-The system creates a default administrator on first run:
-- **Username:** `Admin`
-- **Password:** `1234`
+On the first run, the system no longer creates a default administrator with preset credentials.  
+Instead, the application **forces the user to create a secure username and password** before accessing the system.
 
-⚠️ **Important:** Change this password immediately after first login!
+- The chosen password is immediately stored using **Libsodium Argon2id hashing**.
+- This ensures strong protection and eliminates the risk of weak default credentials.
+
+⚠️ **Important:** Choose a strong password (uppercase, lowercase, numbers, symbols, length ≥ 8).
 
 ---
 
@@ -174,13 +204,30 @@ This project follows **Procedural Programming** with emphasis on clean code, eff
 - File serialization for transactions
 - Enhanced error handling for transfers
 
+#### 📜 Logging System
+- Introduced `SystemLog.txt` for complete audit trail
+- Supports multiple log levels (INFO, WARNING, ERROR, CRITICAL)
+- Logs include timestamp and current user context
+
+#### 🎨 UI Enhancements
+- Added ANSI color codes for success/error/info messages
+- Centered headers and bordered separators for better console formatting
+- Dynamic console width detection for adaptive layouts
+
+#### 🛡 Defensive Programming & Error Handling
+- Added validation for file size and format before reading
+- Prevents loading of corrupted or tampered session files
+- Secure 3-pass overwrite of session files before deletion
+- Logging system designed with silent fail (errors do not disrupt program flow)
+- Improved input validation for transactions and user actions
+
 ---
 
 ## 📊 Transaction Structure
 
 ```cpp
 struct Transaction {
-    string TransactionID;      // Format: TXN + timestamp + random component
+    string TransactionID;       // Format: TXN + timestamp + random component
     TransactionType Type;       // DEPOSIT (1) / WITHDRAWAL (2) / TRANSFER (3)
     string FromAccount;         // Source account number
     string ToAccount;           // Destination account number
@@ -216,8 +263,7 @@ enum Permissions {
     pFindClient     = 16,   // 0010000
     pTransactions   = 32,   // 0100000
     pManageUsers    = 64,   // 1000000
-    pAllPermissions = 127,  // 1111111 
-    pAll            = -1    // 1111111 (Admin) 
+    pAll            = 127   // 1111111 (Full Access) 
 };
 ```
 
@@ -280,11 +326,11 @@ For detailed information about each version and changes, see **[VERSIONS.md](VER
 
 | Version | Key Features |
 | :--- | :--- |
-| v1.0.0 | Basic Client CRUD operations |
-| v1.1.0 | Financial Transactions (Deposit & Withdraw) |
-| v1.2.0 | User Management + RBAC System |
-| v1.3.0 | Binary Session Encryption (Libsodium) |
-| v1.4.0 | Transaction Management + Money Transfers ⭐ |
+| [v1.0.0][v100] | Basic Client CRUD operations |
+| [v1.1.0][v110] | Financial Transactions (Deposit & Withdraw) |
+| [v1.2.0][v120] | User Management + RBAC System |
+| [v1.3.0][v130] | Binary Session Encryption (Libsodium) |
+| [v1.4.0][v140] | Transaction Management + Money Transfers ⭐ |
 
 ---
 
@@ -305,3 +351,9 @@ Feel free to fork the repository, submit pull requests, or open issues.
 **Developer:** Yusuf Zakaria Alshalabi  
 **Version:** 1.4.0  
 **Last Update:** February 2026
+
+[v140]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.0
+[v130]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.3.0
+[v120]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.2.0
+[v110]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.1.0
+[v100]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.0.0

@@ -770,6 +770,138 @@ Transaction deserializeTransactionRecord(const string& line, const string& separ
 	}
 	return txn;
 }
+//=====================================================
+//============ Atomic File Save Functions =============
+// These functions prevent data loss by:
+// 1. Writing to temporary file first
+// 2. Creating backup of original
+// 3. Atomically renaming temp to actual file
+//=====================================================
+// Atomic save for Clients (prevents data loss)
+bool saveClientsToFileAtomic(const string& fileName, const vector<strClient>& vClients) {
+	string tempFile = fileName + ".tmp";
+	string backupFile = fileName + ".bak";
+
+	try {
+		// Step 1: Write to temporary file
+		ofstream tempFileStream(tempFile);
+
+		if (!tempFileStream.is_open()) {
+			logMessage("Failed to open temp file for writing: " + tempFile, ERROR_LOG);
+			return false;
+		}
+
+		// Write all non-deleted clients to temp file
+		for (const strClient& c : vClients) {
+			if (!c.MarkForDelete) {
+				string dataLine = serializeClientRecord(c, Separator);
+				tempFileStream << dataLine << endl;
+			}
+		}
+
+		tempFileStream.close();
+
+		// Step 2: Create backup of original file (if exists)
+		ifstream originalFile(fileName);
+		if (originalFile.good()) {
+			originalFile.close();
+
+			// Copy original to backup
+			ifstream src(fileName, ios::binary);
+			ofstream dst(backupFile, ios::binary);
+
+			if (src.is_open() && dst.is_open()) {
+				dst << src.rdbuf();
+				src.close();
+				dst.close();
+				logMessage("Backup created: " + backupFile, INFO);
+			}
+		}
+
+		// Step 3: Rename temp file to actual file (atomic on most systems)
+#ifdef _WIN32
+		// Windows requires deleting target first
+		remove(fileName.c_str());
+#endif
+
+		if (rename(tempFile.c_str(), fileName.c_str()) != 0) {
+			logMessage("Failed to rename temp file to actual file", ERROR_LOG);
+			return false;
+		}
+
+		logMessage("Clients saved successfully (" + formatInt(vClients.size()) + " records)", INFO);
+		return true;
+
+	}
+	catch (const exception& e) {
+		logMessage("Exception during file save: " + string(e.what()), ERROR_LOG);
+
+		// Cleanup: remove temp file if exists
+		remove(tempFile.c_str());
+		return false;
+	}
+}
+// Atomic save for Users (prevents data loss)
+bool saveUsersToFileAtomic(const string& fileName, const vector<strUser>& vUsers) {
+	string tempFile = fileName + ".tmp";
+	string backupFile = fileName + ".bak";
+
+	try {
+		// Step 1: Write to temporary file
+		ofstream tempFileStream(tempFile);
+
+		if (!tempFileStream.is_open()) {
+			logMessage("Failed to open temp file for writing: " + tempFile, ERROR_LOG);
+			return false;
+		}
+
+		// Write all non-deleted users to temp file
+		for (const strUser& u : vUsers) {
+			if (!u.MarkForDelete) {
+				string dataLine = serializeUserRecord(u, Separator);
+				tempFileStream << dataLine << endl;
+			}
+		}
+
+		tempFileStream.close();
+
+		// Step 2: Create backup of original file (if exists)
+		ifstream originalFile(fileName);
+		if (originalFile.good()) {
+			originalFile.close();
+
+			// Copy original to backup
+			ifstream src(fileName, ios::binary);
+			ofstream dst(backupFile, ios::binary);
+
+			if (src.is_open() && dst.is_open()) {
+				dst << src.rdbuf();
+				src.close();
+				dst.close();
+				logMessage("Backup created: " + backupFile, INFO);
+			}
+		}
+
+		// Step 3: Rename temp file to actual file
+#ifdef _WIN32
+		remove(fileName.c_str());
+#endif
+
+		if (rename(tempFile.c_str(), fileName.c_str()) != 0) {
+			logMessage("Failed to rename temp file to actual file", ERROR_LOG);
+			return false;
+		}
+
+		logMessage("Users saved successfully (" + formatInt(vUsers.size()) + " records)", INFO);
+		return true;
+
+	}
+	catch (const exception& e) {
+		logMessage("Exception during file save: " + string(e.what()), ERROR_LOG);
+		remove(tempFile.c_str());
+		return false;
+	}
+}
 // Load all clients from file, return vector of clients
 vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	vector<strClient> vClients;
@@ -798,28 +930,11 @@ vector<strClient> loadClientsDataFromFile(const string& fileName) {
 	return vClients;
 }
 // Save all clients to file, (skip those marked for deletion)
+// Updated to use atomic save
 void saveClientsToFile(string FileName, const vector<strClient>& vClients) {
-	fstream MyFile;
-	MyFile.open(FileName, ios::out);
-
-	if (!MyFile.is_open()) {
-		throw runtime_error("Cannot open file for writing: " + FileName);
-	}
-
-	try {
-		for (const strClient& c : vClients) {
-			if (!c.MarkForDelete) {
-				MyFile << serializeClientRecord(c) << endl;
-				if (MyFile.fail()) {
-					throw runtime_error("Failed to write client data");
-				}
-			}
-		}
-		MyFile.close();
-	}
-	catch (const exception& e) {
-		MyFile.close();
-		throw runtime_error(string("Error saving clients: ") + e.what());
+	if (!saveClientsToFileAtomic(FileName, vClients)) {
+		showErrorMessage("Failed to save clients data. Check system log for details.");
+		logMessage("saveClientsToFile failed for: " + FileName, CRITICAL);
 	}
 }
 // Load all Users from file, return vector of Users
@@ -850,28 +965,11 @@ vector<strUser> loadUsersDataFromFile(const string& fileName) {
 	return vUsers;
 }
 // Save all Users to file, (skip those marked for deletion)
+// Updated to use atomic save
 void saveUsersToFile(string FileName, const vector<strUser>& vUsers) {
-	fstream MyFile;
-	MyFile.open(FileName, ios::out);
-
-	if (!MyFile.is_open()) {
-		throw runtime_error("Cannot open file for writing: " + FileName);
-	}
-
-	try {
-		for (const strUser& user : vUsers) {
-			if (!user.MarkForDelete) {
-				MyFile << serializeUserRecord(user) << endl;
-				if (MyFile.fail()) {
-					throw runtime_error("Failed to write user data");
-				}
-			}
-		}
-		MyFile.close();
-	}
-	catch (const exception& e) {
-		MyFile.close();
-		throw runtime_error(string("Error saving users: ") + e.what());
+	if (!saveUsersToFileAtomic(FileName, vUsers)) {
+		showErrorMessage("Failed to save users data. Check system log for details.");
+		logMessage("saveUsersToFile failed for: " + FileName, CRITICAL);
 	}
 }
 // Load all Transactions from file, return vector of Transactions
@@ -939,6 +1037,8 @@ void appendLineToFile(const string& FileName, const string& stDataLine) {
 }
 #pragma endregion
 //=====================================================
+
+
 
 //=====================================================
 //================== Logging System ===================

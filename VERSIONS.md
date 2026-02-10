@@ -82,6 +82,34 @@ enum TransactionType {
     TRANSFER = 3
 };
 ```
+#### 📝 Logging System
+- Introduced `SystemLog.txt` for complete audit trail
+- Functions:
+  - `logMessage()` – General logging
+  - `logTransaction()` – Logs financial operations
+  - `logLoginAttempt()` – Records login success/failure
+  - `logUserAction()` – Tracks user actions
+- Supports multiple log levels (INFO, WARNING, ERROR, CRITICAL)
+- Silent fail design (logging errors do not disrupt program flow)
+
+#### 🎨 UI Enhancements
+- ANSI color codes for success/error/info messages
+- `showLine()`, `showBorderLine()`, `printCentered()` for improved console formatting
+- Dynamic console width detection with `getConsoleWidth()`
+- Clear navigation prompts for smoother user experience
+
+#### 🛡 Defensive Programming & Error Handling
+- Added validation for file size and format before reading
+- Prevents loading of corrupted or tampered session files
+- Secure 3-pass overwrite of session files before deletion
+- Logging system designed with silent fail (errors do not disrupt program flow)
+- Improved input validation for transactions and user actions
+
+#### 🔐 First-Time Login (Updated)
+- Removed default Admin account creation.
+- On first run, system forces user to create an administrator account.
+- Password stored securely using Libsodium Argon2id hashing.
+- Enhances security by eliminating weak default credentials.
 
 #### New Functions
 - `generateTransactionID()` – Creates unique IDs
@@ -97,6 +125,15 @@ enum TransactionType {
 - `validateTransferAmount()` – Amount and balance validation
 - `executeTransfer()` – Atomic transfer execution
 - `showTransferScreen()` – Transfer UI with confirmations
+- `logMessage()` – General logging
+- `logTransaction()` – Logs financial operations
+- `logLoginAttempt()` – Records login success/failure
+- `logUserAction()` – Tracks user actions
+- `showLine()` – Separator lines
+- `showBorderLine()` – Bordered lines
+- `pressEnterToContinue()` – Wait for user input
+- `backToMenu()` – Return to main menu prompt
+
 
 #### File Structure Updates
 - New file: `Transactions.txt`
@@ -149,6 +186,15 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 - Prevents data recovery
 
 ### 🔧 Technical Additions
+
+### First-Time Login
+
+The system creates a default administrator on first run:
+- **Username:** `Admin`
+- **Password:** `1234`
+
+⚠️ **Important:** Change this password immediately after first login!
+
 
 #### New Functions
 - `getCurrentUsernameSafe()` – Safe OS username detection

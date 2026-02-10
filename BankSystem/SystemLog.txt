@@ -57,3 +57,12 @@
 [2026-02-08 03:33:50] [INFO] [User: Yusuf] Action: TRANSFER - Details: From: A33333 To: A11111 - Amount: $500.00
 [2026-02-08 03:34:04] [INFO] [User: Yusuf] Transaction TXN8792130161557ea3c5bb - Type: DEPOSIT - Amount: 200.00 - From: A33333 - To: A33333 - Fees: 0.00
 [2026-02-08 03:34:04] [INFO] [User: Yusuf] Action: DEPOSIT - Details: Account: A33333 - Amount: 200.00
+[2026-02-10 06:16:18] [INFO] [User: Yusuf] Backup created: Users.txt.bak
+[2026-02-10 06:16:18] [INFO] [User: Yusuf] Users saved successfully (6 records)
+[2026-02-10 08:23:48] [INFO] [User: Yusuf] Backup created: Clients.txt.bak
+[2026-02-10 08:23:48] [INFO] [User: Yusuf] Clients saved successfully (11 records)
+[2026-02-10 08:23:48] [INFO] [User: Yusuf] Action: UPDATE_CLIENT - Details: Account: A443322
+[2026-02-10 08:26:01] [INFO] [User: Yusuf] Action: DELETE_CLIENT_FAILED - Details: Account not found: A443344
+[2026-02-10 08:26:44] [INFO] [User: Yusuf] Backup created: Clients.txt.bak
+[2026-02-10 08:26:44] [INFO] [User: Yusuf] Clients saved successfully (11 records)
+[2026-02-10 08:26:44] [INFO] [User: Yusuf] Action: DELETE_CLIENT - Details: Account: A443322
