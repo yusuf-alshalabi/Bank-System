@@ -701,7 +701,7 @@ vector<string> splitStringByDelimiter(string S1, string delim = Separator) {
 
 }
 // Convert a client struct to file line
-string serializeClientRecord(const strClient& clientData, const string& seperator = "#//#") {
+string serializeClientRecord(const strClient& clientData, const string& seperator = Separator) {
 	string Line = "";
 	Line += clientData.AccountNumber + seperator;
 	Line += clientData.PinCode + seperator;
@@ -713,25 +713,43 @@ string serializeClientRecord(const strClient& clientData, const string& seperato
 
 }
 // Convert file line to Client struct
-strClient deserializeClientRecord(const string& Line, const string& seperator = "#//#") {
+strClient deserializeClientRecord(const string& Line, const string& seperator = Separator) {
 	strClient Client;
-	vector<string> vClientData = splitStringByDelimiter(Line);
+	vector<string> vClientData;
+	vClientData = splitStringByDelimiter(Line, seperator);
 
+	// Validate we have all required fields
 	if (vClientData.size() < 5) {
-		throw runtime_error("Invalid client data format");
+		logMessage("Invalid client record: expected 5 fields, got " +
+			formatInt(vClientData.size()), ERROR_LOG);
+		// Mark for deletion so it won't be added to vector
+		Client.MarkForDelete = true;
+		return Client;
 	}
 
-	Client.AccountNumber = vClientData[0];
-	Client.PinCode = vClientData[1];
-	Client.Name = vClientData[2];
-	Client.Phone = vClientData[3];
-	Client.AccountBalance = stod(vClientData[4]);
-	Client.MarkForDelete = false;
+	try {
+		Client.AccountNumber = trim(vClientData[0]);
+		Client.PinCode = trim(vClientData[1]);
+		Client.Name = trim(vClientData[2]);
+		Client.Phone = trim(vClientData[3]);
+		Client.AccountBalance = stod(vClientData[4]);
+		Client.MarkForDelete = false;  // Valid record
+		return Client;
 
-	return Client;
+	}
+	catch (const invalid_argument& e) {
+		logMessage("Invalid number format in balance field: " + vClientData[4], ERROR_LOG);
+		Client.MarkForDelete = true;
+		return Client;
+	}
+	catch (const out_of_range& e) {
+		logMessage("Balance value out of range: " + vClientData[4], ERROR_LOG);
+		Client.MarkForDelete = true;
+		return Client;
+	}
 }
 // Convert User struct to file line
-string serializeUserRecord(const strUser& userInfo, const string& separator = "#//#") {
+string serializeUserRecord(const strUser& userInfo, const string& separator = Separator) {
 	string line = "";
 	line += userInfo.UserName + separator;
 	line += userInfo.Password + separator;
@@ -739,36 +757,72 @@ string serializeUserRecord(const strUser& userInfo, const string& separator = "#
 	return line;
 }
 // Convert file line to User struct
-strUser deserializeUserRecord(string Line, const string& seperator = "#//#") {
+strUser deserializeUserRecord(string Line, const string& seperator = Separator) {
 	strUser userInfo;
-	vector<string> vUsersData = splitStringByDelimiter(Line);
+	vector<string> vUsersData;
+	vUsersData = splitStringByDelimiter(Line, seperator);
 
+	// Validate we have all required fields
 	if (vUsersData.size() < 3) {
-		throw runtime_error("Invalid user data format");
+		logMessage("Invalid user record: expected 3 fields, got " +
+			formatInt(vUsersData.size()), ERROR_LOG);
+		userInfo.MarkForDelete = true;
+		return userInfo;
 	}
 
-	userInfo.UserName = vUsersData[0];
-	userInfo.Password = vUsersData[1];
-	userInfo.Permissions = stoi(vUsersData[2]);
+	try {
+		userInfo.UserName = trim(vUsersData[0]);
+		userInfo.Password = trim(vUsersData[1]);
+		userInfo.Permissions = stoi(vUsersData[2]);
+		userInfo.MarkForDelete = false;  // Valid record
+		return userInfo;
 
-	return userInfo;
+	}
+	catch (const invalid_argument& e) {
+		logMessage("Invalid permissions format: " + vUsersData[2], ERROR_LOG);
+		userInfo.MarkForDelete = true;
+		return userInfo;
+	}
+	catch (const out_of_range& e) {
+		logMessage("Permissions value out of range: " + vUsersData[2], ERROR_LOG);
+		userInfo.MarkForDelete = true;
+		return userInfo;
+	}
 }
 // Convert file line to Transaction struct
-Transaction deserializeTransactionRecord(const string& line, const string& separator = "#//#") {
+Transaction deserializeTransactionRecord(const string& line, const string& separator = Separator) {
 	Transaction txn;
-	vector<string> parts = splitStringByDelimiter(line);
+	vector<string> vTxnData = splitStringByDelimiter(line, separator);
 
-	if (parts.size() >= 8) {
-		txn.TransactionID = parts[0];
-		txn.Type = static_cast<TransactionType>(stoi(parts[1]));
-		txn.FromAccount = parts[2];
-		txn.ToAccount = parts[3];
-		txn.Amount = stod(parts[4]);
-		txn.Fees = stod(parts[5]);
-		txn.Timestamp = parts[6];
-		txn.Description = parts[7];
+	// Validate we have all required fields
+	if (vTxnData.size() < 8) {
+		logMessage("Invalid transaction record: expected 8 fields, got " +
+			formatInt(vTxnData.size()), ERROR_LOG);
+		// Return default transaction (will be handled by caller)
+		return txn;
 	}
-	return txn;
+
+	try {
+		txn.TransactionID = trim(vTxnData[0]);
+		txn.Type = static_cast<TransactionType>(stoi(vTxnData[1]));
+		txn.FromAccount = trim(vTxnData[2]);
+		txn.ToAccount = trim(vTxnData[3]);
+		txn.Amount = stod(vTxnData[4]);
+		txn.Fees = stod(vTxnData[5]);
+		txn.Timestamp = trim(vTxnData[6]);
+		txn.Description = trim(vTxnData[7]);
+
+		return txn;
+
+	}
+	catch (const invalid_argument& e) {
+		logMessage("Invalid transaction data format: " + string(e.what()), ERROR_LOG);
+		return txn;  // Return default
+	}
+	catch (const out_of_range& e) {
+		logMessage("Transaction value out of range: " + string(e.what()), ERROR_LOG);
+		return txn;  // Return default
+	}
 }
 //=====================================================
 //============ Atomic File Save Functions =============
