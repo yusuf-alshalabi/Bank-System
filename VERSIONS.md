@@ -105,35 +105,67 @@ enum TransactionType {
 - Logging system designed with silent fail (errors do not disrupt program flow)
 - Improved input validation for transactions and user actions
 
+#### 🛡 Data Backup System
+- Introduced Atomic Save for `Clients.txt` and `Users.txt`.
+- Backup files (`.bak`) created automatically before overwriting.
+- Prevents data loss and supports recovery in case of file corruption.
+
 #### 🔐 First-Time Login (Updated)
 - Removed default Admin account creation.
 - On first run, system forces user to create an administrator account.
 - Password stored securely using Libsodium Argon2id hashing.
+- Strong password policy enforced: minimum 8 characters, must include uppercase, lowercase, and a digit.
 - Enhances security by eliminating weak default credentials.
 
 #### New Functions
-- `generateTransactionID()` – Creates unique IDs
-- `createDepositTransaction()` – Logs deposit operations
-- `createWithdrawTransaction()` – Logs withdrawal operations
-- `createTransferTransaction()` – Logs transfer operations
-- `saveTransactionToFile()` – Persists transactions
-- `loadTransactionsFromFile()` – Retrieves transaction history
-- `convertTransactionRecordToLine()` – Serialization
-- `convertLineToTransactionRecord()` – Deserialization
-- `showTransactionsHistory()` – Display transaction history
-- `validateTransferAccounts()` – Account validation for transfers
-- `validateTransferAmount()` – Amount and balance validation
-- `executeTransfer()` – Atomic transfer execution
-- `showTransferScreen()` – Transfer UI with confirmations
-- `logMessage()` – General logging
-- `logTransaction()` – Logs financial operations
-- `logLoginAttempt()` – Records login success/failure
-- `logUserAction()` – Tracks user actions
-- `showLine()` – Separator lines
-- `showBorderLine()` – Bordered lines
-- `pressEnterToContinue()` – Wait for user input
-- `backToMenu()` – Return to main menu prompt
 
+##### 🆕 Transaction Management System (10 functions)
+- `generateTransactionID()` – Creates unique transaction IDs (TXN + timestamp + random)
+- `createDepositTransaction()` – Creates deposit transaction record
+- `createWithdrawTransaction()` – Creates withdrawal transaction record
+- `createTransferTransaction()` – Creates transfer transaction record
+- `validateTransferAmount()` – Validates transfer amount and fees
+- `showTransferScreen()` – Display transfer UI and process transfer
+- `showTransactionsHistory()` – Display complete transaction history for account
+- `loadTransactionsFromFile()` – Load all transactions from Transactions.txt
+- `saveTransactionToFile()` – Save single transaction to file
+- `deserializeTransactionRecord()` – Convert file line to Transaction struct
+
+##### 📜 Logging System (5 functions)
+- `logLevelToString()` – Convert LogLevel enum to string
+- `logMessage()` – Log message with timestamp, level, and user context
+- `logTransaction()` – Log transaction details to SystemLog.txt
+- `logLoginAttempt()` – Log authentication attempts (success/failure)
+- `logUserAction()` – Log general user actions with details
+
+##### 💾 Atomic File Operations (3 functions)
+- `saveClientsToFileAtomic()` – Atomic save with backup (.tmp → .bak → rename)
+- `saveUsersToFileAtomic()` – Atomic save for users with backup
+- `validateFileBeforeLoad()` – Validate file exists, size, and format before loading
+
+##### 🎨 UI Enhancements (11 functions)
+- `formatDouble()` – Format double with precision
+- `formatInt()` – Convert integer to string safely
+- `formatCurrency()` – Format currency with $ sign
+- `drawLine()` – Draw line without newlines
+- `showLine()` – Separator line with newlines
+- `showBorderLine()` – Bordered line (+ at start/end)
+- `showBackOrExit()` – Display back/exit options dynamically
+- `waitForEnter()` – Wait for Enter key
+- `backToMenu()` – Return to menu prompt
+- `getCurrentTimestamp()` – Get formatted date/time string (YYYY-MM-DD HH:MM:SS)
+- `trim()` – Remove leading/trailing whitespace
+
+##### ✅ Input Validation (4 functions)
+- `isValidAccountNumber()` – Validate account number format
+- `isValidPhoneNumber()` – Validate phone number format
+- `readValidatedAccountNumber()` – Read and validate account number
+- `readValidatedPhoneNumber()` – Read and validate phone number
+
+##### 🔐 Authentication & Security (3 functions)
+- `verifyPassword()` – Verify password against Argon2id hash
+- `startSession()` – Initialize user session and save
+- `countFullAccessUsers()` – Count users with pAll permission
 
 #### File Structure Updates
 - New file: `Transactions.txt`
@@ -141,6 +173,7 @@ enum TransactionType {
 
 #### 🔐 Security Enhancements
 - Password hashing upgraded from `std::hash` (used in v1.2.0–v1.3.0) to **Libsodium Argon2id** in v1.4.0, providing modern, memory-hard, and secure password storage.
+- Permission constant `pAll` standardized: previously defined as `-1` in v1.2–v1.3, now set to `127` (binary 1111111) for consistency.
 
 ### 📈 Improvements
 - Real-time transaction logging

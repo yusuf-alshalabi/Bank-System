@@ -2,7 +2,7 @@
 
 > ⚠️ **PRODUCTION WARNING**  
 > This is an **educational project** demonstrating procedural programming concepts.  
-> **NOT RECOMMENDED FOR PRODUCTION USE** - See [LIMITATIONS.md](docs/LIMITATIONS.md) for details.  
+> **NOT RECOMMENDED FOR PRODUCTION USE**.  
 > For production banking software, use established frameworks with proper security audits.
 
 ---
@@ -41,7 +41,7 @@ This version introduces a comprehensive **Transaction Management System** with m
 - **Role-Based Access Control (RBAC)** – Bitwise permission flags for granular access
 - **Dynamic Menus** – Menu adapts based on user permissions
 - **Password Hashing** – Secure password storage using Libsodium Argon2id hashing
-- **Default Admin** – Auto-created on first run (Username: Admin, Password: 1234)
+- **First-Time Setup** – In v1.4.0, no default credentials are created. The system forces you to create a secure administrator account on first run with a strong password policy (minimum 8 characters, must include uppercase, lowercase, and a digit).
 
 ### 🔒 Security & Session Management
 - **Binary Session Encryption** – XChaCha20-Poly1305 using Libsodium
@@ -84,6 +84,14 @@ This version introduces a comprehensive **Transaction Management System** with m
 - Silent fail design in logging (errors don’t disrupt program flow)
 - Comprehensive input validation for transactions and user actions
 
+### 🛡 Data Backup & Atomic Save (NEW in v1.4.0)
+- Automatic backup files (`Clients.bak`, `Users.bak`) are created before any overwrite.
+- Atomic Save process:
+  1. Data is first written to a temporary `.tmp` file.
+  2. If the original file exists, it is copied to a `.bak` backup.
+  3. The `.tmp` file is then renamed to replace the original file atomically.
+- This guarantees recovery in case of unexpected errors or crashes and prevents corruption.
+- Demonstrates Defensive Programming principles by ensuring data durability and safe recovery.
 ---
 
 ## 📊 Version Comparison
@@ -92,12 +100,12 @@ This version introduces a comprehensive **Transaction Management System** with m
 |---------|:----:|:----:|:----:|:----:|:----:|
 | Client CRUD | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Deposit/Withdraw | ❌ | ✅ | ✅ | ✅ | ✅ |
-| Money Transfers | ❌ | ❌ | ❌ | ❌ | ✅ |
 | Total Balances Report | ❌ | ✅ | ✅ | ✅ | ✅ |
-| Transaction History | ❌ | ❌ | ❌ | ❌ | ✅ |
 | User Management | ❌ | ❌ | ✅ | ✅ | ✅ |
 | RBAC Permissions | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Session Encryption | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Money Transfers | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Transaction History | ❌ | ❌ | ❌ | ❌ | ✅ |
 | Password Hashing | ❌ | ❌ | ⚠️ Weak | ⚠️ Weak | ✅ Argon2id |
 | Transaction Logging | ❌ | ❌ | ❌ | ❌ | ✅ |
 | System Logging | ❌ | ❌ | ❌ | ❌ | ✅ |
@@ -163,11 +171,12 @@ For detailed setup instructions, see the full guide here:
 - ✅ System forces you to create administrator account on first run
 - ✅ No default credentials - you choose username and password
 - ✅ Password immediately hashed with **Argon2id** (cryptographically secure)
-- ⚠️ Minimum 4 characters required (recommend 8+ for production)
+- ✅ Strong password policy: minimum 8 characters, must include uppercase, lowercase, and a digit (recommend adding special characters for production).
 
 **v1.2.0 & v1.3.0 (Previous - Insecure):**
 - ❌ Created default admin: Username `Admin`, Password `1234`
 - ❌ Used weak hashing (`std::hash` - NOT cryptographically secure)
+- ❌ Weak password policy (minimum 4 characters only)
 - ❌ **Do NOT use these versions in any real scenario**
 
 #### First Run Process (v1.4.0)
@@ -175,16 +184,10 @@ For detailed setup instructions, see the full guide here:
 1. Program detects no users exist in `Users.txt`
 2. Prompts you to create first administrator account
 3. Enter desired username (minimum 4 characters)
-4. Enter password (minimum 4 chars, **recommend 8+ with complexity**)
+4. Enter password (minimum 8 characters, must include uppercase, lowercase, and a digit; special characters recommended for stronger security)
 5. Password is immediately hashed using Argon2id
 6. Account created with full permissions (pAll = 127)
 
-**Security Recommendations:**
-- Use minimum 8 characters (current minimum is 4)
-- Mix of uppercase and lowercase letters
-- Include numbers and symbols
-- Avoid dictionary words
-- Don't reuse passwords from other systems
 ---
 
 ## 💻 Code Quality & Architecture
@@ -296,7 +299,7 @@ struct Transaction {
 
 | Feature Area | Implementation Details |
 | :--- | :--- |
-| **Password Security** | Libsodium Argon2id hashing, minimum 4-char enforcement, no plain-text storage |
+| **Password Security** | Libsodium Argon2id hashing, strong policy: minimum 8 characters, must include uppercase, lowercase, and a digit; Argon2id chosen for memory-hard resistance against brute-force attacks |
 | **Session Security** | Encryption (Libsodium XChaCha20-Poly1305), OS-protected key storage, 3-pass secure overwrite |
 | **Transaction Security** | Unique transaction IDs, timestamp validation, balance verification |
 | **Access Control** | Bitwise permission flags (7 levels + admin), dynamic menu system |
