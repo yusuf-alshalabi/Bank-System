@@ -125,7 +125,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BankSystem.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AuthManager.h" />
+    <ClInclude Include="ClientManager.h" />
+    <ClInclude Include="Crypto.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="PermissionManager.h" />
+    <ClInclude Include="Session.h" />
+    <ClInclude Include="TransactionManager.h" />
+    <ClInclude Include="UserManager.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
