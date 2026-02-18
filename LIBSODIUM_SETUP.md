@@ -1,4 +1,3 @@
-
 # 🛡 Libsodium Setup Guide
 
 Complete installation guide for the *Libsodium* cryptographic library required by the *CRUD Bank System*.
@@ -73,10 +72,11 @@ vcpkg install libsodium
  * Download from the Libsodium Releases page.
  * Extract the archive to a location like C:\libsodium.
  * Add the necessary paths to your compiler's include and library search paths.
+
 ## 🔧 Manual Compilation
 ### Download Source
 ```bash
-wget [https://download.libsodium.org/libsodium/releases/LATEST.tar.gz](https://download.libsodium.org/libsodium/releases/LATEST.tar.gz)
+wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
 tar -xzf LATEST.tar.gz
 cd libsodium-stable
 ```
@@ -92,12 +92,16 @@ sudo ldconfig
 ```
 
 ## 🔗 Linking with C++
+
+> ⚠️ **v1.4.1 Note:** The entry point is now `Main.cpp` instead of `BankSystem.cpp`.  
+> Use `Main.cpp` in all compilation commands below.
+
 | Purpose | Command |
 |---|---|
-| Basic Compilation | g++ -o BankSystem BankSystem.cpp -std=c++11 -lsodium |
-| With Optimizations | g++ -o BankSystem BankSystem.cpp -std=c++11 -O2 -lsodium |
-| With Debug Information | g++ -o BankSystem BankSystem.cpp -std=c++11 -g -lsodium |
-| With All Warnings | g++ -o BankSystem BankSystem.cpp -std=c++11 -Wall -Wextra -lsodium |
+| Basic Compilation | `g++ -o BankSystem Main.cpp -std=c++11 -lsodium` |
+| With Optimizations | `g++ -o BankSystem Main.cpp -std=c++11 -O2 -lsodium` |
+| With Debug Information | `g++ -o BankSystem Main.cpp -std=c++11 -g -lsodium` |
+| With All Warnings | `g++ -o BankSystem Main.cpp -std=c++11 -Wall -Wextra -lsodium` |
 
 ## ✅ Verification Test
 ### Create a file named test_sodium.cpp:
@@ -110,8 +114,8 @@ int main() {
         std::cout << "Libsodium initialization failed!" << std::endl;
         return 1;
     }
-    std::cout << "✓ Libsodium installed successfully!" << std::endl;
-    std::cout << "✓ Version: " << sodium_version_string() << std::endl;
+    std::cout << "✔ Libsodium installed successfully!" << std::endl;
+    std::cout << "✔ Version: " << sodium_version_string() << std::endl;
     return 0;
 }
 ```
@@ -123,16 +127,16 @@ g++ -o test_sodium test_sodium.cpp -lsodium
 ```
 ### Expected Output:
 ```
-✓ Libsodium installed successfully!
-✓ Version: 1.0.18
+✔ Libsodium installed successfully!
+✔ Version: 1.0.18
 ```
 (Note: The version number may vary)
 
 ⚠️ Note: Always call `sodium_init()` at the start of your program before using any Libsodium functions.
 
 ## 🐛 Troubleshooting
-Error: sodium.h: No such file or directory
-Solution: Install the development packages (-dev or -devel).
+**Error:** `sodium.h: No such file or directory`  
+**Solution:** Install the development packages (-dev or -devel).
 ```bash
 # Ubuntu/Debian
 sudo apt install libsodium-dev
@@ -140,31 +144,36 @@ sudo apt install libsodium-dev
 # Fedora/CentOS
 sudo dnf install libsodium-devel
 ```
-Error: undefined reference to 'sodium_init'
-Solution: The -lsodium flag must be placed at the end of the compilation command.
+
+**Error:** `undefined reference to 'sodium_init'`  
+**Solution:** The `-lsodium` flag must be placed at the **end** of the compilation command.
 ```bash
 # Wrong
-g++ -lsodium -o program program.cpp
+g++ -lsodium -o program Main.cpp
 
 # Correct
-g++ -o program program.cpp -lsodium
+g++ -o program Main.cpp -lsodium
 ```
-Error: libsodium not found on macOS
-Solution: Update Homebrew and reinstall the library.
+
+**Error:** `libsodium not found on macOS`  
+**Solution:** Update Homebrew and reinstall the library.
 ```bash
 brew update
 brew reinstall libsodium
 ```
-Error: Library not found at runtime
-Solution: Update the dynamic linker run-time bindings cache.
+
+**Error:** `Library not found at runtime`  
+**Solution:** Update the dynamic linker run-time bindings cache.
 ```bash
 sudo ldconfig
 ```
+
 ### Windows: MinGW Path Issues
-Solution: Add the MinGW binary path to the system's PATH environment variable.
+**Solution:** Add the MinGW binary path to the system's PATH environment variable.
 ```bash
 export PATH=/mingw64/bin:$PATH
 ```
+
 ## 🔍 Advanced Configuration
 ### Custom Installation Prefix
 ```bash
@@ -174,33 +183,37 @@ sudo make install
 ```
 ### Static Linking
 ```bash
-g++ -o BankSystem BankSystem.cpp -std=c++11 -static -lsodium
+g++ -o BankSystem Main.cpp -std=c++11 -static -lsodium
 ```
 ### Specific Library Path
 ```bash
-g++ -o BankSystem BankSystem.cpp -std=c++11 -L/usr/local/lib -I/usr/local/include -lsodium
+g++ -o BankSystem Main.cpp -std=c++11 -L/usr/local/lib -I/usr/local/include -lsodium
 ```
+
 ## 📚 Library Information
 | Action | Command |
 |---|---|
-| Check Linking Flags | pkg-config --libs libsodium |
-| Check Include Flags | pkg-config --cflags libsodium |
-| Check Version | sodium-config --version |
-| Check Features | sodium-config --help |
+| Check Linking Flags | `pkg-config --libs libsodium` |
+| Check Include Flags | `pkg-config --cflags libsodium` |
+| Check Version | `sodium-config --version` |
+| Check Features | `sodium-config --help` |
+
 ## 🔒 Security Notes
  * Libsodium is extensively audited and is considered secure for production use.
  * Regular updates are recommended to obtain security patches.
  * Compiled binaries should be verified against known checksums.
  * Use official repositories whenever possible.
+
 ## 📞 Support Resources
  * Official Documentation
  * GitHub Repository
  * Mailing List
+
 ## ✅ Final Checklist
  * [x] Libsodium installed successfully
  * [x] Development headers available
  * [x] Library linked correctly in compilation
  * [x] Test program runs without errors
- * [x] Bank System compiles with the -lsodium flag
+ * [x] Bank System compiles with `Main.cpp -lsodium`
+
 > Note: After successful installation, you can compile the Bank System using the commands detailed in the main project README file.
->

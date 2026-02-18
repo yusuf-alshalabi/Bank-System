@@ -4,6 +4,60 @@ Complete changelog and feature details for all versions.
 
 ---
 
+## Version 1.4.1 — Modular Header Split (February 2026)  [v1.4.1][v141]
+
+### 🎯 Main Focus
+**Pure structural refactor** — splitting the monolithic `BankSystem.cpp` into modular header files as a direct bridge toward the upcoming **v2.0.0 OOP refactor**.
+
+> ⚠️ **No logic changes.** All features, behavior, and output are identical to v1.4.0.  
+> This version is architecture-only.
+
+### ✨ What Changed
+
+#### 🗂 Modular File Structure (NEW)
+The single `BankSystem.cpp` file has been split into 14 files — one header per logical section:
+
+| File | Section | Future Class (v2.0.0) |
+|:-----|:--------|:----------------------|
+| `Main.cpp` | Entry point + ordered includes | `main()` |
+| `Globals.h` | Structs, Enums, Constants, Forward Declarations | Shared types |
+| `Utilities.h` | Formatting, UI helpers, screen control | `clsUtilities` |
+| `Crypto.h` | Encryption & Decryption (libsodium) | `clsCrypto` |
+| `Session.h` | Session save / load / clear | `clsSession` |
+| `Logger.h` | Logging system | `clsLogger` |
+| `FileManager.h` | File I/O, Serialization, Atomic save | `clsFileManager` |
+| `InputManager.h` | Input reading & validation | `clsInputManager` |
+| `PermissionManager.h` | Permission checks | `clsPermissionManager` |
+| `ClientManager.h` | Client CRUD operations | `clsClientManager` |
+| `TransactionManager.h` | Deposit / Withdraw / Transfer | `clsTransactionManager` |
+| `UserManager.h` | User CRUD operations | `clsUserManager` |
+| `AuthManager.h` | Login, Password hashing, Admin setup | `clsAuthManager` |
+| `MenuManager.h` | All menus and navigation | `clsMenuManager` |
+
+#### 🔧 Compilation Command Updated
+```bash
+# v1.4.0
+g++ -o BankSystem BankSystem.cpp -std=c++11 -lsodium
+
+# v1.4.1
+g++ -o BankSystem Main.cpp -std=c++11 -lsodium
+```
+
+#### 📌 Design Decisions
+- Header file names match future OOP class names to minimize friction in v2.0.0 migration
+- `#pragma once` used in all headers to prevent duplicate inclusion
+- `CurrentUser` declared `extern` in `Globals.h` and defined once in `Main.cpp`
+- Forward declarations placed in `Globals.h` to resolve cross-file dependencies
+- Include order in `Main.cpp` is explicit and deterministic
+
+### 📈 Benefits
+- Clear separation of concerns — each file has one responsibility
+- Easier navigation and code review
+- Directly mirrors the planned v2.0.0 class hierarchy
+- Paves the way for OOP transformation with zero re-learning of logic
+
+---
+
 ## Version 1.4.0 — Transaction Management System (February 2026)  [v1.4.0][v140]
 
 ### 🎯 Main Focus
@@ -106,16 +160,16 @@ enum TransactionType {
 - Improved input validation for transactions and user actions
 
 #### 🛡 Data Backup System
-- Introduced Atomic Save for `Clients.txt` and `Users.txt`.
-- Backup files (`.bak`) created automatically before overwriting.
-- Prevents data loss and supports recovery in case of file corruption.
+- Introduced Atomic Save for `Clients.txt` and `Users.txt`
+- Backup files (`.bak`) created automatically before overwriting
+- Prevents data loss and supports recovery in case of file corruption
 
 #### 🔐 First-Time Login (Updated)
-- Removed default Admin account creation.
-- On first run, system forces user to create an administrator account.
-- Password stored securely using Libsodium Argon2id hashing.
-- Strong password policy enforced: minimum 8 characters, must include uppercase, lowercase, and a digit.
-- Enhances security by eliminating weak default credentials.
+- Removed default Admin account creation
+- On first run, system forces user to create an administrator account
+- Password stored securely using Libsodium Argon2id hashing
+- Strong password policy enforced: minimum 8 characters, must include uppercase, lowercase, and a digit
+- Enhances security by eliminating weak default credentials
 
 #### New Functions
 
@@ -172,8 +226,8 @@ enum TransactionType {
 - Transaction record format: `ID#//#Type#//#FromAcc#//#ToAcc#//#Amount#//#Fees#//#Timestamp#//#Desc`
 
 #### 🔐 Security Enhancements
-- Password hashing upgraded from `std::hash` (used in v1.2.0–v1.3.0) to **Libsodium Argon2id** in v1.4.0, providing modern, memory-hard, and secure password storage.
-- Permission constant `pAll` standardized: previously defined as `-1` in v1.2–v1.3, now set to `127` (binary 1111111) for consistency.
+- Password hashing upgraded from `std::hash` (used in v1.2.0–v1.3.0) to **Libsodium Argon2id** in v1.4.0, providing modern, memory-hard, and secure password storage
+- Permission constant `pAll` standardized: previously defined as `-1` in v1.2–v1.3, now set to `127` (binary 1111111) for consistency
 
 ### 📈 Improvements
 - Real-time transaction logging
@@ -220,72 +274,41 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 
 ### 🔧 Technical Additions
 
-### First-Time Login
-
-The system creates a default administrator on first run:
-- **Username:** `Admin`
-- **Password:** `1234`
-
-⚠️ **Important:** Change this password immediately after first login!
-
-
 #### New Functions
-- `getCurrentUsernameSafe()` – Safe OS username detection
-- `getLocalAppDataPath()` – Platform-aware app data path
-- `getSessionPath()` / `getSessionFolder()` – Session file locations
-- `createSessionFolder()` – Directory creation with permissions
-- `generateEncryptionKey()` – Cryptographic key generation
-- `getEncryptionKey()` – Key retrieval or creation
+- `getEncryptionKey()` – Load or generate encryption key
+- `generateEncryptionKey()` – Create new random key
 - `encryptData()` – XChaCha20-Poly1305 encryption
-- `decryptData()` – Decryption with integrity check
-- `saveCurrentUserSession()` – Encrypt and save session
-- `loadCurrentUserSession()` – Load and decrypt session
-- `clearCurrentUserSession()` – Secure session cleanup
-
-#### Dependencies Added
-- **Libsodium** library (version 1.0.18+)
-- Platform-specific headers (`windows.h` for Windows)
-
-#### File Structure
-- Session files: `.bsess` format (encrypted binary)
-- Encryption keys: Hidden system files
-- Platform-aware directory structure
-
-### 📈 Improvements
-- Eliminated plain-text session storage
-- Enhanced security with industry-standard encryption
-- Cross-platform session management
-- Better user experience with auto-resume
+- `decryptData()` – Decryption with authentication
+- `getSessionPath()` – Platform-specific session file path
+- `getSessionFolder()` – Session folder path
+- `createSessionFolder()` – Create session directory
+- `saveCurrentUserSession()` – Encrypted session save
+- `loadCurrentUserSession()` – Encrypted session load
+- `clearCurrentUserSession()` – Secure session wipe
+- `serializeUserData()` – Serialize user struct for storage
+- `deserializeUserData()` – Deserialize user from storage
 
 ---
 
-## Version 1.2.0 — User Management & RBAC (October 2025)  [v1.2.0][v120]
+## Version 1.2.0 — User Management + RBAC (October 2025)  [v1.2.0][v120]
 
 ### 🎯 Main Focus
-Complete **User Management System** with Role-Based Access Control (RBAC).
+Multi-user support with **Role-Based Access Control (RBAC)**.
 
 ### ✨ New Features
 
-#### 👥 User Management
-- **User CRUD Operations:**
-  - Add new users with custom permissions
-  - Delete existing users
-  - Update user information
-  - Find users by username
-  - List all system users
-- Default admin account auto-created on first run
-  - Username: `Admin`
-  - Password: `1234`
+#### 👥 User Management System
+- Add, Delete, Update, Find system users
+- Persistent storage in `Users.txt`
+- Username-based lookup
 
-#### 🔐 Password Security
-- Password hashing using `std::hash` (basic hashing, later replaced with Libsodium Argon2id in v1.4.0)
-- Minimum 4-character password requirement
-- No plain-text password storage
-- Hexadecimal hash representation
+#### 🔐 Authentication System
+- Login screen on startup
+- Password hashing (std::hash — upgraded in v1.4.0)
+- Default admin: Username `Admin`, Password `1234`
 
-#### 🛡 Role-Based Access Control (RBAC)
-- **Bitwise permission system** for granular control
-- 7 permission levels + admin:
+#### 🛡 RBAC Permission System
+- Bitwise permission flags:
   - `pListClients` (1) – View client list
   - `pAddClient` (2) – Add new clients
   - `pDeleteClient` (4) – Delete clients
@@ -317,11 +340,9 @@ struct strUser {
 - `readPassword()` – Secure password input
 - `hashPassword()` – Password hashing
 - `loadUsersDataFromFile()` / `saveUsersToFile()` – User persistence
-- `convertUserRecordToLine()` / `convertLineToUserRecord()` – Serialization
 - `findUserByUserName()` – User lookup
 - `checkUserPassword()` – Password verification
 - `readPermissionsToSet()` – Permission configuration
-- `showAddUserScreen()` / `showDeleteUserScreen()` / `showUpdateUserScreen()` / `showFindUserScreen()` – User management UI
 - `showManageUsersScreen()` – User management menu
 - `checkAccessPermission()` – Permission validation
 - `buildMainMenuOptions()` – Dynamic menu builder
@@ -331,12 +352,6 @@ struct strUser {
 #### File Structure
 - New file: `Users.txt`
 - User record format: `Username#//#HashedPassword#//#Permissions`
-
-### 📈 Improvements
-- Multi-user support with individual access levels
-- Enhanced security with password hashing
-- Flexible permission combinations
-- Professional access control system
 
 ---
 
@@ -363,12 +378,6 @@ Core **Financial Operations** for the banking system.
 - Display all client balances in table format
 - Calculate and show grand total
 - Professional formatting
-- Summary statistics
-
-#### 🎛 Transactions Menu
-- Dedicated interface for financial operations
-- Clear navigation between operations
-- Return to main menu option
 
 ### 🔧 Technical Additions
 
@@ -379,17 +388,6 @@ Core **Financial Operations** for the banking system.
 - `showWithdrawScreen()` – Withdrawal UI
 - `showTotalBalancesReport()` – Balance reporting
 - `ManageTransactions()` – Transaction menu loop
-
-#### Validations Added
-- Positive amount validation
-- Balance sufficiency checks
-- Prevent overdraft scenarios
-
-### 📈 Improvements
-- Enhanced user interface
-- Currency formatting (2 decimal places)
-- Better error handling
-- Clear financial operation flow
 
 ---
 
@@ -425,44 +423,16 @@ struct strClient {
     double AccountBalance;
     bool MarkForDelete;
 };
-
-enum MainMenuOption {
-    ShowClientList = 1,
-    AddNewClient = 2,
-    DeleteClient = 3,
-    UpdateClient = 4,
-    FindClient = 5,
-    Exit = 6
-};
 ```
 
 #### Core Functions
 - `splitString()` – String tokenization
-- `convertClientRecordToLine()` / `convertLineToClientRecord()` – Serialization
 - `loadClientsDataFromFile()` / `saveClientsToFile()` – File I/O
 - `appendLineToFile()` – Append operation
 - `readClientData()` – Client input
-- `readPositiveDouble()` / `readNonEmptyString()` – Input validation
 - `findClientByAccountNumber()` – Search (returns pointer)
 - `markClientForDelete()` – Soft delete
 - `showAllClientsReport()` – Table display
-- `addClient()` / `deleteClient()` / `updateClientByAccountNumber()` – CRUD
-- `showScreenHeader()` – UI headers
-- `confirm()` – User confirmations
-- `readOption()` – Menu input
-- `clearScreen()` / `customPause()` – UI utilities
-
-#### Architecture Principles
-- **Procedural Programming** approach
-- **Single Responsibility Principle** – one function, one task
-- **Pass-by-reference** for efficiency
-- **Pointer-based search** for in-memory modification
-
-### 📈 Foundation Established
-- Clean code structure
-- Efficient memory management
-- Robust input handling
-- Professional UI design
 
 ---
 
@@ -475,6 +445,7 @@ enum MainMenuOption {
 | **v1.2.0** | User Management + RBAC | Multi-user security |
 | **v1.3.0** | Session Encryption | Enterprise-grade security |
 | **v1.4.0** | Transaction Management | Complete audit trail |
+| **v1.4.1** | Modular Header Split | Pre-OOP bridge |
 
 ---
 
@@ -483,6 +454,7 @@ enum MainMenuOption {
 - **Total Structs:** 3 (strClient, strUser, Transaction)
 - **Total Enums:** 6 (TransactionType, MainMenuOption, TransactionsOption, UserManagementOption, Permission, LogLevel)
 - **Total Functions:** 80+ (across all modules)
+- **Source Files:** 14 (1 `.cpp` + 13 `.h`)
 - **Data Files:** 3 (Clients.txt, Users.txt, Transactions.txt)
 - **External Dependencies:** 1 (Libsodium)
 
@@ -492,12 +464,15 @@ enum MainMenuOption {
 
 ### 📅 Next Release: Version 2.0.0 — The OOP Transformation
 
-- ​After mastering the procedural logic and security foundations in the 1.x series, the next major milestone will be a complete Architectural Refactor:
-- **​Paradigm Shift:** Moving from Procedural to Object-Oriented Programming (OOP).
-- **​Class Hierarchy:** Implementing a robust inheritance system (e.g., clsPerson → clsUser & clsClient).
-- ​**Encapsulation:** Protecting sensitive financial data using private members and public getters/setters.
-- ​**Abstraction & Polymorphism:** Streamlining bank operations through abstract classes and interfaces.
-- ​**Advanced Memory Management:** Utilizing Smart Pointers (std::unique_ptr, std::shared_ptr) for modern C++ standards.
+After mastering the procedural logic and security foundations in the 1.x series, the next major milestone will be a complete Architectural Refactor:
+
+- **Paradigm Shift:** Moving from Procedural to Object-Oriented Programming (OOP)
+- **Class Hierarchy:** Implementing a robust inheritance system (e.g., `clsPerson` → `clsUser` & `clsClient`)
+- **Encapsulation:** Protecting sensitive financial data using private members and public getters/setters
+- **Abstraction & Polymorphism:** Streamlining bank operations through abstract classes and interfaces
+- **Advanced Memory Management:** Utilizing Smart Pointers (`std::unique_ptr`, `std::shared_ptr`) for modern C++ standards
+
+> v1.4.1 header files map 1-to-1 with planned v2.0.0 classes — migration will be a direct conversion.
 
 ---
 
@@ -505,6 +480,7 @@ enum MainMenuOption {
 **Developer:** Yusuf Zakaria Alshalabi  
 **Part of:** Programming Advices Roadmap – Course 7
 
+[v141]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.1
 [v140]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.0
 [v130]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.3.0
 [v120]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.2.0
