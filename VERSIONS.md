@@ -7,7 +7,7 @@ Complete changelog and feature details for all versions.
 ## Version 1.4.1 — Modular Header Split (February 2026)  [v1.4.1][v141]
 
 ### 🎯 Main Focus
-**Pure structural refactor** — splitting the monolithic `BankSystem.cpp` into modular header files as a direct bridge toward the upcoming **v2.0.0 OOP refactor**.
+**Pure structural refactor** — extracting the already organized sections of `BankSystem.cpp` into dedicated header files while preserving the original program behavior and application logic.
 
 > ⚠️ **No logic changes.** All features, behavior, and output are identical to v1.4.0.  
 > This version is architecture-only.
@@ -15,7 +15,7 @@ Complete changelog and feature details for all versions.
 ### ✨ What Changed
 
 #### 🗂 Modular File Structure (NEW)
-The single `BankSystem.cpp` file has been split into 14 files — one header per logical section:
+The single `BankSystem.cpp` file has been split into 14 modular files:
 
 | File | Section | Future Class (v2.0.0) |
 |:-----|:--------|:----------------------|
@@ -44,17 +44,17 @@ g++ -o BankSystem Main.cpp -std=c++11 -lsodium
 ```
 
 #### 📌 Design Decisions
-- Header file names match future OOP class names to minimize friction in v2.0.0 migration
+- Module names were intentionally chosen to mirror the planned OOP class names for a smoother migration.
 - `#pragma once` used in all headers to prevent duplicate inclusion
 - `CurrentUser` declared `extern` in `Globals.h` and defined once in `Main.cpp`
 - Forward declarations placed in `Globals.h` to resolve cross-file dependencies
 - Include order in `Main.cpp` is explicit and deterministic
 
 ### 📈 Benefits
-- Clear separation of concerns — each file has one responsibility
+- Physical separation of previously organized code sections.
 - Easier navigation and code review
-- Directly mirrors the planned v2.0.0 class hierarchy
-- Paves the way for OOP transformation with zero re-learning of logic
+- Cleaner project structure
+- Mirrors the planned OOP class hierarchy
 
 ---
 
@@ -246,7 +246,7 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 ### ✨ New Features
 
 #### 🔒 Binary Session Encryption
-- **Algorithm:** XChaCha20-Poly1305 (military-grade encryption)
+- **Algorithm:** XChaCha20-Poly1305 (strong authenticated encryption)
 - **Library:** Libsodium integration
 - Encrypted session files stored as `.bsess` (binary format)
 - Non-reversible encryption for session data
@@ -443,7 +443,7 @@ struct strClient {
 | **v1.0.0** | Client CRUD | Foundation established |
 | **v1.1.0** | Financial Transactions | Banking operations enabled |
 | **v1.2.0** | User Management + RBAC | Multi-user security |
-| **v1.3.0** | Session Encryption | Enterprise-grade security |
+| **v1.3.0** | Session Encryption | Secure Session Management with Binary Encryption |
 | **v1.4.0** | Transaction Management | Complete audit trail |
 | **v1.4.1** | Modular Header Split | Pre-OOP bridge |
 
@@ -453,7 +453,7 @@ struct strClient {
 
 - **Total Structs:** 3 (strClient, strUser, Transaction)
 - **Total Enums:** 6 (TransactionType, MainMenuOption, TransactionsOption, UserManagementOption, Permission, LogLevel)
-- **Total Functions:** 80+ (across all modules)
+- **Total Functions:** 80+ functions across 14 modules
 - **Source Files:** 14 (1 `.cpp` + 13 `.h`)
 - **Data Files:** 3 (Clients.txt, Users.txt, Transactions.txt)
 - **External Dependencies:** 1 (Libsodium)
@@ -470,9 +470,9 @@ After mastering the procedural logic and security foundations in the 1.x series,
 - **Class Hierarchy:** Implementing a robust inheritance system (e.g., `clsPerson` → `clsUser` & `clsClient`)
 - **Encapsulation:** Protecting sensitive financial data using private members and public getters/setters
 - **Abstraction & Polymorphism:** Streamlining bank operations through abstract classes and interfaces
-- **Advanced Memory Management:** Utilizing Smart Pointers (`std::unique_ptr`, `std::shared_ptr`) for modern C++ standards
+- **Modern Memory Management:** Utilizing Smart Pointers (`std::unique_ptr`, `std::shared_ptr`) for modern C++ standards
 
-> v1.4.1 header files map 1-to-1 with planned v2.0.0 classes — migration will be a direct conversion.
+> v1.4.1 header files map 1-to-1 with planned v2.0.0 classes — migration will be significantly more straightforward.
 
 ---
 

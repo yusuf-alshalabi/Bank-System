@@ -9,7 +9,9 @@
 
 A professional console-based Bank Management System built in C++ as part of the Programming Advices Roadmap (Course 7).
 
-This version is a **structural refactor** of v1.4.0 — the codebase has been split into modular header files as a direct bridge toward the upcoming **v2.0.0 OOP refactor**. No logic was changed.
+This version is a **structural refactor** of v1.4.0. The codebase has been reorganized into modular header files to improve readability, maintainability, and separation of responsibilities. No application logic was changed.
+
+This modular structure also simplifies the upcoming v2.0.0 OOP refactor while keeping the future object-oriented design flexible as the project evolves. 
 
 ---
 
@@ -83,8 +85,7 @@ This version is a **structural refactor** of v1.4.0 — the codebase has been sp
 
 ## 🗂 File Structure (v1.4.1 — Modular)
 
-> **NEW in v1.4.1:** The single-file `BankSystem.cpp` has been split into 14 modular header files. Each file maps directly to a future class in the v2.0.0 OOP refactor.
-
+> **NEW in v1.4.1:** The single-file `BankSystem.cpp` has been split into 14 modular header files. This improves code organization, readability, maintainability, and separation of responsibilities, laying the groundwork for the complete object-oriented redesign planned for v2.0.0.
 ### Source Files
 
 | File | Responsibility |
@@ -137,7 +138,7 @@ This version is a **structural refactor** of v1.4.0 — the codebase has been sp
 **Legend:**  
 ✅ Fully Implemented | ⚠️ Implemented (Weak/Insecure) | ❌ Not Available
 
-**Security Note:** v1.2.0 and v1.3.0 used `std::hash` for password hashing, which is NOT cryptographically secure. Only v1.4.0+ uses proper Argon2id hashing.
+**Security Note:** v1.2.0 and v1.3.0 used `std::hash` for password hashing, which is NOT cryptographically secure. Only v1.4.0+ uses Libsodium Argon2id password hashing.
 
 ---
 
@@ -198,27 +199,21 @@ For detailed setup instructions, see the full guide here:
 
 ## 💻 Code Quality & Architecture
 
-### 🏗 v1.4.1 — Modular Procedural Architecture (Pre-OOP Bridge)
+### 🏗 v1.4.1 — Modular Procedural Architecture
 
-v1.4.1 is a **pure structural refactor** of v1.4.0 with **zero logic changes**. The goal is to prepare the codebase for the v2.0.0 OOP transformation by mapping each logical section to its own header file — which will become its own class.
+v1.4.1 is a **pure structural refactor** of v1.4.0 with **zero logic changes**. The goal of this release is to improve code organization by separating the application into logical modules with clear responsibilities. This structural refactor makes the codebase easier to maintain, navigate, and extend while making future architectural changes easier, including the transition to an object-oriented design.
 
-```
-v1.4.0                         v1.4.1                       v2.0.0 (Next)
-──────────────────────         ─────────────────────────    ──────────────────
-BankSystem.cpp (single file)   Globals.h                →   Shared types
-                               Utilities.h              →   clsUtilities
-                               Crypto.h                 →   clsCrypto
-                               Session.h                →   clsSession
-                               Logger.h                 →   clsLogger
-                               FileManager.h            →   clsFileManager
-                               InputManager.h           →   clsInputManager
-                               PermissionManager.h      →   clsPermissionManager
-                               ClientManager.h          →   clsClientManager
-                               TransactionManager.h     →   clsTransactionManager
-                               UserManager.h            →   clsUserManager
-                               AuthManager.h            →   clsAuthManager
-                               MenuManager.h            →   clsMenuManager
-                               Main.cpp                 →   main()
+```text
+v1.4.0
+Monolithic source file
+        │
+        ▼
+v1.4.1
+Modular source organization
+        │
+        ▼
+v2.0.0
+Object-Oriented Architecture
 ```
 
 ### 🔧 Professional C++ Usage
@@ -227,6 +222,7 @@ BankSystem.cpp (single file)   Globals.h                →   Shared types
 - **Pointers** – `strClient*` enables direct in-memory editing
 - **Input Validation** – Prevents negative amounts, overdrafts, invalid input
 - **Cross-Platform** – Works on Windows, Linux, and macOS
+- **Pointers** – Direct in-memory modification of client records without unnecessary copying
 
 ---
 
@@ -287,14 +283,13 @@ For detailed information about each version and changes, see **[VERSIONS.md](VER
 | [v1.2.0][v120] | User Management + RBAC System |
 | [v1.3.0][v130] | Binary Session Encryption (Libsodium) |
 | [v1.4.0][v140] | Transaction Management + Money Transfers |
-| [v1.4.1][v141] | Modular Header Split (Pre-OOP Bridge) ⭐ |
+| [v1.4.1][v141] | Modular Code Organization ⭐ |
 
 ---
 
 ## 🤝 Contribution
 
-Contributions, bug reports, and suggestions for future enhancements are highly welcome.
-Feel free to fork the repository, submit pull requests, or open issues.
+Contributions are welcome. If you find a bug or have an idea for improvement, feel free to open an issue or submit a pull request.
 
 ---
 
