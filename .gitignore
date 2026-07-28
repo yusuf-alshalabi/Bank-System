@@ -26,3 +26,6 @@ obj/
 *.exe
 *.db
 *.opendb
+
+# Runtime files
+BankSystem/SystemLog.txt
