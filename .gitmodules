@@ -1,0 +1,3 @@
+[submodule "Libs/Cpp-Library-Collection"]
+	path = Libs/Cpp-Library-Collection
+	url = https://github.com/yusuf-alshalabi/Cpp-Library-Collection.git
