@@ -16,6 +16,12 @@
     <Filter Include="Header Files\LastVersion">
       <UniqueIdentifier>{69be1c2b-baa7-4e08-a172-7497457c4fba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{46eff7a8-4a57-4f4f-8307-91eb80146679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screens">
+      <UniqueIdentifier>{5eeaec4d-56d2-46c2-9d9d-ff14d9a33119}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
