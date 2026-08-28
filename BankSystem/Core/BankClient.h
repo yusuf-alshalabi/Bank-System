@@ -97,6 +97,21 @@ private:
 
 		_SaveCleintsDataToFile(vClients);
 	}
+
+	void _AddDataLineToFile(const std::string&  DataLine)
+	{
+		std::fstream MyFile;
+		MyFile.open("Clients.txt", std::ios::out | std::ios::app);
+
+		if (MyFile.is_open())
+		{
+
+			MyFile << DataLine << "\n";
+			MyFile.close();
+		}
+
+	}
+
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
