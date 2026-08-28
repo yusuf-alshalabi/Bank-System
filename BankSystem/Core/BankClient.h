@@ -40,6 +40,29 @@ private:
 		return ClientRecord;
 	}
 
+	static std::vector<BankClient> _LoadClientsDataFromFile()
+	{
+		std::vector<BankClient> vClients;
+
+		std::fstream MyFile;
+		MyFile.open("Clients.txt", std::ios::in); // Read Mode
+
+		if (MyFile.is_open())
+		{
+			std::string Line;
+
+			while (getline(MyFile, Line))
+			{
+				BankClient Client = _ConvertLinetoClientObject(Line);
+				vClients.push_back(Client);
+			}
+
+			MyFile.close();
+		}
+
+		return vClients;
+	}
+
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
