@@ -63,6 +63,25 @@ private:
 		return vClients;
 	}
 
+	static void _SaveCleintsDataToFile(const std::vector<BankClient>& vClients)
+	{
+		std::fstream MyFile;
+		MyFile.open("Clients.txt", std::ios::out); // Overwrite mode
+
+		if (MyFile.is_open())
+		{
+			std::string DataLine;
+
+			for (const BankClient& C : vClients)
+			{
+				DataLine = _ConverClientObjectToLine(C);
+				MyFile << DataLine << "\n";
+			}
+
+			MyFile.close();
+		}
+	}
+
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
