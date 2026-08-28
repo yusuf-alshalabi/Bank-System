@@ -1,72 +1,68 @@
+#include <iostream>
+#include "Core/BankClient.h"
+#include "../Libs/Cpp-Library-Collection/Lib/InputValidate.h" 
 
+using namespace std;
 
-//  ||========================================================||
-//  || BankSystem Project - Version v1.4.1                    ||
-//  ||========================================================||
-//  || File: Main.cpp                                         ||
-//  || Entry point of the application.                        ||
-//  ||                                                        ||
-//  || File Structure:                                        ||
-//  ||  - Globals.h            : Structs, Enums, Constants,   ||
-//  ||                           Forward Declarations         ||
-//  ||  - Utilities.h          : Format, UI, Screen helpers   ||
-//  ||  - Crypto.h             : Encryption & Decryption      ||
-//  ||  - Session.h            : Session Management           ||
-//  ||  - Logger.h             : Logging System               ||
-//  ||  - FileManager.h        : File I/O & Serialization     ||
-//  ||  - InputManager.h       : Input reading & validation   ||
-//  ||  - ClientManager.h      : Client CRUD operations       ||
-//  ||  - TransactionManager.h : Deposit/Withdraw/Transfer    ||
-//  ||  - UserManager.h        : User CRUD operations         ||
-//  ||  - PermissionManager.h  : Permission checks            ||
-//  ||  - AuthManager.h        : Login, Hashing, Admin setup  ||
-//  ||  - MenuManager.h        : All menus and navigation     ||
-//  ||========================================================||
+void ReadClientInfo(BankClient& Client)
+{
+    Client.FirstName = Core::InputValidate::ReadString("\nEnter FirstName: ");
 
-// NOTE: Include order matters - each file depends on those above it.
-// Globals must be first, MenuManager and AuthManager last.
+    Client.LastName = Core::InputValidate::ReadString("\nEnter LastName: ");
 
-#include "Globals.h"
-#include "Utilities.h"
-#include "Crypto.h"
-#include "Session.h"
-#include "Logger.h"
-#include "FileManager.h"
-#include "InputManager.h"
-#include "PermissionManager.h"
-#include "ClientManager.h"
-#include "TransactionManager.h"
-#include "UserManager.h"
-#include "AuthManager.h"
-#include "MenuManager.h"
+    Client.Email = Core::InputValidate::ReadString("\nEnter Email: ");
 
-//=====================================================
-// Global variable definition (declared extern in Globals.h)
-//=====================================================
-strUser CurrentUser;
+    Client.Phone = Core::InputValidate::ReadString("\nEnter Phone: ");
 
-//=====================================================
-//==================== Main Function ==================
-//=====================================================
+    Client.PinCode = Core::InputValidate::ReadString("\nEnter PinCode: ");
 
-// Program entry point: initialize system, create admin, login, run menus
+    Client.AccountBalance = Core::InputValidate::ReadNumber<double>("\nEnter Account Balance: ");
+}
+
+void UpdateClient()
+{
+    string AccountNumber = "";
+
+    cout << "\nPlease Enter client Account Number: ";
+    AccountNumber = Core::InputValidate::ReadString();
+
+    while (!BankClient::IsClientExist(AccountNumber))
+    {
+        cout << "\nAccount number is not found, choose another one: ";
+        AccountNumber = Core::InputValidate::ReadString();
+    }
+
+    BankClient Client1 = BankClient::Find(AccountNumber);
+    Client1.Print();
+
+    cout << "\n\nUpdate Client Info:";
+    cout << "\n____________________\n";
+
+    ReadClientInfo(Client1);
+
+    BankClient::enSaveResults SaveResult;
+    SaveResult = Client1.Save();
+
+    switch (SaveResult)
+    {
+    case BankClient::enSaveResults::svSucceeded:
+    {
+        cout << "\nAccount Updated Successfully :-)\n";
+        Client1.Print();
+        break;
+    }
+    case BankClient::enSaveResults::svFailedEmptyObject:
+    {
+        cout << "\nError account was not saved because it's Empty\n";
+        break;
+    }
+    }
+}
+
 int main()
 {
-    cout << fixed << setprecision(2);
+    UpdateClient();
 
-    if (sodium_init() < 0) {
-        showErrorMessage("System initialization failed!");
-        return 1;
-    }
-
-    try {
-        createDefaultAdmin();
-        login();
-    }
-    catch (const exception& e) {
-        showErrorMessage("Critical system error: " + string(e.what()));
-        return 1;
-    }
-
+    system("pause>0");
     return 0;
 }
