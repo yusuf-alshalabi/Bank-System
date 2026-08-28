@@ -98,7 +98,7 @@ private:
 		_SaveCleintsDataToFile(vClients);
 	}
 
-	void _AddDataLineToFile(const std::string&  DataLine)
+	void _AddDataLineToFile(const std::string& DataLine)
 	{
 		std::fstream MyFile;
 		MyFile.open("Clients.txt", std::ios::out | std::ios::app);
@@ -220,6 +220,23 @@ public:
 			MyFile.close();
 		}
 		return _GetEmptyClientObject();
+	}
+
+	enum enSaveResults { svFailedEmptyObject = 0, svSucceeded = 1 };
+
+	enSaveResults Save()
+	{
+		switch (_Mode)
+		{
+		case enMode::EmptyMode:
+			return enSaveResults::svFailedEmptyObject;
+
+		case enMode::UpdateMode:
+			_Update();
+			return enSaveResults::svSucceeded;
+		}
+
+		return enSaveResults::svFailedEmptyObject;
 	}
 
 	static bool IsClientExist(const std::string& AccountNumber)
