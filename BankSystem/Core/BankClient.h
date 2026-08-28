@@ -26,6 +26,20 @@ private:
 			vClientData[3], vClientData[4], vClientData[5], std::stod(vClientData[6]));
 	}
 
+	static std::string _ConverClientObjectToLine(const BankClient& Client, const std::string& Seperator = "#//#")
+	{
+		std::string ClientRecord = "";
+		ClientRecord += Client.FirstName + Seperator;
+		ClientRecord += Client.LastName + Seperator;
+		ClientRecord += Client.Email + Seperator;
+		ClientRecord += Client.Phone + Seperator;
+		ClientRecord += Client.AccountNumber + Seperator;
+		ClientRecord += Client.PinCode + Seperator;
+		ClientRecord += std::to_string(Client.AccountBalance);
+
+		return ClientRecord;
+	}
+
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
