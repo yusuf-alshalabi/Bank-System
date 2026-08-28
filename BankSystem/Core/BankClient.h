@@ -82,6 +82,21 @@ private:
 		}
 	}
 
+	void _Update()
+	{
+		std::vector<BankClient> vClients = _LoadClientsDataFromFile();
+
+		for (BankClient& C : vClients)
+		{
+			if (C.GetAccountNumber() == _AccountNumber)
+			{
+				C = *this;
+				break;
+			}
+		}
+
+		_SaveCleintsDataToFile(vClients);
+	}
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
