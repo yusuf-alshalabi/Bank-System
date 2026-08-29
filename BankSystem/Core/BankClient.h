@@ -309,4 +309,9 @@ public:
 		return BankClient(enMode::AddNewMode, "", "", "", "", AccountNumber, "", 0);
 	}
 
+	static std::vector<BankClient> GetClientsList()
+	{
+		return _LoadClientsDataFromFile();
+	}
+
 };
