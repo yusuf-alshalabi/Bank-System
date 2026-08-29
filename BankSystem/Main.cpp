@@ -2,6 +2,7 @@
 #include "Core/BankClient.h"
 #include "../Libs/Cpp-Library-Collection/Lib/InputValidate.h" 
 #include "../Libs/Cpp-Library-Collection/Lib/Util.h" 
+#include "../BankSystem/Screens/MainScreen.h"
 
 
 void ReadClientInfo(BankClient& Client)
@@ -220,7 +221,11 @@ void ShowTotalBalances()
 
 int main()
 {
-    ShowTotalBalances();
+
+    MainScreen::ShowMainMenue();
+
+
+
 
     system("pause>0");
     return 0;
