@@ -182,21 +182,6 @@ public:
 	__declspec(property(get = MarkedForDeleted)) bool MarkedForDelete;
 
 
-	void Print() const
-	{
-		std::cout << "\nClient Card:";
-		std::cout << "\n___________________";
-		std::cout << "\nFirstName   : " << GetFirstName();
-		std::cout << "\nLastName    : " << GetLastName();
-		std::cout << "\nFull Name   : " << FullName();
-		std::cout << "\nEmail       : " << GetEmail();
-		std::cout << "\nPhone       : " << GetPhone();
-		std::cout << "\nAcc. Number : " << _AccountNumber;
-		std::cout << "\nPassword    : " << _PinCode;
-		std::cout << "\nBalance     : " << _AccountBalance;
-		std::cout << "\n___________________\n";
-	}
-
 	static BankClient Find(const std::string& AccountNumber)
 	{
 		std::fstream MyFile;
