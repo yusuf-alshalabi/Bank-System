@@ -15,6 +15,7 @@ private:
 	std::string _AccountNumber;
 	std::string _PinCode;
 	double _AccountBalance;
+	bool _MarkedForDelete = false;
 
 	static BankClient _ConvertLinetoClientObject(const std::string& Line, const std::string& Seperator = "#//#")
 	{
@@ -65,21 +66,31 @@ private:
 
 	static void _SaveCleintsDataToFile(const std::vector<BankClient>& vClients)
 	{
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::out); // Overwrite mode
+
+		fstream MyFile;
+		MyFile.open("Clients.txt", ios::out);//overwrite
+
+		string DataLine;
 
 		if (MyFile.is_open())
 		{
-			std::string DataLine;
 
 			for (const BankClient& C : vClients)
 			{
-				DataLine = _ConverClientObjectToLine(C);
-				MyFile << DataLine << "\n";
+				if (C.MarkedForDeleted() == false)
+				{
+					//we only write records that are not marked for delete.  
+					DataLine = _ConverClientObjectToLine(C);
+					MyFile << DataLine << endl;
+
+				}
+				
 			}
 
 			MyFile.close();
+
 		}
+
 	}
 
 	void _Update()
@@ -168,6 +179,14 @@ public:
 		return _AccountBalance;
 	}
 	__declspec(property(get = GetAccountBalance, put = SetAccountBalance)) double AccountBalance;
+
+	// Property Read-Only: MarkedForDeleted
+	bool MarkedForDeleted() const
+	{
+		return _MarkedForDelete;
+	}
+	__declspec(property(get = MarkedForDeleted)) bool MarkedForDelete;
+
 
 	void Print() const
 	{
@@ -268,6 +287,29 @@ public:
 	{
 		BankClient Client1 = BankClient::Find(AccountNumber);
 		return (!Client1.IsEmpty());
+	}
+
+	bool Delete()
+	{
+		vector <BankClient> _vClients;
+		_vClients = _LoadClientsDataFromFile();
+
+		for (BankClient& C : _vClients)
+		{
+			if (C.GetAccountNumber() == _AccountNumber)
+			{
+				C._MarkedForDelete = true;
+				break;
+			}
+
+		}
+
+		_SaveCleintsDataToFile(_vClients);
+
+		*this = _GetEmptyClientObject();
+
+		return true;
+
 	}
 
 	static BankClient GetAddNewClientObject(const std::string& AccountNumber)
