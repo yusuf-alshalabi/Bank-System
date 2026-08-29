@@ -130,23 +130,23 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AuthManager.h" />
-    <ClInclude Include="ClientManager.h" />
     <ClInclude Include="Core\BankClient.h" />
     <ClInclude Include="Core\Person.h" />
-    <ClInclude Include="Crypto.h" />
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="MenuManager.h" />
-    <ClInclude Include="PermissionManager.h" />
+    <ClInclude Include="LastVersion\AuthManager.h" />
+    <ClInclude Include="LastVersion\ClientManager.h" />
+    <ClInclude Include="LastVersion\Crypto.h" />
+    <ClInclude Include="LastVersion\FileManager.h" />
+    <ClInclude Include="LastVersion\Globals.h" />
+    <ClInclude Include="LastVersion\InputManager.h" />
+    <ClInclude Include="LastVersion\Logger.h" />
+    <ClInclude Include="LastVersion\MenuManager.h" />
+    <ClInclude Include="LastVersion\PermissionManager.h" />
+    <ClInclude Include="LastVersion\Session.h" />
+    <ClInclude Include="LastVersion\TransactionManager.h" />
+    <ClInclude Include="LastVersion\UserManager.h" />
+    <ClInclude Include="LastVersion\Utilities.h" />
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\Screen.h" />
-    <ClInclude Include="Session.h" />
-    <ClInclude Include="TransactionManager.h" />
-    <ClInclude Include="UserManager.h" />
-    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

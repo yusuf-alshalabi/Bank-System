@@ -29,45 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AuthManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Crypto.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="PermissionManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Session.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="TransactionManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="UserManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Person.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -79,6 +40,45 @@
     </ClInclude>
     <ClInclude Include="Screens\MainScreen.h">
       <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\AuthManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\ClientManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\Crypto.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\FileManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\Globals.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\InputManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\Logger.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\MenuManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\PermissionManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\Session.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\TransactionManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\UserManager.h">
+      <Filter>Header Files\LastVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="LastVersion\Utilities.h">
+      <Filter>Header Files\LastVersion</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
