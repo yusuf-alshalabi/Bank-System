@@ -59,9 +59,56 @@ void UpdateClient()
     }
 }
 
+void AddNewClient()
+{
+    string AccountNumber = "";
+
+    cout << "\nPlease Enter Account Number: ";
+    AccountNumber = Core::InputValidate::ReadString();
+    while (BankClient::IsClientExist(AccountNumber))
+    {
+        cout << "\nAccount Number Is Already Used, Choose another one: ";
+        AccountNumber = Core::InputValidate::ReadString();
+    }
+
+    BankClient NewClient = BankClient::GetAddNewClientObject(AccountNumber);
+
+
+    ReadClientInfo(NewClient);
+
+    BankClient::enSaveResults SaveResult;
+
+    SaveResult = NewClient.Save();
+
+    switch (SaveResult)
+    {
+    case  BankClient::enSaveResults::svSucceeded:
+    {
+        cout << "\nAccount Addeded Successfully :-)\n";
+        NewClient.Print();
+        break;
+    }
+    case BankClient::enSaveResults::svFailedEmptyObject:
+    {
+        cout << "\nError account was not saved because it's Empty";
+        break;
+
+    }
+    case BankClient::enSaveResults::svFaildAccountNumberExists:
+    {
+        cout << "\nError account was not saved because account number is used!\n";
+        break;
+
+    }
+    }
+}
+
+
+
+
 int main()
 {
-    UpdateClient();
+    AddNewClient();
 
     system("pause>0");
     return 0;
