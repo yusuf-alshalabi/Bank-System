@@ -63,12 +63,10 @@ void AddNewClient()
 {
     string AccountNumber = "";
 
-    cout << "\nPlease Enter Account Number: ";
-    AccountNumber = Core::InputValidate::ReadString();
+    AccountNumber = Core::InputValidate::ReadString("\nPlease Enter Account Number: ");
     while (BankClient::IsClientExist(AccountNumber))
     {
-        cout << "\nAccount Number Is Already Used, Choose another one: ";
-        AccountNumber = Core::InputValidate::ReadString();
+        AccountNumber = Core::InputValidate::ReadString("\nAccount Number Is Already Used, Choose another one: ");
     }
 
     BankClient NewClient = BankClient::GetAddNewClientObject(AccountNumber);
@@ -103,12 +101,37 @@ void AddNewClient()
     }
 }
 
+void DeleteClient()
+{
+    string AccountNumber = "";
 
+    AccountNumber = Core::InputValidate::ReadString("\nPlease Enter Account Number: ");
+    while (!BankClient::IsClientExist(AccountNumber))
+    {
+        AccountNumber = Core::InputValidate::ReadString("\nAccount number is not found, choose another one: ");
+    }
+
+    BankClient Client1 = BankClient::Find(AccountNumber);
+    Client1.Print();
+
+    if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to delete this client?"))
+    {
+        if (Client1.Delete())
+        {
+            cout << "\nClient Deleted Successfully :-)\n";
+            Client1.Print();
+        }
+        else
+        {
+            cout << "\nError Client Was not Deleted\n";
+        }
+    }
+}
 
 
 int main()
 {
-    AddNewClient();
+    DeleteClient();
 
     system("pause>0");
     return 0;
