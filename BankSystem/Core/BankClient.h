@@ -10,7 +10,7 @@
 class BankClient : public Person
 {
 private:
-	enum enMode { EmptyMode = 0, UpdateMode = 1 };
+	enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
 	enMode _Mode;
 	std::string _AccountNumber;
 	std::string _PinCode;
@@ -96,6 +96,12 @@ private:
 		}
 
 		_SaveCleintsDataToFile(vClients);
+	}
+
+	void _AddNew()
+	{
+
+		_AddDataLineToFile(_ConverClientObjectToLine(*this));
 	}
 
 	void _AddDataLineToFile(const std::string& DataLine)
@@ -222,18 +228,37 @@ public:
 		return _GetEmptyClientObject();
 	}
 
-	enum enSaveResults { svFailedEmptyObject = 0, svSucceeded = 1 };
+	enum enSaveResults { svFailedEmptyObject = 0, svSucceeded = 1, svFaildAccountNumberExists = 2 };
 
 	enSaveResults Save()
 	{
 		switch (_Mode)
 		{
 		case enMode::EmptyMode:
-			return enSaveResults::svFailedEmptyObject;
-
+		{
+			if (IsEmpty())
+			{
+				return enSaveResults::svFailedEmptyObject;
+			}
+		}
 		case enMode::UpdateMode:
+		{
 			_Update();
 			return enSaveResults::svSucceeded;
+		}
+		case enMode::AddNewMode:
+		{
+			if (BankClient::IsClientExist(_AccountNumber))
+			{
+				return enSaveResults::svFaildAccountNumberExists;
+			}
+			else
+			{
+				_AddNew();
+				_Mode = enMode::UpdateMode;
+				return enSaveResults::svSucceeded;
+			}
+		}
 		}
 
 		return enSaveResults::svFailedEmptyObject;
@@ -244,4 +269,10 @@ public:
 		BankClient Client1 = BankClient::Find(AccountNumber);
 		return (!Client1.IsEmpty());
 	}
+
+	static BankClient GetAddNewClientObject(const std::string& AccountNumber)
+	{
+		return BankClient(enMode::AddNewMode, "", "", "", "", AccountNumber, "", 0);
+	}
+
 };
