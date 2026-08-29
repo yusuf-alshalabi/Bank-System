@@ -314,4 +314,20 @@ public:
 		return _LoadClientsDataFromFile();
 	}
 
+
+	static double GetTotalBalances()
+	{
+		std::vector<BankClient> vClients = BankClient::GetClientsList();
+
+		double TotalBalances = 0;
+
+		for (const BankClient& Client : vClients)
+		{
+
+			TotalBalances += Client.GetAccountBalance();
+		}
+
+		return TotalBalances;
+
+	}
 };
