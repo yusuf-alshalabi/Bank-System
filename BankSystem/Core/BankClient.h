@@ -66,31 +66,25 @@ private:
 
 	static void _SaveCleintsDataToFile(const std::vector<BankClient>& vClients)
 	{
-
-		fstream MyFile;
-		MyFile.open("Clients.txt", ios::out);//overwrite
-
-		string DataLine;
+		std::fstream MyFile;
+		MyFile.open("Clients.txt", std::ios::out); // overwrite
 
 		if (MyFile.is_open())
 		{
+			std::string DataLine;
 
 			for (const BankClient& C : vClients)
 			{
 				if (C.MarkedForDeleted() == false)
 				{
-					//we only write records that are not marked for delete.  
+					// we only write records that are not marked for delete.  
 					DataLine = _ConverClientObjectToLine(C);
-					MyFile << DataLine << endl;
-
+					MyFile << DataLine << "\n";
 				}
-				
 			}
 
 			MyFile.close();
-
 		}
-
 	}
 
 	void _Update()
@@ -291,7 +285,7 @@ public:
 
 	bool Delete()
 	{
-		vector <BankClient> _vClients;
+		std::vector<BankClient> _vClients;
 		_vClients = _LoadClientsDataFromFile();
 
 		for (BankClient& C : _vClients)
@@ -301,7 +295,6 @@ public:
 				C._MarkedForDelete = true;
 				break;
 			}
-
 		}
 
 		_SaveCleintsDataToFile(_vClients);
@@ -309,7 +302,6 @@ public:
 		*this = _GetEmptyClientObject();
 
 		return true;
-
 	}
 
 	static BankClient GetAddNewClientObject(const std::string& AccountNumber)
