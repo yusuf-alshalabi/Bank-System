@@ -139,8 +139,10 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="MainScreen.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="PermissionManager.h" />
+    <ClInclude Include="Screen.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="TransactionManager.h" />
     <ClInclude Include="UserManager.h" />

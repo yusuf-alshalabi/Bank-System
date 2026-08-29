@@ -74,5 +74,11 @@
     <ClInclude Include="Core\BankClient.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="MainScreen.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Screen.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
