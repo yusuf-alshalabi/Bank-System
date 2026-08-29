@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Core/BankClient.h"
 #include "../Libs/Cpp-Library-Collection/Lib/InputValidate.h" 
+#include "../Libs/Cpp-Library-Collection/Lib/Util.h" 
 
 
 void ReadClientInfo(BankClient& Client)
@@ -172,9 +173,54 @@ void ShowClientsList()
 
 }
 
+
+void PrintClientRecordBalanceLine(const BankClient& Client)
+{
+
+    std::cout << "| " << std::setw(15) << std::left << Client.GetAccountNumber();
+    std::cout << "| " << std::setw(40) << std::left << Client.FullName();
+    std::cout << "| " << std::setw(12) << std::left << Client.GetAccountBalance();
+
+}
+
+
+void ShowTotalBalances()
+{
+
+    std::vector<BankClient> vClients = BankClient::GetClientsList();
+
+    std::cout << "\n\t\t\t\t\tBalances List (" << vClients.size() << ") Client(s).";
+    std::cout << "\n_______________________________________________________";
+    std::cout << "_________________________________________\n" << std::endl;
+
+    std::cout << "| " << std::left << std::setw(15) << "Accout Number";
+    std::cout << "| " << std::left << std::setw(40) << "Client Name";
+    std::cout << "| " << std::left << std::setw(12) << "Balance";
+    std::cout << "\n_______________________________________________________";
+    std::cout << "_________________________________________\n" << std::endl;
+
+    double TotalBalances = BankClient::GetTotalBalances();
+
+    if (vClients.size() == 0)
+        std::cout << "\t\t\t\tNo Clients Available In the System!";
+    else
+
+        for (const BankClient& Client : vClients)
+        {
+            PrintClientRecordBalanceLine(Client);
+            std::cout << std::endl;
+        }
+
+    std::cout << "\n_______________________________________________________";
+    std::cout << "_________________________________________\n" << std::endl;
+    std::cout << "\t\t\t\t\t   Total Balances = " << TotalBalances << std::endl;
+    std::cout << "\t\t\t\t\t   ( " << Core::Util::NumberToText(TotalBalances) << ")";
+}
+
+
 int main()
 {
-    ShowClientsList();
+    ShowTotalBalances();
 
     system("pause>0");
     return 0;
