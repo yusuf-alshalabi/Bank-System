@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include "Screen.h"
+#include "ClientListScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
@@ -34,8 +35,8 @@ private:
 
     static void _ShowAllClientsScreen()
     {
-        // TODO: Call ClientListScreen::ShowClientsList();
-        std::cout << "\nClient List Screen Will be here...\n";
+       // std::cout << "\nClient List Screen Will be here...\n";
+        ClientListScreen::ShowClientsList();
     }
 
     static void _ShowAddNewClientsScreen()

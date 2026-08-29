@@ -80,5 +80,8 @@
     <ClInclude Include="LastVersion\Utilities.h">
       <Filter>Header Files\LastVersion</Filter>
     </ClInclude>
+    <ClInclude Include="Screens\ClientListScreen.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

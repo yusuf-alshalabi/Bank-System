@@ -145,6 +145,7 @@
     <ClInclude Include="LastVersion\TransactionManager.h" />
     <ClInclude Include="LastVersion\UserManager.h" />
     <ClInclude Include="LastVersion\Utilities.h" />
+    <ClInclude Include="Screens\ClientListScreen.h" />
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\Screen.h" />
   </ItemGroup>
