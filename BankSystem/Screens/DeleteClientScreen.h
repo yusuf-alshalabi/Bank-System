@@ -44,12 +44,7 @@ public:
         BankClient Client1 = BankClient::Find(AccountNumber);
         _PrintClient(Client1);
 
-        std::cout << "\nAre you sure you want to delete this client y/n? ";
-
-        char Answer = 'n';
-        std::cin >> Answer;
-
-        if (Answer == 'y' || Answer == 'Y')
+        if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to delete this client y/n? "))
         {
 
 
