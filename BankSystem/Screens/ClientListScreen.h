@@ -9,7 +9,7 @@
 class ClientListScreen :protected Screen
 {
 private:
-    static void PrintClientRecordLine(BankClient Client)
+    static void PrintClientRecordLine(const BankClient& Client)
     {
 
         std::cout << std::setw(8) << std::left << "" << "| " << std::setw(15) << std::left << Client.GetAccountNumber();
