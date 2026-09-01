@@ -104,5 +104,8 @@
     <ClInclude Include="Screens\WithdrawScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
+    <ClInclude Include="Screens\TotalBalancesScreen.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

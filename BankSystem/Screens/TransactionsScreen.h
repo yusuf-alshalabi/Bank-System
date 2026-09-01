@@ -6,6 +6,7 @@
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "DepositScreen.h"
 #include "WithdrawScreen.h"
+#include "TotalBalancesScreen.h"
 
 using namespace std;
 
@@ -42,7 +43,8 @@ private:
 
     static void _ShowTotalBalancesScreen()
     {
-        cout << "\n Balances Screen will be here.\n";
+       // cout << "\n Balances Screen will be here.\n";
+        		TotalBalancesScreen::ShowTotalBalances();
     }
 
     static void _GoBackToTransactionsMenue()
