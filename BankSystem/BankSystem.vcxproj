@@ -148,6 +148,7 @@
     <ClInclude Include="Screens\AddNewClientScreen.h" />
     <ClInclude Include="Screens\ClientListScreen.h" />
     <ClInclude Include="Screens\DeleteClientScreen.h" />
+    <ClInclude Include="Screens\FindClientScreen.h" />
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\Screen.h" />
     <ClInclude Include="UpdateClientScreen.h" />
