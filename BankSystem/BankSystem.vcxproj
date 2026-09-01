@@ -153,6 +153,7 @@
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\Screen.h" />
     <ClInclude Include="Screens\TransactionsScreen.h" />
+    <ClInclude Include="Screens\WithdrawScreen.h" />
     <ClInclude Include="UpdateClientScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -5,6 +5,7 @@
 #include "../Core/BankClient.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "DepositScreen.h"
+#include "WithdrawScreen.h"
 
 using namespace std;
 
@@ -35,7 +36,8 @@ private:
 
     static void _ShowWithdrawScreen()
     {
-        cout << "\n Withdraw Screen will be here.\n";
+       // cout << "\n Withdraw Screen will be here.\n";
+		WithdrawScreen::ShowWithdrawScreen();
     }
 
     static void _ShowTotalBalancesScreen()
