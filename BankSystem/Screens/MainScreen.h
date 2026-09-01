@@ -6,6 +6,7 @@
 #include "AddNewClientScreen.h"
 #include "DeleteClientScreen.h"
 #include "UpdateClientScreen.h"
+#include "FindClientScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
@@ -62,8 +63,8 @@ private:
 
     static void _ShowFindClientScreen()
     {
-        // TODO: Call FindClientScreen::ShowFindClientScreen();
-        std::cout << "\nFind Client Screen Will be here...\n";
+        // std::cout << "\nFind Client Screen Will be here...\n";
+        FindClientScreen::ShowFindClientScreen();
     }
 
     static void _ShowTransactionsMenue()
@@ -141,7 +142,7 @@ public:
     static void ShowMainMenue()
     {
         system("cls");
-        _DrawScreenHeader("Main Screen");
+        _DrawScreenHeader("\t\tMain Screen");
 
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
         std::cout << std::setw(37) << std::left << "" << "\t\tMain Menue\n";
