@@ -33,8 +33,7 @@ public:
 
         std::string AccountNumber = "";
 
-        std::cout << "\nPlease Enter Account Number: ";
-        AccountNumber = Core::InputValidate::ReadString();
+        AccountNumber = Core::InputValidate::ReadString("\nPlease Enter Account Number: ");
         while (!BankClient::IsClientExist(AccountNumber))
         {
             std::cout << "\nAccount number is not found, choose another one: ";
