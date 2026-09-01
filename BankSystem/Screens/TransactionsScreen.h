@@ -4,6 +4,7 @@
 #include "../Core/Person.h"
 #include "../Core/BankClient.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "DepositScreen.h"
 
 using namespace std;
 
@@ -27,7 +28,9 @@ private:
 
     static void _ShowDepositScreen()
     {
-        cout << "\n Deposit Screen will be here.\n";
+        //cout << "\n Deposit Screen will be here.\n";
+        DepositScreen::ShowDepositScreen();
+
     }
 
     static void _ShowWithdrawScreen()
