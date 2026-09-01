@@ -4,6 +4,7 @@
 #include "Screen.h"
 #include "ClientListScreen.h"
 #include "AddNewClientScreen.h"
+#include "DeleteClientScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
@@ -48,8 +49,8 @@ private:
 
     static void _ShowDeleteClientScreen()
     {
-        // TODO: Call DeleteClientScreen::ShowDeleteClientScreen();
-        std::cout << "\nDelete Client Screen Will be here...\n";
+        //std::cout << "\nDelete Client Screen Will be here...\n";
+        DeleteClientScreen::ShowDeleteClientScreen();
     }
 
     static void _ShowUpdateClientScreen()
