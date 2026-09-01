@@ -7,6 +7,7 @@
 #include "DeleteClientScreen.h"
 #include "UpdateClientScreen.h"
 #include "FindClientScreen.h"
+#include "TransactionsScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
@@ -69,8 +70,8 @@ private:
 
     static void _ShowTransactionsMenue()
     {
-        // TODO: Call TransactionsScreen::ShowTransactionsMenue();
-        std::cout << "\nTransactions Menue Will be here...\n";
+       // std::cout << "\nTransactions Menue Will be here...\n";
+        TransactionsScreen::ShowTransactionsMenue();
     }
 
     static void _ShowManageUsersMenue()
