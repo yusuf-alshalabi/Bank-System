@@ -12,26 +12,20 @@ class AddNewClientScreen : protected Screen
 private:
     static void _ReadClientInfo(BankClient& Client)
     {
-        std::cout << "\nEnter FirstName: ";
-        Client.FirstName = Core::InputValidate::ReadString();
+        Client.FirstName = Core::InputValidate::ReadString("\nEnter FirstName: ");
 
-        std::cout << "\nEnter LastName: ";
-        Client.LastName = Core::InputValidate::ReadString();
+        Client.LastName = Core::InputValidate::ReadString("\nEnter LastName: ");
 
-        std::cout << "\nEnter Email: ";
-        Client.Email = Core::InputValidate::ReadString();
+        Client.Email = Core::InputValidate::ReadString("\nEnter Email: ");
 
-        std::cout << "\nEnter Phone: ";
-        Client.Phone = Core::InputValidate::ReadString();
+        Client.Phone = Core::InputValidate::ReadString("\nEnter Phone: ");
 
-        std::cout << "\nEnter PinCode: ";
-        Client.PinCode = Core::InputValidate::ReadString();
+        Client.PinCode = Core::InputValidate::ReadString("\nEnter PinCode: ");
 
-        std::cout << "\nEnter Account Balance: ";
         Client.AccountBalance = Core::InputValidate::ReadNumber<double>();
     }
 
-    static void _PrintClient(BankClient Client)
+    static void _PrintClient(const BankClient& Client)
     {
         std::cout << "\nClient Card:";
         std::cout << "\n___________________";
