@@ -8,6 +8,7 @@
 #include "UpdateClientScreen.h"
 #include "FindClientScreen.h"
 #include "TransactionsScreen/TransactionsScreen.h"
+#include "ManageUsersScreen/ManageUsersScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
@@ -76,8 +77,8 @@ private:
 
     static void _ShowManageUsersMenue()
     {
-        // TODO: Call ManageUsersScreen::ShowManageUsersMenue();
-        std::cout << "\nManage Users Menue Will be here...\n";
+       // std::cout << "\nManage Users Menue Will be here...\n";
+        ManageUsersScreen::ShowManageUsersMenue();
     }
 
     static void _Logout()

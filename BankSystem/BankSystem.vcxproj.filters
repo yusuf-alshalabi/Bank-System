@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Screens\TransactionsScreen">
       <UniqueIdentifier>{14d688b2-b297-4404-b358-d7ccfe985d8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Screens\ManageUsersScreen">
+      <UniqueIdentifier>{2f0e0df7-e26b-4de8-ac21-e792ac055c5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Screens\TransactionsScreen\WithdrawScreen.h">
       <Filter>Header Files\Screens\TransactionsScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens\ManageUsersScreen\ManageUsersScreen.h">
+      <Filter>Header Files\Screens\ManageUsersScreen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
