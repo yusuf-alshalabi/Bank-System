@@ -339,20 +339,4 @@ public:
 
 	}
 
-	static double GetTotalBalances()
-	{
-		std::vector <BankClient> vClients = BankClient::GetClientsList();
-
-		double TotalBalances = 0;
-
-		for (BankClient Client : vClients)
-		{
-
-			TotalBalances += Client.AccountBalance;
-		}
-
-		return TotalBalances;
-	}
-
-
 };
