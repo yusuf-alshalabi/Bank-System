@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Core\BankClient.h" />
     <ClInclude Include="Core\Person.h" />
+    <ClInclude Include="Core\User.h" />
     <ClInclude Include="LastVersion\AuthManager.h" />
     <ClInclude Include="LastVersion\ClientManager.h" />
     <ClInclude Include="LastVersion\Crypto.h" />

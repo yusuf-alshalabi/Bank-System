@@ -116,5 +116,8 @@
     <ClInclude Include="Screens\ManageUsersScreen\ManageUsersScreen.h">
       <Filter>Header Files\Screens\ManageUsersScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Core\User.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
