@@ -6,6 +6,7 @@
 #include <vector>
 #include "Person.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
+#include <vector>
 
 class BankClient : public Person
 {
@@ -340,7 +341,7 @@ public:
 
 	static double GetTotalBalances()
 	{
-		vector <BankClient> vClients = BankClient::GetClientsList();
+		std::vector <BankClient> vClients = BankClient::GetClientsList();
 
 		double TotalBalances = 0;
 
