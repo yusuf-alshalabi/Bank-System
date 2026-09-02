@@ -148,13 +148,13 @@
     <ClInclude Include="Screens\AddNewClientScreen.h" />
     <ClInclude Include="Screens\ClientListScreen.h" />
     <ClInclude Include="Screens\DeleteClientScreen.h" />
-    <ClInclude Include="Screens\DepositScreen.h" />
     <ClInclude Include="Screens\FindClientScreen.h" />
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\Screen.h" />
-    <ClInclude Include="Screens\TotalBalancesScreen.h" />
-    <ClInclude Include="Screens\TransactionsScreen.h" />
-    <ClInclude Include="Screens\WithdrawScreen.h" />
+    <ClInclude Include="Screens\TransactionsScreen\DepositScreen.h" />
+    <ClInclude Include="Screens\TransactionsScreen\TotalBalancesScreen.h" />
+    <ClInclude Include="Screens\TransactionsScreen\TransactionsScreen.h" />
+    <ClInclude Include="Screens\TransactionsScreen\WithdrawScreen.h" />
     <ClInclude Include="UpdateClientScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

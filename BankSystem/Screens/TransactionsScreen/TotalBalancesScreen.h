@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
-#include "Screen.h"
-#include "../Core/Person.h"
-#include "../Core/BankClient.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/Util.h"
+#include "../Screen.h"
+#include "../../Core/Person.h"
+#include "../../Core/BankClient.h"
+#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "../../../Libs/Cpp-Library-Collection/Lib/Util.h"
 #include <vector>
 
 class TotalBalancesScreen : protected Screen

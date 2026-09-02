@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
-#include "Screen.h"
-#include "../Core/Person.h"
-#include "../Core/BankClient.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "../Screen.h"
+#include "../../Core/Person.h"
+#include "../../Core/BankClient.h"
+#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "DepositScreen.h"
 #include "WithdrawScreen.h"
 #include "TotalBalancesScreen.h"

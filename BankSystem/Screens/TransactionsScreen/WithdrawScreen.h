@@ -1,14 +1,13 @@
 #pragma once
 
 #include <iostream>
-#include "Screen.h"
-#include "../Core/Person.h"
-#include "../Core/BankClient.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "../Screen.h"
+#include "../../Core/Person.h"
+#include "../../Core/BankClient.h"
+#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
-class DepositScreen : protected Screen
+class WithdrawScreen : protected Screen
 {
-
 private:
 
     static void _PrintClient(const BankClient& Client)
@@ -29,9 +28,9 @@ private:
 
 public:
 
-    static void ShowDepositScreen()
+    static void ShowWithdrawScreen()
     {
-        _DrawScreenHeader("\t   Deposit Screen");
+        _DrawScreenHeader("\t   Withdraw Screen");
 
         std::string AccountNumber = Core::InputValidate::ReadString("\nPlease enter Account Number: ");
 
@@ -45,14 +44,24 @@ public:
         BankClient Client1 = BankClient::Find(AccountNumber);
         _PrintClient(Client1);
 
-        double Amount = Core::InputValidate::ReadNumber<double>("\nPlease enter deposit amount? ");
+
+        double Amount = 0;
+        Amount = Core::InputValidate::ReadNumber<double>("\nPlease enter Withdraw amount? ");
 
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
         {
-            Client1.Deposit(Amount);
-            std::cout << "\nAmount Deposited Successfully.\n";
-            std::cout << "\nNew Balance Is: " << Client1.GetAccountBalance();
+            if (Client1.Withdraw(Amount))
+            {
+                std::cout << "\nAmount Withdrew Successfully.\n";
+                std::cout << "\nNew Balance Is: " << Client1.GetAccountBalance();
+            }
+            else
+            {
+                std::cout << "\nCannot withdraw, Insuffecient Balance!\n";
+                std::cout << "\nAmout to withdraw is: " << Amount;
+                std::cout << "\nYour Balance is: " << Client1.GetAccountBalance();
 
+            }
         }
         else
         {

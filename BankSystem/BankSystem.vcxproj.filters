@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{5eeaec4d-56d2-46c2-9d9d-ff14d9a33119}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Screens\TransactionsScreen">
+      <UniqueIdentifier>{14d688b2-b297-4404-b358-d7ccfe985d8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -95,17 +98,17 @@
     <ClInclude Include="Screens\FindClientScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Screens\TransactionsScreen.h">
-      <Filter>Header Files\Screens</Filter>
+    <ClInclude Include="Screens\TransactionsScreen\DepositScreen.h">
+      <Filter>Header Files\Screens\TransactionsScreen</Filter>
     </ClInclude>
-    <ClInclude Include="Screens\DepositScreen.h">
-      <Filter>Header Files\Screens</Filter>
+    <ClInclude Include="Screens\TransactionsScreen\TotalBalancesScreen.h">
+      <Filter>Header Files\Screens\TransactionsScreen</Filter>
     </ClInclude>
-    <ClInclude Include="Screens\WithdrawScreen.h">
-      <Filter>Header Files\Screens</Filter>
+    <ClInclude Include="Screens\TransactionsScreen\TransactionsScreen.h">
+      <Filter>Header Files\Screens\TransactionsScreen</Filter>
     </ClInclude>
-    <ClInclude Include="Screens\TotalBalancesScreen.h">
-      <Filter>Header Files\Screens</Filter>
+    <ClInclude Include="Screens\TransactionsScreen\WithdrawScreen.h">
+      <Filter>Header Files\Screens\TransactionsScreen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

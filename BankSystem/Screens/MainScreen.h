@@ -7,7 +7,7 @@
 #include "DeleteClientScreen.h"
 #include "UpdateClientScreen.h"
 #include "FindClientScreen.h"
-#include "TransactionsScreen.h"
+#include "TransactionsScreen/TransactionsScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class MainScreen : protected Screen
