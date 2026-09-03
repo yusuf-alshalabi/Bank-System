@@ -3,6 +3,7 @@
 #include "../Screen.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "UsersListScreen.h"
+#include "AddNewUserScreen.h"
 #include <iomanip>
 
 using namespace std;
@@ -38,7 +39,8 @@ private:
 
     static void _ShowAddNewUserScreen()
     {
-        cout << "\nAdd New User Screen Will Be Here.\n";
+       // cout << "\nAdd New User Screen Will Be Here.\n";
+        AddNewUserScreen::ShowAddNewUserScreen();
 
     }
 
