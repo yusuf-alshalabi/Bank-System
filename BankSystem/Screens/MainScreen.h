@@ -10,6 +10,7 @@
 #include "TransactionsScreen/TransactionsScreen.h"
 #include "ManageUsersScreen/ManageUsersScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "Global.h"
 
 class MainScreen : protected Screen
 {
@@ -83,8 +84,8 @@ private:
 
     static void _Logout()
     {
-        // TODO: Handle session end / logout
-        std::cout << "\nUser logged out successfully.\n";
+        CurrentUser = User::Find("", "");
+        //then it will go back to main function.
     }
 
     static void _PerformMainMenueOption(enMainMenueOptions MainMenueOption)
