@@ -178,7 +178,7 @@ public:
         return _MarkedForDelete;
     }
 
-    string GetUserName()
+    string GetUserName() const
     {
         return _UserName;
     }
@@ -195,7 +195,7 @@ public:
         _Password = Password;
     }
 
-    string GetPassword()
+    string GetPassword() const
     {
         return _Password;
     }
@@ -206,7 +206,7 @@ public:
         _Permissions = Permissions;
     }
 
-    int GetPermissions()
+    int GetPermissions() const
     {
         return _Permissions;
     }

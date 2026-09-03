@@ -25,7 +25,7 @@ private:
         User.Permissions = _ReadPermissionsToSet();
     }
 
-    static void _PrintUser(User User)
+    static void _PrintUser(const User& User)
     {
         std::cout << "\nUser Card:";
         std::cout << "\n___________________";
@@ -43,12 +43,9 @@ private:
 
     static int _ReadPermissionsToSet()
     {
-
         int Permissions = 0;
         char Answer = 'n';
 
-
-     
 		if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to give full access? y/n? "))
         {
             return -1;
@@ -104,12 +101,10 @@ public:
 
         string UserName = "";
 
-        std::cout << "\nPlease Enter UserName: ";
-        UserName = Core::InputValidate::ReadString();
+        UserName = Core::InputValidate::ReadString("\nPlease Enter UserName: ");
         while (User::IsUserExist(UserName))
         {
-            std::cout << "\nUserName Is Already Used, Choose another one: ";
-            UserName = Core::InputValidate::ReadString();
+            UserName = Core::InputValidate::ReadString("\nUserName Is Already Used, Choose another one: ");
         }
 
         User NewUser = User::GetAddNewUserObject(UserName);
