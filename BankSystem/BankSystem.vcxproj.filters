@@ -134,5 +134,11 @@
     <ClInclude Include="Screens\ManageUsersScreen\FindUserScreen.h">
       <Filter>Header Files\Screens\ManageUsersScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Screens\LoginScreen.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens\Global.h">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
