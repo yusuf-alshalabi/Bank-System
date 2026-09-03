@@ -128,5 +128,8 @@
     <ClInclude Include="Screens\ManageUsersScreen\DeleteUserScreen.h">
       <Filter>Header Files\Screens\ManageUsersScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Screens\ManageUsersScreen\UpdateUserScreen.h">
+      <Filter>Header Files\Screens\ManageUsersScreen</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

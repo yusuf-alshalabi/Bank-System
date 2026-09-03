@@ -5,6 +5,7 @@
 #include "UsersListScreen.h"
 #include "AddNewUserScreen.h"
 #include "DeleteUserScreen.h"
+#include "UpdateUserScreen.h"
 #include <iomanip>
 
 using namespace std;
@@ -54,7 +55,8 @@ private:
 
     static void _ShowUpdateUserScreen()
     {
-        cout << "\nUpdate User Screen Will Be Here.\n";
+        //cout << "\nUpdate User Screen Will Be Here.\n";
+        UpdateUserScreen::ShowUpdateUserScreen();
     }
 
     static void _ShowFindUserScreen()
