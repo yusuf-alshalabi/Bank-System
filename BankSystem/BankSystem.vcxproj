@@ -153,6 +153,7 @@
     <ClInclude Include="Screens\MainScreen.h" />
     <ClInclude Include="Screens\ManageUsersScreen\AddNewUserScreen.h" />
     <ClInclude Include="Screens\ManageUsersScreen\DeleteUserScreen.h" />
+    <ClInclude Include="Screens\ManageUsersScreen\FindUserScreen.h" />
     <ClInclude Include="Screens\ManageUsersScreen\ManageUsersScreen.h" />
     <ClInclude Include="Screens\ManageUsersScreen\UpdateUserScreen.h" />
     <ClInclude Include="Screens\ManageUsersScreen\UsersListScreen.h" />

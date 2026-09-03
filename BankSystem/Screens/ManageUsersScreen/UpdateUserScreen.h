@@ -26,7 +26,7 @@ private:
         User.Permissions = _ReadPermissionsToSet();
     }
 
-    static void _PrintUser(User User)
+    static void _PrintUser(const User& User)
     {
         cout << "\nUser Card:";
         cout << "\n___________________";

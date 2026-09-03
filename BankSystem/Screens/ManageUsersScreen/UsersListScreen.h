@@ -9,7 +9,7 @@ class UsersListScreen :protected Screen
 {
 
 private:
-    static void _PrintUserRecordLine(User User)
+    static void _PrintUserRecordLine(const User& User)
     {
 
         std::cout << std::setw(8) << std::left << "" << "| " << std::setw(12) << std::left << User.GetUserName();

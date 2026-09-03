@@ -6,6 +6,7 @@
 #include "AddNewUserScreen.h"
 #include "DeleteUserScreen.h"
 #include "UpdateUserScreen.h"
+#include "FindUserScreen.h"
 #include <iomanip>
 
 using namespace std;
@@ -61,7 +62,8 @@ private:
 
     static void _ShowFindUserScreen()
     {
-        cout << "\nFind User Screen Will Be Here.\n";
+      //  cout << "\nFind User Screen Will Be Here.\n";
+        FindUserScreen::ShowFindUserScreen();
     }
 
 
