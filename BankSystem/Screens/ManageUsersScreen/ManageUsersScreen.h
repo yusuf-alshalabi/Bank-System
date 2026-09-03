@@ -4,6 +4,7 @@
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "UsersListScreen.h"
 #include "AddNewUserScreen.h"
+#include "DeleteUserScreen.h"
 #include <iomanip>
 
 using namespace std;
@@ -46,7 +47,8 @@ private:
 
     static void _ShowDeleteUserScreen()
     {
-        cout << "\nDelete User Screen Will Be Here.\n";
+        //cout << "\nDelete User Screen Will Be Here.\n";
+		DeleteUserScreen::ShowDeleteUserScreen();
 
     }
 
