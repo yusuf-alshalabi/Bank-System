@@ -3,8 +3,9 @@
 
 int main()
 {
-    LoginScreen::ShowLoginScreen();
-
+    while (true) {
+        LoginScreen::ShowLoginScreen();
+    }
     system("pause>0");
     return 0;
 }
