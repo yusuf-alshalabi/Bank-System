@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Screen.h"
 #include "../Core/BankClient.h"
+#include "../Core/User.h"
 #include <iomanip>
 #include <vector>
 
@@ -25,7 +26,10 @@ public:
 
     static void ShowClientsList()
     {
-
+        if (!CheckAccessRights(User::enPermissions::pListClients))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         std::vector<BankClient> vClients = BankClient::GetClientsList();
         std::string Title = "\t  Client List Screen";

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "../Screen.h"
+#include "../../Core/User.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "UsersListScreen.h"
 #include "AddNewUserScreen.h"
@@ -128,6 +129,10 @@ public:
 
     static void ShowManageUsersMenue()
     {
+        if (!CheckAccessRights(User::enPermissions::pManageUsers))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         system("cls");
         _DrawScreenHeader("\t Manage Users Screen");

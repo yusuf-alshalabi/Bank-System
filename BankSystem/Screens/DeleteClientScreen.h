@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Screen.h"
 #include "../Core/BankClient.h"
+#include "../Core/User.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <vector>
 
@@ -28,6 +29,10 @@ private:
 public:
     static void ShowDeleteClientScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pDeleteClient))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         _DrawScreenHeader("\tDelete Client Screen");
 

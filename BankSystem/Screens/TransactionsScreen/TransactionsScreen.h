@@ -3,6 +3,7 @@
 #include "../Screen.h"
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
+#include "../../Core/User.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "DepositScreen.h"
 #include "WithdrawScreen.h"
@@ -100,7 +101,10 @@ public:
 
     static void ShowTransactionsMenue()
     {
-
+        if (!CheckAccessRights(User::enPermissions::pTranactions))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         system("cls");
         _DrawScreenHeader("\t  Transactions Screen");

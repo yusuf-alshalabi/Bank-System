@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Screen.h"
 #include "../Core/BankClient.h"
+#include "../Core/User.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <vector>
 
@@ -45,6 +46,10 @@ public:
 
     static void ShowAddNewClientScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pAddNewClient))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         _DrawScreenHeader("\t  Add New Client Screen");
 

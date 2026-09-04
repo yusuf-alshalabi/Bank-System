@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "../Core/Person.h"
 #include "../Core/BankClient.h"
+#include "../Core/User.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class FindClientScreen :protected Screen
@@ -29,6 +30,10 @@ public:
 
     static void ShowFindClientScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pFindClient))
+        {
+            return;// this will exit the function and it will not continue
+        }
 
         _DrawScreenHeader("\tFind Client Screen");
 
