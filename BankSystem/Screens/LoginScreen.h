@@ -44,7 +44,7 @@ private:
 
         } while (LoginFaild);
 
-        CurrentUser.AddLoginRegister();
+        CurrentUser.RegisterLogIn();
         MainScreen::ShowMainMenue();
         return true;
     }

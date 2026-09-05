@@ -150,7 +150,7 @@ private:
         return User(enMode::EmptyMode, "", "", "", "", "", "", 0);
     }
 
-    std::string _PrepareLoginRegisterLine(std::string Seperator = "#//#") {
+    std::string _PrepareLogInRecord(std::string Seperator = "#//#") {
         std::string LoginRegisterLine = "";
         LoginRegisterLine += Core::Date::GetSystemDateTime() + Seperator;
         LoginRegisterLine += GetUserName() + Seperator;
@@ -370,14 +370,14 @@ public:
 
     }
 
-    void AddLoginRegister() {
+    void RegisterLogIn() {
 
         std::fstream MyFile;
         MyFile.open("LoginRegister.txt", std::ios::out | std::ios::app);
 
         if (MyFile.is_open())
         {
-            MyFile << _PrepareLoginRegisterLine() << std::endl;
+            MyFile << _PrepareLogInRecord() << std::endl;
             MyFile.close();
         }
     }
