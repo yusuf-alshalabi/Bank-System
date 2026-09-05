@@ -12,43 +12,50 @@ class LoginScreen :protected Screen
 
 private:
 
-    static  void _Login()
+    static  bool _Login()
     {
         bool LoginFaild = false;
+		int Attempts = 0;
 
         string Username, Password;
         do
         {
-
             if (LoginFaild)
             {
-                cout << "\nInvlaid Username/Password!\n\n";
+                Attempts++;
+                std::cout << "\nInvlaid Username/Password!\n";
+                std::cout << "You have " << 3 - Attempts << " attempts to login\n\n";
+                if (Attempts == 3)
+                {
+                    std::cout << "\nYou are locked after 3 failed attempts.\n\n";
+                    return false;
+                }
             }
 
-            cout << "Enter Username? ";
-            cin >> Username;
+            std::cout << "Enter Username? ";
+            std::cin >> Username;
 
-            cout << "Enter Password? ";
-            cin >> Password;
+            std::cout << "Enter Password? ";
+            std::cin >> Password;
 
             CurrentUser = User::Find(Username, Password);
 
             LoginFaild = CurrentUser.IsEmpty();
 
         } while (LoginFaild);
-
+   
         MainScreen::ShowMainMenue();
-
+        return true;
     }
 
 public:
 
 
-    static void ShowLoginScreen()
+    static bool ShowLoginScreen()
     {
         system("cls");
         _DrawScreenHeader("\t  Login Screen");
-        _Login();
+        return _Login();
 
     }
 

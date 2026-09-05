@@ -4,7 +4,9 @@
 int main()
 {
     while (true) {
-        LoginScreen::ShowLoginScreen();
+        if (!LoginScreen::ShowLoginScreen()) {
+            break;
+        }
     }
     system("pause>0");
     return 0;
