@@ -32,18 +32,21 @@ private:
 		return AccountNumber;
 	}
 
-public:
-
-	static void ShowTransferScreen()
+	static string _ReadAccountNumber()
 	{
-		_DrawScreenHeader("\t   Transfer Screen");
+		string AccountNumber;
+		cout << "\nPlease Enter Account Number to Transfer From: ";
+		AccountNumber = Core::InputValidate::ReadString();
+		while (!BankClient::IsClientExist(AccountNumber))
+		{
+			cout << "\nAccount number is not found, choose another one: ";
+			AccountNumber = Core::InputValidate::ReadString();
+		}
+		return AccountNumber;
+	}
 
-		BankClient SourceClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer from: "));
-		_PrintClient(SourceClient);
-
-		BankClient DestinationClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer to: "));
-		_PrintClient(DestinationClient);
-
+	static double ReadAmount(const BankClient& SourceClient)
+	{
 		double Amount = Core::InputValidate::ReadNumber<double>("\nEnter transfer amount? ");
 
 		while (Amount <= 0)
@@ -57,6 +60,23 @@ public:
 			std::cout << "\nAmount Exceeds the available Balance,";
 			Amount = Core::InputValidate::ReadNumber<double>("\nEnter another amount : ");
 		}
+		return Amount;
+	}
+
+
+public:
+
+	static void ShowTransferScreen()
+	{
+		_DrawScreenHeader("\t   Transfer Screen");
+
+		BankClient SourceClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer from: "));
+		_PrintClient(SourceClient);
+
+		BankClient DestinationClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer to: "));
+		_PrintClient(DestinationClient);
+
+		double Amount = ReadAmount(SourceClient);
 
 
 		if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
