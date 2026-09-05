@@ -87,6 +87,10 @@ private:
         {
             Permissions += User::enPermissions::pManageUsers;
         }
+        if (Core::InputValidate::ReadYesNoOption("\nLogin/Register? y/n? "))
+        {
+            Permissions += User::enPermissions::pLoginRegister;
+        }
 
         return Permissions;
 
