@@ -286,6 +286,7 @@ public:
             {
                 return enSaveResults::svFaildEmptyObject;
             }
+            break;
         }
 
         case enMode::UpdateMode:
@@ -314,7 +315,7 @@ public:
             break;
         }
         }
-
+		return enSaveResults::svFaildEmptyObject;
     }
 
     static bool IsUserExist(string UserName)
