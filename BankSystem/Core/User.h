@@ -20,6 +20,32 @@ private:
 
     bool _MarkedForDelete = false;
 
+    struct stLoginRegisterRecord;
+    static stLoginRegisterRecord _ConvertLogInRegisterLineToRecord(string Line, string Seperator = "#//#")
+    {
+        stLoginRegisterRecord LoginRegisterRecord;
+
+
+        vector <string> LoginRegisterDataLine = Core::String::Split(Line, Seperator);
+        LoginRegisterRecord.DateTime = LoginRegisterDataLine[0];
+        LoginRegisterRecord.UserName = LoginRegisterDataLine[1];
+        LoginRegisterRecord.Password = LoginRegisterDataLine[2];
+        LoginRegisterRecord.Permissions = stoi(LoginRegisterDataLine[3]);
+
+        return LoginRegisterRecord;
+
+    }
+
+    string _PrepareLogInRecord(string Seperator = "#//#")
+    {
+        string LoginRecord = "";
+        LoginRecord += Core::Date::GetSystemDateTime() + Seperator;
+        LoginRecord += UserName + Seperator;
+        LoginRecord += Password + Seperator;
+        LoginRecord += to_string(Permissions);
+        return LoginRecord;
+    }
+
     static User _ConvertLinetoUserObject(string Line, string Seperator = "#//#")
     {
         vector<string> vUserData;
@@ -150,20 +176,20 @@ private:
         return User(enMode::EmptyMode, "", "", "", "", "", "", 0);
     }
 
-    std::string _PrepareLogInRecord(std::string Seperator = "#//#") {
-        std::string LoginRegisterLine = "";
-        LoginRegisterLine += Core::Date::GetSystemDateTime() + Seperator;
-        LoginRegisterLine += GetUserName() + Seperator;
-        LoginRegisterLine += GetPassword() + Seperator;
-        LoginRegisterLine += std::to_string(GetPermissions());
-        return LoginRegisterLine;
-    }
-
 public:
 
     enum enPermissions {
         eAll = -1, pListClients = 1, pAddNewClient = 2, pDeleteClient = 4,
         pUpdateClients = 8, pFindClient = 16, pTranactions = 32, pManageUsers = 64
+    };
+
+    struct stLoginRegisterRecord
+    {
+        string DateTime;
+        string UserName;
+        string Password;
+        int Permissions;
+
     };
 
     User(enMode Mode, string FirstName, string LastName,
@@ -370,16 +396,56 @@ public:
 
     }
 
-    void RegisterLogIn() {
+    void RegisterLogIn()
+    {
 
-        std::fstream MyFile;
-        MyFile.open("LoginRegister.txt", std::ios::out | std::ios::app);
+        string stDataLine = _PrepareLogInRecord();
+
+        fstream MyFile;
+        MyFile.open("LoginRegister.txt", ios::out | ios::app);
 
         if (MyFile.is_open())
         {
-            MyFile << _PrepareLogInRecord() << std::endl;
+
+            MyFile << stDataLine << endl;
+
             MyFile.close();
         }
+
     }
+
+    static  vector <stLoginRegisterRecord> GetLoginRegisterList()
+    {
+        vector <stLoginRegisterRecord> vLoginRegisterRecord;
+
+        fstream MyFile;
+        MyFile.open("LoginRegister.txt", ios::in);//read Mode
+
+        if (MyFile.is_open())
+        {
+
+            string Line;
+
+            stLoginRegisterRecord LoginRegisterRecord;
+
+            while (getline(MyFile, Line))
+            {
+
+                LoginRegisterRecord = _ConvertLogInRegisterLineToRecord(Line);
+
+                vLoginRegisterRecord.push_back(LoginRegisterRecord);
+
+            }
+
+            MyFile.close();
+
+        }
+
+        return vLoginRegisterRecord;
+
+    }
+
 };
+
+
 
