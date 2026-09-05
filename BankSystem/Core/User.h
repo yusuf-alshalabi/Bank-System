@@ -3,6 +3,7 @@
 #include <string>
 #include "Person.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
+#include "../../Libs/Cpp-Library-Collection/Lib/Date.h"
 #include <vector>
 #include <fstream>
 
@@ -147,6 +148,15 @@ private:
     static User _GetEmptyUserObject()
     {
         return User(enMode::EmptyMode, "", "", "", "", "", "", 0);
+    }
+
+    std::string _PrepareLoginRegisterLine(std::string Seperator = "#//#") {
+        std::string LoginRegisterLine = "";
+        LoginRegisterLine += Core::Date::GetSystemDateTime() + Seperator;
+        LoginRegisterLine += GetUserName() + Seperator;
+        LoginRegisterLine += GetPassword() + Seperator;
+        LoginRegisterLine += std::to_string(GetPermissions());
+        return LoginRegisterLine;
     }
 
 public:
@@ -359,5 +369,16 @@ public:
 
     }
 
+    void AddLoginRegister() {
+
+        std::fstream MyFile;
+        MyFile.open("LoginRegister.txt", std::ios::out | std::ios::app);
+
+        if (MyFile.is_open())
+        {
+            MyFile << _PrepareLoginRegisterLine() << std::endl;
+            MyFile.close();
+        }
+    }
 };
 

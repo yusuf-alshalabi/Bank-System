@@ -43,7 +43,8 @@ private:
             LoginFaild = CurrentUser.IsEmpty();
 
         } while (LoginFaild);
-   
+
+        CurrentUser.AddLoginRegister();
         MainScreen::ShowMainMenue();
         return true;
     }
