@@ -7,6 +7,7 @@
 #include "DeleteClientScreen.h"
 #include "UpdateClientScreen.h"
 #include "FindClientScreen.h"
+#include "LoginRegisterScreen.h"
 #include "TransactionsScreen/TransactionsScreen.h"
 #include "ManageUsersScreen/ManageUsersScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
@@ -23,13 +24,14 @@ private:
         eFindClient = 5,
         eShowTransactionsMenue = 6,
         eManageUsers = 7,
-        eExit = 8
+		eLoginRegister = 8,
+        eExit = 9
     };
 
     static short _ReadMainMenueOption()
     {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 8]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 8, "Enter Number between 1 to 8: ");
+        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 9]? ";
+        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 9, "Enter Number between 1 to 9: ");
         return Choice;
     }
 
@@ -82,6 +84,12 @@ private:
         ManageUsersScreen::ShowManageUsersMenue();
     }
 
+	static void _ShowLoginRegisterScreen()
+	{
+		// std::cout << "\nLogin Register Screen Will be here...\n";
+		LoginRegisterScreen::ShowLoginRegisterScreen();
+	}
+
     static void _Logout()
     {
         CurrentUser = User::Find("", "");
@@ -133,7 +141,11 @@ private:
             _ShowManageUsersMenue();
             _GoBackToMainMenue();
             break;
-
+        case enMainMenueOptions::eLoginRegister:
+            system("cls");
+			_ShowLoginRegisterScreen();
+			_GoBackToMainMenue();
+            break;
         case enMainMenueOptions::eExit:
             system("cls");
             _Logout();
@@ -157,7 +169,8 @@ public:
         std::cout << std::setw(37) << std::left << "" << "\t[5] Find Client.\n";
         std::cout << std::setw(37) << std::left << "" << "\t[6] Transactions.\n";
         std::cout << std::setw(37) << std::left << "" << "\t[7] Manage Users.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[8] Logout.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[8] Login Register.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[9] Logout.\n";
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
         _PerformMainMenueOption((enMainMenueOptions)_ReadMainMenueOption());
