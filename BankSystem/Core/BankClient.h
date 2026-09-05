@@ -339,4 +339,16 @@ public:
 
 	}
 
+	bool Transfer(double Amount , BankClient& DestinationClient)
+	{
+		if (Amount > _AccountBalance)
+		{
+			return false;
+		}
+
+		Withdraw(Amount);
+		DestinationClient.Deposit(Amount);
+		return true;
+	}
+
 };
