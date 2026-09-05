@@ -1,6 +1,8 @@
-Yusuf#//#Alshalabi#//#yusuf@email.com#//#01000000000#//#Yusuf#//#1234#//#127
-Admin#//#User#//#admin@bank.com#//#01000000001#//#Admin#//#1234#//#127
+Yusuf#//#Alshalabi#//#yusuf@email.com#//#01000000000#//#Yusuf#//#1234#//#255
+Admin#//#User#//#admin@bank.com#//#01000000001#//#Admin#//#1234#//#-1
 Manager#//#User#//#manager@bank.com#//#01000000002#//#Manager#//#1234#//#63
 Cashier#//#User#//#cashier@bank.com#//#01000000003#//#Cashier#//#1234#//#32
 Teller#//#User#//#teller@bank.com#//#01000000004#//#Teller#//#1234#//#32
 Supervisor#//#User#//#supervisor@bank.com#//#01000000005#//#Supervisor#//#1234#//#49
+Y#//#Y#//#Y@gmail.com#//#02384484950#//#YY#//#1111#//#-1
+Y#//#SH#//#ysh@gmail.com#//#03839246394#//#YSH#//#1111#//#255
