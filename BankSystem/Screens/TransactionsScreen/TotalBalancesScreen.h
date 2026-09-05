@@ -16,7 +16,9 @@ private:
     {
         std::cout << std::setw(25) << std::left << "" << "| " << std::setw(15) << std::left << Client.GetAccountNumber();
         std::cout << "| " << std::setw(40) << std::left << Client.FullName();
-        std::cout << "| " << std::setw(12) << std::left << Client.GetAccountBalance();
+        std::cout << "| " << std::setw(12) << std::left
+            << std::fixed << std::setprecision(2)
+            << Client.GetAccountBalance();
     }
 
 public:
@@ -55,9 +57,9 @@ public:
         std::cout << std::setw(25) << std::left << "" << "\n\t\t_______________________________________________________";
         std::cout << "__________________________\n" << std::endl;
 
-        std::cout << std::setw(8) << std::left << "" << "\t\t\t\t\t\t\t     Total Balances = " << TotalBalances << std::endl;
+        std::cout << std::setw(8) << std::left << "" << "\t\t\t\t\t\t\t     Total Balances = " << std::fixed << std::setprecision(2) << TotalBalances << std::endl;
         std::cout << std::setw(8) << std::left << "" << "\t\t\t\t  ( " << Core::Util::NumberToText(TotalBalances) << ")";
     }
 
 };
-
+;
