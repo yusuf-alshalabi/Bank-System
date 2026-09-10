@@ -129,6 +129,26 @@ private:
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
 	}
 
+	struct stTrnsferLogRecord;
+
+	static stTrnsferLogRecord _ConvertTransferLogLineToRecord(string Line, string Seperator = "#//#")
+	{
+		stTrnsferLogRecord TrnsferLogRecord;
+
+		vector <string> vTrnsferLogRecordLine = Core::String::Split(Line, Seperator);
+		TrnsferLogRecord.DateTime = vTrnsferLogRecordLine[0];
+		TrnsferLogRecord.SourceAccountNumber = vTrnsferLogRecordLine[1];
+		TrnsferLogRecord.DestinationAccountNumber = vTrnsferLogRecordLine[2];
+		TrnsferLogRecord.Amount = stod(vTrnsferLogRecordLine[3]);
+		TrnsferLogRecord.srcBalanceAfter = stod(vTrnsferLogRecordLine[4]);
+		TrnsferLogRecord.destBalanceAfter = stod(vTrnsferLogRecordLine[5]);
+		TrnsferLogRecord.UserName = vTrnsferLogRecordLine[6];
+
+		return TrnsferLogRecord;
+
+	}
+
+
 	string _PrepareTransferLogRecord(float Amount, BankClient DestinationClient,
 		string UserName, string Seperator = "#//#")
 	{
@@ -163,6 +183,18 @@ private:
 
 
 public:
+	struct stTrnsferLogRecord
+	{
+		string DateTime;
+		string SourceAccountNumber;
+		string DestinationAccountNumber;
+		float Amount;
+		float srcBalanceAfter;
+		float destBalanceAfter;
+		string UserName;
+
+	};
+
 	BankClient(enMode Mode, const std::string& FirstName, const std::string& LastName,
 		const std::string& Email, const std::string& Phone, const std::string& AccountNumber, const std::string& PinCode,
 		double AccountBalance) :
@@ -385,4 +417,34 @@ public:
 		return true;
 	}
 
+	static  vector <stTrnsferLogRecord> GetTransfersLogList()
+	{
+		vector <stTrnsferLogRecord> vTransferLogRecord;
+
+		fstream MyFile;
+		MyFile.open("TransferLog.txt", ios::in);//read Mode
+		
+		if (MyFile.is_open())
+		{
+
+			string Line;
+
+			stTrnsferLogRecord TransferRecord;
+
+			while (getline(MyFile, Line))
+			{
+
+				TransferRecord = _ConvertTransferLogLineToRecord(Line);
+
+				vTransferLogRecord.push_back(TransferRecord);
+
+			}
+
+			MyFile.close();
+
+		}
+
+		return vTransferLogRecord;
+
+	}
 };
