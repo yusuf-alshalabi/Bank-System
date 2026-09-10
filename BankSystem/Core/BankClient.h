@@ -188,9 +188,9 @@ public:
 		string DateTime;
 		string SourceAccountNumber;
 		string DestinationAccountNumber;
-		float Amount;
-		float srcBalanceAfter;
-		float destBalanceAfter;
+		double Amount;
+		double srcBalanceAfter;
+		double destBalanceAfter;
 		string UserName;
 
 	};
