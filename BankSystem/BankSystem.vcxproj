@@ -164,6 +164,7 @@
     <ClInclude Include="Screens\TransactionsScreen\DepositScreen.h" />
     <ClInclude Include="Screens\TransactionsScreen\TotalBalancesScreen.h" />
     <ClInclude Include="Screens\TransactionsScreen\TransactionsScreen.h" />
+    <ClInclude Include="Screens\TransactionsScreen\TransferLogScreen.h" />
     <ClInclude Include="Screens\TransactionsScreen\TransferScreen.h" />
     <ClInclude Include="Screens\TransactionsScreen\WithdrawScreen.h" />
     <ClInclude Include="UpdateClientScreen.h" />
