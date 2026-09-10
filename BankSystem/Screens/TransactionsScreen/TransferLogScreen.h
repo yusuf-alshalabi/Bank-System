@@ -39,33 +39,33 @@ public:
 
         _DrawScreenHeader(Title, SubTitle);
 
-        cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-        cout << "_________________________________________\n" << endl;
+        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+        std::cout << "_________________________________________\n" << endl;
 
-        cout << setw(8) << left << "" << "| " << left << setw(23) << "Date/Time";
-        cout << "| " << left << setw(8) << "s.Acct";
-        cout << "| " << left << setw(8) << "d.Acct";
-        cout << "| " << left << setw(8) << "Amount";
-        cout << "| " << left << setw(10) << "s.Balance";
-        cout << "| " << left << setw(10) << "d.Balance";
-        cout << "| " << left << setw(8) << "User";
+        std::cout << std::setw(8) << std::left << "" << "| " << std::left << std::setw(23) << "Date/Time";
+        std::cout << "| " << std::left << std::setw(8) << "s.Acct";
+        std::cout << "| " << std::left << std::setw(8) << "d.Acct";
+        std::cout << "| " << std::left << std::setw(8) << "Amount";
+        std::cout << "| " << std::left << std::setw(10) << "s.Balance";
+        std::cout << "| " << std::left << std::setw(10) << "d.Balance";
+        std::cout << "| " << std::left << std::setw(8) << "User";
 
-        cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-        cout << "_________________________________________\n" << endl;
+        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+        std::cout << "_________________________________________\n" << endl;
 
         if (vTransferLogRecord.size() == 0)
-            cout << "\t\t\t\tNo Transfers Available In the System!";
+            std::cout << "\t\t\t\tNo Transfers Available In the System!";
         else
 
             for (BankClient::stTrnsferLogRecord Record : vTransferLogRecord)
             {
 
                 PrintTransferLogRecordLine(Record);
-                cout << endl;
+                std::cout << endl;
             }
 
-        cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-        cout << "_________________________________________\n" << endl;
+        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+        std::cout << "_________________________________________\n" << endl;
 
     }
 

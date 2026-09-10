@@ -10,8 +10,6 @@
 #include "FindUserScreen.h"
 #include <iomanip>
 
-using namespace std;
-
 class ManageUsersScreen :protected Screen
 {
 
@@ -23,47 +21,47 @@ private:
 
     static short ReadManageUsersMenueOption()
     {
-        cout << setw(37) << left << "" << "Choose what do you want to do? [1 to 6]? ";
+        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 6]? ";
         short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 6, "Enter Number between 1 to 6? ");
         return Choice;
     }
 
     static void _GoBackToManageUsersMenue()
     {
-        cout << "\n\nPress any key to go back to Manage Users Menue...";
-        system("pause>0");
+        std::cout << "\n\nPress any key to go back to Manage Users Menue...";
+        std::system("pause>0");
         ShowManageUsersMenue();
     }
 
     static void _ShowListUsersScreen()
     {
-       // cout << "\nList Users Screen Will Be Here.\n";
+       // std::cout << "\nList Users Screen Will Be Here.\n";
 		UsersListScreen::ShowUsersList();
     }
 
     static void _ShowAddNewUserScreen()
     {
-       // cout << "\nAdd New User Screen Will Be Here.\n";
+       // std::cout << "\nAdd New User Screen Will Be Here.\n";
         AddNewUserScreen::ShowAddNewUserScreen();
 
     }
 
     static void _ShowDeleteUserScreen()
     {
-        //cout << "\nDelete User Screen Will Be Here.\n";
+        //std::cout << "\nDelete User Screen Will Be Here.\n";
 		DeleteUserScreen::ShowDeleteUserScreen();
 
     }
 
     static void _ShowUpdateUserScreen()
     {
-        //cout << "\nUpdate User Screen Will Be Here.\n";
+        //std::cout << "\nUpdate User Screen Will Be Here.\n";
         UpdateUserScreen::ShowUpdateUserScreen();
     }
 
     static void _ShowFindUserScreen()
     {
-      //  cout << "\nFind User Screen Will Be Here.\n";
+      //  std::cout << "\nFind User Screen Will Be Here.\n";
         FindUserScreen::ShowFindUserScreen();
     }
 
@@ -75,7 +73,7 @@ private:
         {
         case enManageUsersMenueOptions::eListUsers:
         {
-            system("cls");
+            std::system("cls");
             _ShowListUsersScreen();
             _GoBackToManageUsersMenue();
             break;
@@ -83,7 +81,7 @@ private:
 
         case enManageUsersMenueOptions::eAddNewUser:
         {
-            system("cls");
+            std::system("cls");
             _ShowAddNewUserScreen();
             _GoBackToManageUsersMenue();
             break;
@@ -91,7 +89,7 @@ private:
 
         case enManageUsersMenueOptions::eDeleteUser:
         {
-            system("cls");
+            std::system("cls");
             _ShowDeleteUserScreen();
             _GoBackToManageUsersMenue();
             break;
@@ -99,7 +97,7 @@ private:
 
         case enManageUsersMenueOptions::eUpdateUser:
         {
-            system("cls");
+            std::system("cls");
             _ShowUpdateUserScreen();
             _GoBackToManageUsersMenue();
             break;
@@ -107,7 +105,7 @@ private:
 
         case enManageUsersMenueOptions::eFindUser:
         {
-            system("cls");
+            std::system("cls");
 
             _ShowFindUserScreen();
             _GoBackToManageUsersMenue();
@@ -134,19 +132,19 @@ public:
             return;// this will exit the function and it will not continue
         }
 
-        system("cls");
+        std::system("cls");
         _DrawScreenHeader("\t Manage Users Screen");
 
-        cout << setw(37) << left << "" << "===========================================\n";
-        cout << setw(37) << left << "" << "\t\t  Manage Users Menue\n";
-        cout << setw(37) << left << "" << "===========================================\n";
-        cout << setw(37) << left << "" << "\t[1] List Users.\n";
-        cout << setw(37) << left << "" << "\t[2] Add New User.\n";
-        cout << setw(37) << left << "" << "\t[3] Delete User.\n";
-        cout << setw(37) << left << "" << "\t[4] Update User.\n";
-        cout << setw(37) << left << "" << "\t[5] Find User.\n";
-        cout << setw(37) << left << "" << "\t[6] Main Menue.\n";
-        cout << setw(37) << left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "\t\t  Manage Users Menue\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[1] List Users.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[2] Add New User.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[3] Delete User.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[4] Update User.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[5] Find User.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[6] Main Menue.\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
         _PerformManageUsersMenueOption((enManageUsersMenueOptions)ReadManageUsersMenueOption());
     }

@@ -16,10 +16,10 @@ private:
 	static void PrintLoginRegisterRecordLine(User::stLoginRegisterRecord LoginRegisterRecord)
 	{
 
-		cout << setw(8) << left << "" << "| " << setw(35) << left << LoginRegisterRecord.DateTime;
-		cout << "| " << setw(20) << left << LoginRegisterRecord.UserName;
-		cout << "| " << setw(20) << left << LoginRegisterRecord.Password;
-		cout << "| " << setw(10) << left << LoginRegisterRecord.Permissions;
+		std::cout << std::setw(8) << std::left << "" << "| " << std::setw(35) << std::left << LoginRegisterRecord.DateTime;
+		std::cout << "| " << std::setw(20) << std::left << LoginRegisterRecord.UserName;
+		std::cout << "| " << std::setw(20) << std::left << LoginRegisterRecord.Password;
+		std::cout << "| " << std::setw(10) << std::left << LoginRegisterRecord.Permissions;
 	}
 
 public:
@@ -38,29 +38,29 @@ public:
 
 		_DrawScreenHeader(Title, SubTitle);
 
-		cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-		cout << "_________________________________________\n" << endl;
+		std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+		std::cout << "_________________________________________\n" << endl;
 
-		cout << setw(8) << left << "" << "| " << left << setw(35) << "Date/Time";
-		cout << "| " << left << setw(20) << "UserName";
-		cout << "| " << left << setw(20) << "Password";
-		cout << "| " << left << setw(10) << "Permissions";
-		cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-		cout << "_________________________________________\n" << endl;
+		std::cout << std::setw(8) << std::left << "" << "| " << std::left << std::setw(35) << "Date/Time";
+		std::cout << "| " << std::left << std::setw(20) << "UserName";
+		std::cout << "| " << std::left << std::setw(20) << "Password";
+		std::cout << "| " << std::left << std::setw(10) << "Permissions";
+		std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+		std::cout << "_________________________________________\n" << endl;
 
 		if (vLoginRegisterRecord.size() == 0)
-			cout << "\t\t\t\tNo Logins Available In the System!";
+			std::cout << "\t\t\t\tNo Logins Available In the System!";
 		else
 
 			for (User::stLoginRegisterRecord Record : vLoginRegisterRecord)
 			{
 
 				PrintLoginRegisterRecordLine(Record);
-				cout << endl;
+				std::cout << endl;
 			}
 
-		cout << setw(8) << left << "" << "\n\t_______________________________________________________";
-		cout << "_________________________________________\n" << endl;
+		std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
+		std::cout << "_________________________________________\n" << endl;
 
 	}
 

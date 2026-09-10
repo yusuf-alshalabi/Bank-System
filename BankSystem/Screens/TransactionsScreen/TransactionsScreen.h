@@ -11,8 +11,6 @@
 #include "TransferScreen.h"
 #include "TransferLogScreen.h"
 
-using namespace std;
-
 class TransactionsScreen :protected Screen
 {
 
@@ -25,7 +23,7 @@ private:
 
     static short ReadTransactionsMenueOption()
     {
-        cout << setw(37) << left << "" << "Choose what do you want to do? [1 to 6]? ";
+        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 6]? ";
         short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 6, "Enter Number between 1 to 6? ");
         return Choice;
     }
@@ -64,7 +62,7 @@ private:
 
     static void _GoBackToTransactionsMenue()
     {
-        cout << "\n\nPress any key to go back to Transactions Menue...";
+        std::cout << "\n\nPress any key to go back to Transactions Menue...";
         system("pause>0");
         ShowTransactionsMenue();
 
@@ -76,7 +74,7 @@ private:
         {
         case enTransactionsMenueOptions::eDeposit:
         {
-            system("cls");
+            std::system("cls");
             _ShowDepositScreen();
             _GoBackToTransactionsMenue();
             break;
@@ -84,7 +82,7 @@ private:
 
         case enTransactionsMenueOptions::eWithdraw:
         {
-            system("cls");
+            std::system("cls");
             _ShowWithdrawScreen();
             _GoBackToTransactionsMenue();
             break;
@@ -92,7 +90,7 @@ private:
 
         case enTransactionsMenueOptions::eShowTotalBalance:
         {
-            system("cls");
+            std::system("cls");
             _ShowTotalBalancesScreen();
             _GoBackToTransactionsMenue();
             break;
@@ -100,7 +98,7 @@ private:
 
 		case enTransactionsMenueOptions::eTransfer:
 		{
-			system("cls");
+			std::system("cls");
 			_ShowTransferScreen();
 			_GoBackToTransactionsMenue();
 			break;
@@ -108,7 +106,7 @@ private:
 
 		case enTransactionsMenueOptions::eTransferLog:
 		{
-			system("cls");
+			std::system("cls");
 			_ShowTransferLogScreen();
 			_GoBackToTransactionsMenue();
 			break;
@@ -135,19 +133,19 @@ public:
             return;// this will exit the function and it will not continue
         }
 
-        system("cls");
+        std::system("cls");
         _DrawScreenHeader("\t  Transactions Screen");
 
-        cout << setw(37) << left << "" << "===========================================\n";
-        cout << setw(37) << left << "" << "\t\t  Transactions Menue\n";
-        cout << setw(37) << left << "" << "===========================================\n";
-        cout << setw(37) << left << "" << "\t[1] Deposit.\n";
-        cout << setw(37) << left << "" << "\t[2] Withdraw.\n";
-        cout << setw(37) << left << "" << "\t[3] Total Balances.\n";
-		cout << setw(37) << left << "" << "\t[4] Transfer.\n";
-		cout << setw(37) << left << "" << "\t[5] Transfer Log.\n";
-        cout << setw(37) << left << "" << "\t[6] Main Menue.\n";
-        cout << setw(37) << left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "\t\t  Transactions Menue\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[1] Deposit.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[2] Withdraw.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[3] Total Balances.\n";
+		std::cout << std::setw(37) << std::left << "" << "\t[4] Transfer.\n";
+		std::cout << std::setw(37) << std::left << "" << "\t[5] Transfer Log.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[6] Main Menue.\n";
+        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
         _PerformTransactionsMenueOption((enTransactionsMenueOptions)ReadTransactionsMenueOption());
     }

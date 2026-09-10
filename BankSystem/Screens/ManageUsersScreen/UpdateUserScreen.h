@@ -28,17 +28,17 @@ private:
 
     static void _PrintUser(const User& User)
     {
-        cout << "\nUser Card:";
-        cout << "\n___________________";
-        cout << "\nFirstName   : " << User.GetFirstName();
-        cout << "\nLastName    : " << User.GetLastName();
-        cout << "\nFull Name   : " << User.FullName();
-        cout << "\nEmail       : " << User.GetEmail();
-        cout << "\nPhone       : " << User.GetPhone();
-        cout << "\nUser Name   : " << User.GetUserName();
-        cout << "\nPassword    : " << User.GetPassword();
-        cout << "\nPermissions : " << User.GetPermissions();
-        cout << "\n___________________\n";
+        std::cout << "\nUser Card:";
+        std::cout << "\n___________________";
+        std::cout << "\nFirstName   : " << User.GetFirstName();
+        std::cout << "\nLastName    : " << User.GetLastName();
+        std::cout << "\nFull Name   : " << User.FullName();
+        std::cout << "\nEmail       : " << User.GetEmail();
+        std::cout << "\nPhone       : " << User.GetPhone();
+        std::cout << "\nUser Name   : " << User.GetUserName();
+        std::cout << "\nPassword    : " << User.GetPassword();
+        std::cout << "\nPermissions : " << User.GetPermissions();
+        std::cout << "\n___________________\n";
 
     }
 
@@ -53,7 +53,7 @@ private:
             return -1;
         }
 
-        cout << "\nDo you want to give access to : \n ";
+        std::cout << "\nDo you want to give access to : \n ";
 
         if (Core::InputValidate::ReadYesNoOption("\nShow Client List? y/n? "))
         {
@@ -117,8 +117,8 @@ public:
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to update this User y/n? "))
         {
 
-            cout << "\n\nUpdate User Info:";
-            cout << "\n____________________\n";
+            std::cout << "\n\nUpdate User Info:";
+            std::cout << "\n____________________\n";
 
 
             _ReadUserInfo(User1);
@@ -131,14 +131,14 @@ public:
             {
             case  User::enSaveResults::svSucceeded:
             {
-                cout << "\nUser Updated Successfully :-)\n";
+                std::cout << "\nUser Updated Successfully :-)\n";
 
                 _PrintUser(User1);
                 break;
             }
             case User::enSaveResults::svFaildEmptyObject:
             {
-                cout << "\nError User was not saved because it's Empty";
+                std::cout << "\nError User was not saved because it's Empty";
                 break;
 
             }

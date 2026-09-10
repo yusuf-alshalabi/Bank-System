@@ -101,31 +101,31 @@ private:
         switch (MainMenueOption)
         {
         case enMainMenueOptions::eListClients:
-            system("cls");
+            std::system("cls");
             _ShowAllClientsScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eAddNewClient:
-            system("cls");
+            std::system("cls");
             _ShowAddNewClientsScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eDeleteClient:
-            system("cls");
+            std::system("cls");
             _ShowDeleteClientScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eUpdateClient:
-            system("cls");
+            std::system("cls");
             _ShowUpdateClientScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eFindClient:
-            system("cls");
+            std::system("cls");
             _ShowFindClientScreen();
             _GoBackToMainMenue();
             break;
@@ -137,17 +137,17 @@ private:
             break;
 
         case enMainMenueOptions::eManageUsers:
-            system("cls");
+            std::system("cls");
             _ShowManageUsersMenue();
             _GoBackToMainMenue();
             break;
         case enMainMenueOptions::eLoginRegister:
-            system("cls");
+            std::system("cls");
 			_ShowLoginRegisterScreen();
 			_GoBackToMainMenue();
             break;
         case enMainMenueOptions::eExit:
-            system("cls");
+            std::system("cls");
             _Logout();
             break;
         }
@@ -156,7 +156,7 @@ private:
 public:
     static void ShowMainMenue()
     {
-        system("cls");
+        std::system("cls");
         _DrawScreenHeader("\t\tMain Screen");
 
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
