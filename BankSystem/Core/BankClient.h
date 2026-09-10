@@ -129,6 +129,39 @@ private:
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
 	}
 
+	string _PrepareTransferLogRecord(float Amount, BankClient DestinationClient,
+		string UserName, string Seperator = "#//#")
+	{
+		string TransferLogRecord = "";
+		TransferLogRecord += Core::Date::GetSystemDateTime() + Seperator;
+		TransferLogRecord += GetAccountNumber() + Seperator;
+		TransferLogRecord += DestinationClient.GetAccountNumber() + Seperator;
+		TransferLogRecord += std::to_string(Amount) + Seperator;
+		TransferLogRecord += std::to_string(GetAccountBalance()) + Seperator;
+		TransferLogRecord += std::to_string(DestinationClient.GetAccountBalance()) + Seperator;
+		TransferLogRecord += UserName;
+		return TransferLogRecord;
+	}
+
+	void _RegisterTransferLog(float Amount, BankClient DestinationClient, string UserName)
+	{
+
+		string stDataLine = _PrepareTransferLogRecord(Amount, DestinationClient, UserName);
+
+		fstream MyFile;
+		MyFile.open("TransferLog.txt", ios::out | ios::app);
+
+		if (MyFile.is_open())
+		{
+
+			MyFile << stDataLine << endl;
+
+			MyFile.close();
+		}
+
+	}
+
+
 public:
 	BankClient(enMode Mode, const std::string& FirstName, const std::string& LastName,
 		const std::string& Email, const std::string& Phone, const std::string& AccountNumber, const std::string& PinCode,
@@ -339,7 +372,7 @@ public:
 
 	}
 
-	bool Transfer(double Amount , BankClient& DestinationClient)
+	bool Transfer(double Amount , BankClient& DestinationClient , std::string CurrentUser)
 	{
 		if (Amount > _AccountBalance)
 		{
@@ -348,6 +381,7 @@ public:
 
 		Withdraw(Amount);
 		DestinationClient.Deposit(Amount);
+		_RegisterTransferLog(Amount, DestinationClient, CurrentUser);
 		return true;
 	}
 
