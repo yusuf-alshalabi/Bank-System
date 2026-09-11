@@ -4,6 +4,7 @@
 #include "Person.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/Date.h"
+#include "../../Libs/Cpp-Library-Collection/Lib/Util.h"
 #include <vector>
 #include <fstream>
 
@@ -41,7 +42,7 @@ private:
         string LoginRecord = "";
         LoginRecord += Core::Date::GetSystemDateTime() + Seperator;
         LoginRecord += UserName + Seperator;
-        LoginRecord += Password + Seperator;
+        LoginRecord += Core::Util::EncryptText(Password, 2) + Seperator;
         LoginRecord += to_string(Permissions);
         return LoginRecord;
     }
@@ -52,7 +53,7 @@ private:
         vUserData = Core::String::Split(Line, Seperator);
 
         return User(enMode::UpdateMode, vUserData[0], vUserData[1], vUserData[2],
-            vUserData[3], vUserData[4], vUserData[5], stoi(vUserData[6]));
+            vUserData[3], vUserData[4], Core::Util::DecryptText(vUserData[5], 2), stoi(vUserData[6]));
 
     }
 
@@ -65,7 +66,7 @@ private:
         UserRecord += User.Email + Seperator;
         UserRecord += User.Phone + Seperator;
         UserRecord += User.UserName + Seperator;
-        UserRecord += User.Password + Seperator;
+        UserRecord += Core::Util::EncryptText(User.Password,2) + Seperator;
         UserRecord += to_string(User.Permissions);
 
         return UserRecord;
