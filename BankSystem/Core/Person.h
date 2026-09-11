@@ -2,8 +2,9 @@
 
 #include <iostream>
 #include <string>
+#include "InterfaceComunication.h"
 
-class Person
+class Person : public InterfaceComunication
 {
 private:
     std::string _FirstName;
@@ -75,15 +76,18 @@ public:
         return _FirstName + " " + _LastName;
     }
 
-    void Print() const
+    virtual void SendEmail(string Title, string Body) 
     {
-        std::cout << "\nInfo:";
-        std::cout << "\n___________________";
-        std::cout << "\nFirstName: " << _FirstName;
-        std::cout << "\nLastName : " << _LastName;
-        std::cout << "\nFull Name: " << FullName();
-        std::cout << "\nEmail    : " << _Email;
-        std::cout << "\nPhone    : " << _Phone;
-        std::cout << "\n___________________\n";
+
+    }
+
+    virtual void SendFax(string Title, string Body) 
+    {
+
+    }
+
+    virtual void SendSMS(string Title, string Body) 
+    {
+
     }
 };

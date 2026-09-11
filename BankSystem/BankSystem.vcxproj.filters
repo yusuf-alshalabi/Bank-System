@@ -149,5 +149,8 @@
     <ClInclude Include="Screens\TransactionsScreen\TransferLogScreen.h">
       <Filter>Header Files\Screens\TransactionsScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Core\InterfaceComunication.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

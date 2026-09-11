@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\BankClient.h" />
+    <ClInclude Include="Core\InterfaceComunication.h" />
     <ClInclude Include="Core\Person.h" />
     <ClInclude Include="Core\User.h" />
     <ClInclude Include="LastVersion\AuthManager.h" />
