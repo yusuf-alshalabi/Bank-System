@@ -28,6 +28,9 @@
     <Filter Include="Header Files\Screens\ManageUsersScreen">
       <UniqueIdentifier>{2f0e0df7-e26b-4de8-ac21-e792ac055c5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Screens\CurrencyScreen">
+      <UniqueIdentifier>{c7a99004-cc08-409d-b33d-ec2dd08a5ffa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Core\Currency.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens\CurrencyScreen\CurrencyExchangeMainScreen.h">
+      <Filter>Header Files\Screens\CurrencyScreen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

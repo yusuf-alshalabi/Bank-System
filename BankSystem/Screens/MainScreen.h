@@ -10,6 +10,7 @@
 #include "LoginRegisterScreen.h"
 #include "TransactionsScreen/TransactionsScreen.h"
 #include "ManageUsersScreen/ManageUsersScreen.h"
+#include "CurrencyScreen/CurrencyExchangeMainScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "Global.h"
 
@@ -25,7 +26,8 @@ private:
         eShowTransactionsMenue = 6,
         eManageUsers = 7,
 		eLoginRegister = 8,
-        eExit = 9
+		eCurrencyExchange = 9,
+        eExit = 10
     };
 
     static short _ReadMainMenueOption()
@@ -90,6 +92,12 @@ private:
 		LoginRegisterScreen::ShowLoginRegisterScreen();
 	}
 
+	static void _ShowCurrencyExchangeScreen()
+	{
+		// std::cout << "\nCurrency Exchange Screen Will be here...\n";
+		CurrencyExchangeMainScreen::ShowCurrenciesMenue();
+	}
+
     static void _Logout()
     {
         CurrentUser = User::Find("", "");
@@ -146,6 +154,11 @@ private:
 			_ShowLoginRegisterScreen();
 			_GoBackToMainMenue();
             break;
+        case enMainMenueOptions::eCurrencyExchange:
+            std::system("cls");
+			_ShowCurrencyExchangeScreen();
+			_GoBackToMainMenue();
+            break;
         case enMainMenueOptions::eExit:
             std::system("cls");
             _Logout();
@@ -170,7 +183,8 @@ public:
         std::cout << std::setw(37) << std::left << "" << "\t[6] Transactions.\n";
         std::cout << std::setw(37) << std::left << "" << "\t[7] Manage Users.\n";
         std::cout << std::setw(37) << std::left << "" << "\t[8] Login Register.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[9] Logout.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[9] Currency Exchange.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[10] Logout.\n";
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
         _PerformMainMenueOption((enMainMenueOptions)_ReadMainMenueOption());
