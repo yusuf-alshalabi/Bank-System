@@ -16,7 +16,7 @@ private:
     std::string _Country;
     std::string _CurrencyCode;
     std::string _CurrencyName;
-    float _Rate;
+    double _Rate;
 
     static Currency _ConvertLinetoCurrencyObject(std::string Line, std::string Seperator = "#//#")
     {

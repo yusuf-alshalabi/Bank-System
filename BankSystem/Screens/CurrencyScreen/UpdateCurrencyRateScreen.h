@@ -8,12 +8,12 @@ class UpdateCurrencyRateScreen :protected Screen
 {
 private:
 
-    static float _ReadRate()
+    static double _ReadRate()
     {
         std::cout << "\nEnter New Rate: ";
-        float NewRate = 0;
+        double NewRate = 0;
 
-        NewRate = Core::InputValidate::ReadNumber<float>();
+        NewRate = Core::InputValidate::ReadNumber<double>();
         return NewRate;
     }
 
