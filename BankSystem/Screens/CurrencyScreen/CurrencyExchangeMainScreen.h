@@ -18,8 +18,7 @@ private:
 
     static short ReadCurrenciesMainMenueOptions()
     {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 5]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 5, "Enter Number between 1 to 5? ");
+        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 5, "Choose what do you want to do? [1 to 5]? ");
         return Choice;
     }
 

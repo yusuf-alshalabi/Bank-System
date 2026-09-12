@@ -47,16 +47,14 @@ public:
 		if (Answer == 1)
 		{
 			std::string CurrencyCode;
-			std::cout << "\nPlease Enter CurrencyCode: ";
-			CurrencyCode = Core::InputValidate::ReadString();
+			CurrencyCode = Core::InputValidate::ReadString("\nPlease Enter CurrencyCode: ");
 			Currency Currency = Currency::FindByCode(CurrencyCode);
 			_ShowResults(Currency);
 		}
 		else
 		{
 			std::string Country;
-			std::cout << "\nPlease Enter Country Name: ";
-			Country = Core::InputValidate::ReadString();
+			Country = Core::InputValidate::ReadString("\nPlease Enter Country Name: ");
 			Currency Currency = Currency::FindByCountry(Country);
 			_ShowResults(Currency);
 		}
