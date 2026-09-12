@@ -4,6 +4,7 @@
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <iomanip>
 #include "CurrenciesListScreen.h"
+#include "FindCurrencyScreen.h"
 
 class CurrencyExchangeMainScreen :protected Screen
 {
@@ -36,8 +37,8 @@ private:
 
     static void _ShowFindCurrencyScreen()
     {
-        std::cout << "\nFind Currency Screen Will Be Here.\n";
-
+        // std::cout << "\nFind Currency Screen Will Be Here.\n";
+        FindCurrencyScreen::ShowFindCurrencyScreen();
     }
 
     static void _ShowUpdateCurrencyRateScreen()

@@ -164,5 +164,8 @@
     <ClInclude Include="Screens\CurrencyScreen\CurrenciesListScreen.h">
       <Filter>Header Files\Screens\CurrencyScreen</Filter>
     </ClInclude>
+    <ClInclude Include="Screens\CurrencyScreen\FindCurrencyScreen.h">
+      <Filter>Header Files\Screens\CurrencyScreen</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

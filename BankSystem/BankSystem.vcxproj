@@ -152,6 +152,7 @@
     <ClInclude Include="Screens\ClientListScreen.h" />
     <ClInclude Include="Screens\CurrencyScreen\CurrenciesListScreen.h" />
     <ClInclude Include="Screens\CurrencyScreen\CurrencyExchangeMainScreen.h" />
+    <ClInclude Include="Screens\CurrencyScreen\FindCurrencyScreen.h" />
     <ClInclude Include="Screens\DeleteClientScreen.h" />
     <ClInclude Include="Screens\FindClientScreen.h" />
     <ClInclude Include="Screens\Global.h" />
