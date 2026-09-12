@@ -42,10 +42,7 @@ public:
 
 		_DrawScreenHeader("\t  Find Currency Screen");
 
-		std::cout << "\nFind By: [1] Code or [2] Country ? ";
-		short Answer = 1;
-
-		std::cin >> Answer;
+		short Answer = Core::InputValidate::ReadNumberBetween<short>(1, 2, "\nFind By: [1] Code or [2] Country ?");
 
 		if (Answer == 1)
 		{
