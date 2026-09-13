@@ -6,6 +6,7 @@
 #include "CurrenciesListScreen.h"
 #include "FindCurrencyScreen.h"
 #include "UpdateCurrencyRateScreen.h"
+#include "CurrencyCalculatorScreen.h"
 
 class CurrencyExchangeMainScreen :protected Screen
 {
@@ -49,7 +50,8 @@ private:
 
     static void _ShowCurrencyCalculatorScreen()
     {
-        std::cout << "\nCurrency Calculator Screen Will Be Here.\n";
+       // std::cout << "\nCurrency Calculator Screen Will Be Here.\n";
+        CurrencyCalculatorScreen::ShowCurrencyCalculatorScreen();
 
     }
 

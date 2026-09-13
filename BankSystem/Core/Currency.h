@@ -239,6 +239,23 @@ public:
     {
         return _LoadCurrencysDataFromFile();
     }
+
+    double ConvertToUSD(double Amount)
+    {
+        return (double)(Amount / Rate());
+    }
+
+    double ConvertToOtherCurrency(double Amount, Currency Currency2)
+    {
+        double AmountInUSD = ConvertToUSD(Amount);
+
+        if (Currency2.CurrencyCode() == "USD")
+        {
+            return AmountInUSD;
+        }
+
+        return (double)(AmountInUSD * Currency2.Rate());
+    }
 };
 
 
