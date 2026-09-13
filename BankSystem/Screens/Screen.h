@@ -3,7 +3,7 @@
 #include <string>
 #include"../Core/User.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/Date.h"
-#include "Global.h"
+#include "../Global.h"
 class Screen
 {
 protected:

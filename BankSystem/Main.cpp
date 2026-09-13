@@ -1,5 +1,5 @@
 #include <iostream> 
-#include "../BankSystem/Screens/LoginScreen.h"
+#include "../BankSystem/Screens/Auth/LoginScreen.h"
 
 int main()
 {

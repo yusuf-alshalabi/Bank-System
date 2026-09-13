@@ -2,17 +2,17 @@
 #include <iostream>
 #include <iomanip>
 #include "Screen.h"
-#include "ClientListScreen.h"
-#include "AddNewClientScreen.h"
-#include "DeleteClientScreen.h"
-#include "UpdateClientScreen.h"
-#include "FindClientScreen.h"
-#include "LoginRegisterScreen.h"
-#include "TransactionsScreen/TransactionsScreen.h"
-#include "ManageUsersScreen/ManageUsersScreen.h"
-#include "CurrencyScreen/CurrencyExchangeMainScreen.h"
+#include "Client/ClientListScreen.h"
+#include "Client/AddNewClientScreen.h"
+#include "Client/DeleteClientScreen.h"
+#include "Client/UpdateClientScreen.h"
+#include "Client/FindClientScreen.h"
+#include "Auth/LoginRegisterScreen.h"
+#include "Transaction/TransactionsScreen.h"
+#include "User/ManageUsersScreen.h"
+#include "Currency/CurrencyExchangeMainScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include "Global.h"
+#include "../Global.h"
 
 class MainScreen : protected Screen
 {

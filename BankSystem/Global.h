@@ -1,4 +1,4 @@
 #pragma once
 #include <iostream>
-#include "../Core/User.h"
+#include "Core/User.h"
 User CurrentUser = User::Find("", "");

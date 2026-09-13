@@ -1,11 +1,11 @@
 #pragma once
 
 #include <iostream>
-#include "Screen.h"
-#include "../Core/User.h"
+#include "../Screen.h"
+#include "../../Core/User.h"
 #include <iomanip>
-#include "MainScreen.h"
-#include "Global.h"
+#include "../MainScreen.h"
+#include "../../Global.h"
 
 class LoginScreen :protected Screen
 {
@@ -17,7 +17,7 @@ private:
         bool LoginFaild = false;
 		int Attempts = 0;
 
-        string Username, Password;
+        std::string Username, Password;
         do
         {
             if (LoginFaild)

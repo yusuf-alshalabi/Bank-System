@@ -1,8 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include "Screen.h"
-#include "../Core/User.h"
+#include "../Screen.h"
+#include "../../Core/User.h"
 #include <iomanip>
 #include <vector>
 #include <fstream>
