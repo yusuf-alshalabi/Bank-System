@@ -29,3 +29,7 @@ obj/
 
 # Runtime files
 BankSystem/SystemLog.txt
+
+# Temporary / Draft files
+0
+*.tmp
