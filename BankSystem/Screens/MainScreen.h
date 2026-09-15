@@ -14,6 +14,7 @@
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "../Core/Infrastructure/SessionManager.h"
 #include "../Core/Infrastructure/Logger.h"
+#include "../Core/Services/MenuManager.h"
 
 class MainScreen : protected Screen
 {
@@ -31,10 +32,10 @@ private:
         eExit = 10
     };
 
-    static short _ReadMainMenueOption()
+    static short _ReadMainMenueOption(short MaxOption)
     {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 9]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 9, "Enter Number between 1 to 9: ");
+        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [" << 1 << " to " << MaxOption << "]? ";
+        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, MaxOption, "Enter Number between 1 and " + std::to_string(MaxOption) + "? ");
         return Choice;
     }
 
@@ -174,21 +175,20 @@ public:
         std::system("cls");
         _DrawScreenHeader("\t\tMain Screen");
 
+        // Dynamic menu: only entries the acting user is permitted to use.
+        const User& CurrentUser = Bank::Security::SessionManager::Instance().Current();
+        std::vector<Bank::UI::MainMenuEntry> Entries = Bank::UI::MenuManager::BuildMainMenu(CurrentUser);
+
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
         std::cout << std::setw(37) << std::left << "" << "\t\tMain Menue\n";
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[1] Show Client List.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[2] Add New Client.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[3] Delete Client.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[4] Update Client Info.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[5] Find Client.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[6] Transactions.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[7] Manage Users.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[8] Login Register.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[9] Currency Exchange.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[10] Logout.\n";
+        for (std::size_t i = 0; i < Entries.size(); ++i)
+        {
+            std::cout << std::setw(37) << std::left << "" << "\t[" << (i + 1) << "] " << Entries[i].Label << ".\n";
+        }
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
-        _PerformMainMenueOption((enMainMenueOptions)_ReadMainMenueOption());
+        short Choice = _ReadMainMenueOption(static_cast<short>(Entries.size()));
+        _PerformMainMenueOption((enMainMenueOptions)Entries[Choice - 1].Key);
     }
 };

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../Screen.h"
 #include "../../Core/User.h"
+#include "../../Core/Services/UserService.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <iomanip>
 
@@ -19,7 +20,7 @@ private:
         std::cout << "\nEmail       : " << User.GetEmail();
         std::cout << "\nPhone       : " << User.GetPhone();
         std::cout << "\nUser Name   : " << User.GetUserName();
-        std::cout << "\nPassword    : " << User.GetPassword();
+        std::cout << "\nPassword    : " << _FormatPasswordForDisplay(User.GetPassword());
         std::cout << "\nPermissions : " << User.GetPermissions();
         std::cout << "\n___________________\n";
 
@@ -40,6 +41,23 @@ public:
         }
 
         User User1 = User::Find(UserName);
+
+        // --- credential gate: operator must know the target user's password ---
+        string password = Core::InputValidate::ReadString("\nEnter password to authorize this operation: ");
+        if (!Bank::Users::UserService::VerifyUserPassword(User1, password))
+        {
+            std::cout << "\nInvalid password. Operation denied.\n";
+            return;
+        }
+
+        // --- last admin protection: cannot delete the sole full-access user ---
+        if (User1.GetPermissions() == User::enPermissions::eAll
+            && Bank::Users::UserService::IsLastFullAccessAdmin(User1.GetUserName()))
+        {
+            std::cout << "\nYou cannot delete the last full-access Admin user.\n";
+            return;
+        }
+
         _PrintUser(User1);
 
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to delete this User y/n? "))
@@ -48,7 +66,6 @@ public:
             if (User1.Delete())
             {
                 std::cout << "\nUser Deleted Successfully :-)\n";
-                _PrintUser(User1);
             }
             else
             {
@@ -58,4 +75,3 @@ public:
     }
 
 };
-

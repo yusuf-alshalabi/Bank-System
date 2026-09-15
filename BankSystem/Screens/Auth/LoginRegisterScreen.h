@@ -18,7 +18,7 @@ private:
 
 		std::cout << std::setw(8) << std::left << "" << "| " << std::setw(35) << std::left << LoginRegisterRecord.DateTime;
 		std::cout << "| " << std::setw(20) << std::left << LoginRegisterRecord.UserName;
-		std::cout << "| " << std::setw(20) << std::left << LoginRegisterRecord.Password;
+		std::cout << "| " << std::setw(20) << std::left << _FormatPasswordForDisplay(LoginRegisterRecord.Password);
 		std::cout << "| " << std::setw(10) << std::left << LoginRegisterRecord.Permissions;
 	}
 

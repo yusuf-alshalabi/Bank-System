@@ -2,6 +2,8 @@
 #include <iostream>
 #include "../Screen.h"
 #include "../../Core/User.h"
+#include "../../Core/Infrastructure/PasswordPolicy.h"
+#include "../../Core/Services/UserService.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <iomanip>
 
@@ -20,7 +22,7 @@ private:
 
         User.Phone = Core::InputValidate::ReadString("\nEnter Phone: ");
 
-        User.Password = Core::InputValidate::ReadString("\nEnter Password: ");
+        User.Password = Bank::Security::PasswordPolicy::ReadPassword("\nEnter Password: ");
 
         cout << "\nEnter Permission: ";
         User.Permissions = _ReadPermissionsToSet();
@@ -36,7 +38,7 @@ private:
         std::cout << "\nEmail       : " << User.GetEmail();
         std::cout << "\nPhone       : " << User.GetPhone();
         std::cout << "\nUser Name   : " << User.GetUserName();
-        std::cout << "\nPassword    : " << User.GetPassword();
+        std::cout << "\nPassword    : " << _FormatPasswordForDisplay(User.GetPassword());
         std::cout << "\nPermissions : " << User.GetPermissions();
         std::cout << "\n___________________\n";
 
@@ -110,6 +112,14 @@ public:
             UserName = Core::InputValidate::ReadString("\nAccount number is not found, choose another one: ");
         }
 
+        // --- credential gate: operator must know the target user's password ---
+        string password = Core::InputValidate::ReadString("\nEnter password to authorize this operation: ");
+        if (!Bank::Users::UserService::VerifyUserPassword(User::Find(UserName), password))
+        {
+            std::cout << "\nInvalid password. Operation denied.\n";
+            return;
+        }
+
         User User1 = User::Find(UserName);
 
         _PrintUser(User1);
@@ -117,11 +127,23 @@ public:
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to update this User y/n? "))
         {
 
+            // capture full-access status before any change
+            bool wasFullAccess = (User1.GetPermissions() == User::enPermissions::eAll);
+
             std::cout << "\n\nUpdate User Info:";
             std::cout << "\n____________________\n";
 
 
             _ReadUserInfo(User1);
+
+            // --- last admin protection: cannot downgrade the sole full-access user ---
+            int newPermissions = User1.GetPermissions();
+            if (wasFullAccess && newPermissions != User::enPermissions::eAll
+                && Bank::Users::UserService::IsLastFullAccessAdmin(User1.GetUserName()))
+            {
+                std::cout << "\nYou cannot remove full access from the last Admin user.\n";
+                return;
+            }
 
             User::enSaveResults SaveResult;
 
@@ -149,4 +171,3 @@ public:
 
     }
 };
-

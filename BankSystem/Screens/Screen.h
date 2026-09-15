@@ -21,9 +21,18 @@ protected:
             << "\n\n";
     }
 
+// Masks long stored password hashes (Argon2id) in table/card views. Short
+    // values (plaintext passwords still in memory for a freshly created user)
+    // are displayed as-is so the operator can retype/confirm them.
+    static std::string _FormatPasswordForDisplay(const std::string& Password)
+    {
+        if (Password.size() <= 25)
+            return Password;
+        return "******** (argon2id hash)";
+    }
+
     static bool CheckAccessRights(User::enPermissions Permission)
     {
-
         if (!Bank::Security::SessionManager::Instance().CanAccess(Permission))
         {
             std::cout << "\t\t\t\t\t______________________________________";

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../Screen.h"
 #include "../../Core/User.h"
+#include "../../Core/Infrastructure/PasswordPolicy.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include <iomanip>
 
@@ -19,7 +20,7 @@ private:
 
         User.Phone = Core::InputValidate::ReadString("\nEnter Phone: ");
 
-        User.Password = Core::InputValidate::ReadString("\nEnter Password: ");
+        User.Password = Bank::Security::PasswordPolicy::ReadPassword("\nEnter Password: ");
 
         std::cout << "\nEnter Permission: ";
         User.Permissions = _ReadPermissionsToSet();
@@ -35,7 +36,7 @@ private:
         std::cout << "\nEmail       : " << User.GetEmail();
         std::cout << "\nPhone       : " << User.GetPhone();
         std::cout << "\nUser Name   : " << User.GetUserName();
-        std::cout << "\nPassword    : " << User.GetPassword();
+        std::cout << "\nPassword    : " << _FormatPasswordForDisplay(User.GetPassword());
         std::cout << "\nPermissions : " << User.GetPermissions();
         std::cout << "\n___________________\n";
 

@@ -49,10 +49,15 @@ public:
 
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
         {
-            Client1.Deposit(Amount);
-            std::cout << "\nAmount Deposited Successfully.\n";
-            std::cout << "\nNew Balance Is: " << Client1.GetAccountBalance();
-
+            if (Client1.Deposit(Amount))
+            {
+                std::cout << "\nAmount Deposited Successfully.\n";
+                std::cout << "\nNew Balance Is: " << Client1.GetAccountBalance();
+            }
+            else
+            {
+                std::cout << "\nDeposit failed: amount must be greater than zero.\n";
+            }
         }
         else
         {
