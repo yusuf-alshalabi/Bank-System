@@ -3,9 +3,10 @@
 #include <iostream>
 #include "../Screen.h"
 #include "../../Core/User.h"
+#include "../../Core/Infrastructure/SessionManager.h"
+#include "../../Core/Infrastructure/Logger.h"
 #include <iomanip>
 #include "../MainScreen.h"
-#include "../../Global.h"
 
 class LoginScreen :protected Screen
 {
@@ -15,18 +16,23 @@ private:
     static  bool _Login()
     {
         bool LoginFaild = false;
-		int Attempts = 0;
+        int Attempts = 0;
 
         std::string Username, Password;
+        User FoundUser = User::Find("", "");
         do
         {
             if (LoginFaild)
             {
                 Attempts++;
+                Bank::Diagnostics::Logger::Instance().LogLoginAttempt(Username, false);
                 std::cout << "\nInvlaid Username/Password!\n";
                 std::cout << "You have " << 3 - Attempts << " attempts to login\n\n";
                 if (Attempts == 3)
                 {
+                    Bank::Diagnostics::Logger::Instance().Log(
+                        Bank::Diagnostics::LogLevel::Critical,
+                        "Account locked after 3 failed login attempts for user '" + Username + "'");
                     std::cout << "\nYou are locked after 3 failed attempts.\n\n";
                     return false;
                 }
@@ -38,13 +44,15 @@ private:
             std::cout << "Enter Password? ";
             std::cin >> Password;
 
-            CurrentUser = User::Find(Username, Password);
+            FoundUser = User::Find(Username, Password);
 
-            LoginFaild = CurrentUser.IsEmpty();
+            LoginFaild = FoundUser.IsEmpty();
 
         } while (LoginFaild);
 
-        CurrentUser.RegisterLogIn();
+        Bank::Security::SessionManager::Instance().Start(FoundUser);
+        Bank::Diagnostics::Logger::Instance().LogLoginAttempt(Username, true);
+        FoundUser.RegisterLogIn();
         MainScreen::ShowMainMenue();
         return true;
     }

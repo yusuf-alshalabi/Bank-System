@@ -4,8 +4,8 @@
 #include "../Screen.h"
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
+#include "../../Core/Infrastructure/SessionManager.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include "../Global.h"
 
 class TransferScreen : protected Screen
 {
@@ -82,7 +82,7 @@ public:
 
 		if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
 		{
-			SourceClient.Transfer(Amount, DestinationClient, CurrentUser.UserName);
+			SourceClient.Transfer(Amount, DestinationClient, Bank::Security::SessionManager::Instance().CurrentUserName());
 			std::cout << "\nAmount Transferred Successfully.\n";
 			_PrintClient(SourceClient);
 			_PrintClient(DestinationClient);

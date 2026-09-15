@@ -12,7 +12,8 @@
 #include "User/ManageUsersScreen.h"
 #include "Currency/CurrencyExchangeMainScreen.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include "../Global.h"
+#include "../Core/Infrastructure/SessionManager.h"
+#include "../Core/Infrastructure/Logger.h"
 
 class MainScreen : protected Screen
 {
@@ -100,8 +101,9 @@ private:
 
     static void _Logout()
     {
-        CurrentUser = User::Find("", "");
-        //then it will go back to main function.
+        Bank::Diagnostics::Logger::Instance().LogUserAction("LOGOUT");
+        // secure session wipe + back to the login flow
+        Bank::Security::SessionManager::Instance().End();
     }
 
     static void _PerformMainMenueOption(enMainMenueOptions MainMenueOption)
