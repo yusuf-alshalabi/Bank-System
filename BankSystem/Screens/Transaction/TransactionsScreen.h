@@ -10,21 +10,22 @@
 #include "TotalBalancesScreen.h"
 #include "TransferScreen.h"
 #include "TransferLogScreen.h"
+#include "TransactionHistoryScreen.h"
 
 class TransactionsScreen :protected Screen
 {
 
-
 private:
     enum enTransactionsMenueOptions {
         eDeposit = 1, eWithdraw = 2,
-        eShowTotalBalance = 3, eTransfer = 4,eTransferLog=5, eShowMainMenue = 6
+        eShowTotalBalance = 3, eTransfer = 4, eTransferLog = 5,
+        eHistory = 6, eShowMainMenue = 7
     };
 
     static short ReadTransactionsMenueOption()
     {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 6]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 6, "Enter Number between 1 to 6? ");
+        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 7]? ";
+        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 7, "Enter Number between 1 to 7? ");
         return Choice;
     }
 
@@ -45,7 +46,7 @@ private:
     static void _ShowTotalBalancesScreen()
     {
        // cout << "\n Balances Screen will be here.\n";
-        		TotalBalancesScreen::ShowTotalBalances();
+        	TotalBalancesScreen::ShowTotalBalances();
     }
 
 	static void _ShowTransferScreen()
@@ -58,6 +59,11 @@ private:
 	{
 		// cout << "\n Transfer Log Screen will be here.\n";
 		TransferLogScreen::ShowTransferLogScreen();
+	}
+
+	static void _ShowHistoryScreen()
+	{
+		TransactionHistoryScreen::ShowTransactionHistoryScreen();
 	}
 
     static void _GoBackToTransactionsMenue()
@@ -112,6 +118,14 @@ private:
 			break;
 		}
 
+		case enTransactionsMenueOptions::eHistory:
+		{
+			std::system("cls");
+			_ShowHistoryScreen();
+			_GoBackToTransactionsMenue();
+			break;
+		}
+
         case enTransactionsMenueOptions::eShowMainMenue:
         {
             //do nothing here the main screen will handle it :-) ;
@@ -144,11 +158,11 @@ public:
         std::cout << std::setw(37) << std::left << "" << "\t[3] Total Balances.\n";
 		std::cout << std::setw(37) << std::left << "" << "\t[4] Transfer.\n";
 		std::cout << std::setw(37) << std::left << "" << "\t[5] Transfer Log.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[6] Main Menue.\n";
+		std::cout << std::setw(37) << std::left << "" << "\t[6] Transactions History.\n";
+        std::cout << std::setw(37) << std::left << "" << "\t[7] Main Menue.\n";
         std::cout << std::setw(37) << std::left << "" << "===========================================\n";
 
         _PerformTransactionsMenueOption((enTransactionsMenueOptions)ReadTransactionsMenueOption());
     }
 
 };
-
