@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{46eff7a8-4a57-4f4f-8307-91eb80146679}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Infrastructure">
+      <UniqueIdentifier>{c2e0e1a9-4d35-4f6e-9b1a-6d0c6ea3b7c1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{5eeaec4d-56d2-46c2-9d9d-ff14d9a33119}</UniqueIdentifier>
     </Filter>
@@ -98,14 +101,26 @@
     <ClInclude Include="Core\User.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Infrastructure\CryptoEngine.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Infrastructure\DataMigrator.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Infrastructure\Logger.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Infrastructure\PasswordHasher.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Infrastructure\SessionManager.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
     <ClInclude Include="Core\InterfaceComunication.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Currency.h">
       <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Global.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Screens\Client\AddNewClientScreen.h">
       <Filter>Header Files\Screens\Client</Filter>

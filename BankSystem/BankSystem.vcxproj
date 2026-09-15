@@ -109,7 +109,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\vcpkg\installed\x64-windows\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /D "C:\vcpkg\installed\x64-windows\bin\libsodium.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -124,7 +128,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\vcpkg\installed\x64-windows\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /D "C:\vcpkg\installed\x64-windows\bin\libsodium.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -132,10 +141,14 @@
   <ItemGroup>
     <ClInclude Include="Core\BankClient.h" />
     <ClInclude Include="Core\Currency.h" />
+    <ClInclude Include="Core\Infrastructure\CryptoEngine.h" />
+    <ClInclude Include="Core\Infrastructure\DataMigrator.h" />
+    <ClInclude Include="Core\Infrastructure\Logger.h" />
+    <ClInclude Include="Core\Infrastructure\PasswordHasher.h" />
+    <ClInclude Include="Core\Infrastructure\SessionManager.h" />
     <ClInclude Include="Core\InterfaceComunication.h" />
     <ClInclude Include="Core\Person.h" />
     <ClInclude Include="Core\User.h" />
-    <ClInclude Include="Global.h" />
     <ClInclude Include="LastVersion\AuthManager.h" />
     <ClInclude Include="LastVersion\ClientManager.h" />
     <ClInclude Include="LastVersion\Crypto.h" />
