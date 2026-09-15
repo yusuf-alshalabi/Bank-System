@@ -6,29 +6,37 @@
 #include "../../Libs/Cpp-Library-Collection/Lib/Date.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/Util.h"
 #include "Infrastructure/PasswordHasher.h"
+#include "Infrastructure/AtomicFileStore.h"
 #include <vector>
-#include <fstream>
 
 using namespace std;
 class User : public Person
 {
-private:
+public:
 
-    enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
-    enMode _Mode;
-    string _UserName;
-    string _Password;
-    int _Permissions;
+    struct stLoginRegisterRecord
+    {
+        string DateTime;
+        string UserName;
+        string Password;
+        int Permissions;
+
+    };
+
+private:
 
     bool _MarkedForDelete = false;
 
-    struct stLoginRegisterRecord;
     static stLoginRegisterRecord _ConvertLogInRegisterLineToRecord(string Line, string Seperator = "#//#")
     {
         stLoginRegisterRecord LoginRegisterRecord;
 
+        vector <string> LoginRegisterDataLine = Bank::Persistence::AtomicFileStore::SplitPreserve(Line, Seperator);
 
-        vector <string> LoginRegisterDataLine = Core::String::Split(Line, Seperator);
+        // skip malformed records instead of indexing out of bounds
+        if (LoginRegisterDataLine.size() < 4)
+            return LoginRegisterRecord;
+
         LoginRegisterRecord.DateTime = LoginRegisterDataLine[0];
         LoginRegisterRecord.UserName = LoginRegisterDataLine[1];
         LoginRegisterRecord.Password = LoginRegisterDataLine[2];
@@ -48,131 +56,6 @@ private:
         return LoginRecord;
     }
 
-    static User _ConvertLinetoUserObject(string Line, string Seperator = "#//#")
-    {
-        vector<string> vUserData;
-        vUserData = Core::String::Split(Line, Seperator);
-
-        return User(enMode::UpdateMode, vUserData[0], vUserData[1], vUserData[2],
-            vUserData[3], vUserData[4], vUserData[5], stoi(vUserData[6]));
-
-    }
-
-    static string _ConverUserObjectToLine(User User, string Seperator = "#//#")
-    {
-
-        string UserRecord = "";
-        UserRecord += User.FirstName + Seperator;
-        UserRecord += User.LastName + Seperator;
-        UserRecord += User.Email + Seperator;
-        UserRecord += User.Phone + Seperator;
-        UserRecord += User.UserName + Seperator;
-        UserRecord += Bank::Security::PasswordHasher::HashIfNeeded(User.Password) + Seperator;
-        UserRecord += to_string(User.Permissions);
-
-        return UserRecord;
-
-    }
-
-    static  vector <User> _LoadUsersDataFromFile()
-    {
-
-        vector <User> vUsers;
-
-        fstream MyFile;
-        MyFile.open("Users.txt", ios::in);//read Mode
-
-        if (MyFile.is_open())
-        {
-
-            string Line;
-
-
-            while (getline(MyFile, Line))
-            {
-
-                User User = _ConvertLinetoUserObject(Line);
-
-                vUsers.push_back(User);
-            }
-
-            MyFile.close();
-
-        }
-
-        return vUsers;
-
-    }
-
-    static void _SaveUsersDataToFile(vector <User> vUsers)
-    {
-
-        fstream MyFile;
-        MyFile.open("Users.txt", ios::out);//overwrite
-
-        string DataLine;
-
-        if (MyFile.is_open())
-        {
-
-            for (User U : vUsers)
-            {
-                if (U.MarkedForDeleted() == false)
-                {
-                    //we only write records that are not marked for delete.  
-                    DataLine = _ConverUserObjectToLine(U);
-                    MyFile << DataLine << endl;
-
-                }
-
-            }
-
-            MyFile.close();
-
-        }
-
-    }
-
-    void _Update()
-    {
-        vector <User> _vUsers;
-        _vUsers = _LoadUsersDataFromFile();
-
-        for (User& U : _vUsers)
-        {
-            if (U.UserName == UserName)
-            {
-                U = *this;
-                break;
-            }
-
-        }
-
-        _SaveUsersDataToFile(_vUsers);
-
-    }
-
-    void _AddNew()
-    {
-
-        _AddDataLineToFile(_ConverUserObjectToLine(*this));
-    }
-
-    void _AddDataLineToFile(string  stDataLine)
-    {
-        fstream MyFile;
-        MyFile.open("Users.txt", ios::out | ios::app);
-
-        if (MyFile.is_open())
-        {
-
-            MyFile << stDataLine << endl;
-
-            MyFile.close();
-        }
-
-    }
-
     static User _GetEmptyUserObject()
     {
         return User(enMode::EmptyMode, "", "", "", "", "", "", 0);
@@ -180,18 +63,11 @@ private:
 
 public:
 
+    enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
+
     enum enPermissions {
         eAll = -1, pListClients = 1, pAddNewClient = 2, pDeleteClient = 4,
 		pUpdateClients = 8, pFindClient = 16, pTranactions = 32, pManageUsers = 64, pLoginRegister = 128
-    };
-
-    struct stLoginRegisterRecord
-    {
-        string DateTime;
-        string UserName;
-        string Password;
-        int Permissions;
-
     };
 
     User(enMode Mode, string FirstName, string LastName,
@@ -211,7 +87,7 @@ public:
         return (_Mode == enMode::EmptyMode);
     }
 
-    bool MarkedForDeleted()
+    bool MarkedForDeleted() const
     {
         return _MarkedForDelete;
     }
@@ -250,141 +126,23 @@ public:
     }
     __declspec(property(get = GetPermissions, put = SetPermissions)) int Permissions;
 
-    static User Find(string UserName)
-    {
-        fstream MyFile;
-        MyFile.open("Users.txt", ios::in);//read Mode
-
-        if (MyFile.is_open())
-        {
-            string Line;
-            while (getline(MyFile, Line))
-            {
-                User User = _ConvertLinetoUserObject(Line);
-                if (User.UserName == UserName)
-                {
-                    MyFile.close();
-                    return User;
-                }
-            }
-
-            MyFile.close();
-
-        }
-
-        return _GetEmptyUserObject();
-    }
-
-    static User Find(string UserName, string Password)
-    {
-
-        fstream MyFile;
-        MyFile.open("Users.txt", ios::in);//read Mode
-
-        if (MyFile.is_open())
-        {
-            string Line;
-            while (getline(MyFile, Line))
-            {
-                User User = _ConvertLinetoUserObject(Line);
-                if (User.UserName == UserName && Bank::Security::PasswordHasher::Verify(Password, User.Password))
-                {
-                    MyFile.close();
-                    return User;
-                }
-
-            }
-
-            MyFile.close();
-
-        }
-        return _GetEmptyUserObject();
-    }
+    static User Find(string UserName);
+    static User Find(string UserName, string Password);
 
     enum enSaveResults { svFaildEmptyObject = 0, svSucceeded = 1, svFaildUserExists = 2 };
 
-    enSaveResults Save()
-    {
+    enSaveResults Save();
 
-        switch (_Mode)
-        {
-        case enMode::EmptyMode:
-        {
-            if (IsEmpty())
-            {
-                return enSaveResults::svFaildEmptyObject;
-            }
-            break;
-        }
+    static bool IsUserExist(string UserName);
 
-        case enMode::UpdateMode:
-        {
-            _Update();
-            return enSaveResults::svSucceeded;
-
-            break;
-        }
-
-        case enMode::AddNewMode:
-        {
-            //This will add new record to file or database
-            if (User::IsUserExist(_UserName))
-            {
-                return enSaveResults::svFaildUserExists;
-            }
-            else
-            {
-                _AddNew();
-                //We need to set the mode to update after add new
-                _Mode = enMode::UpdateMode;
-                return enSaveResults::svSucceeded;
-            }
-
-            break;
-        }
-        }
-		return enSaveResults::svFaildEmptyObject;
-    }
-
-    static bool IsUserExist(string UserName)
-    {
-
-        User User = User::Find(UserName);
-        return (!User.IsEmpty());
-    }
-
-    bool Delete()
-    {
-        vector <User> _vUsers;
-        _vUsers = _LoadUsersDataFromFile();
-
-        for (User& U : _vUsers)
-        {
-            if (U.UserName == _UserName)
-            {
-                U._MarkedForDelete = true;
-                break;
-            }
-
-        }
-
-        _SaveUsersDataToFile(_vUsers);
-
-        *this = _GetEmptyUserObject();
-
-        return true;
-
-    }
+    bool Delete();
 
     static User GetAddNewUserObject(string UserName)
     {
         return User(enMode::AddNewMode, "", "", "", "", UserName, "", 0);
     }
 
-    static vector <User> GetUsersList()
-    {
-        return _LoadUsersDataFromFile();
-    }
+    static vector <User> GetUsersList();
 
     bool CheckAccessPermission(enPermissions Permission) const
     {
@@ -403,16 +161,7 @@ public:
 
         string stDataLine = _PrepareLogInRecord();
 
-        fstream MyFile;
-        MyFile.open("LoginRegister.txt", ios::out | ios::app);
-
-        if (MyFile.is_open())
-        {
-
-            MyFile << stDataLine << endl;
-
-            MyFile.close();
-        }
+        Bank::Persistence::AtomicFileStore::AppendLine("LoginRegister.txt", stDataLine);
 
     }
 
@@ -420,34 +169,120 @@ public:
     {
         vector <stLoginRegisterRecord> vLoginRegisterRecord;
 
-        fstream MyFile;
-        MyFile.open("LoginRegister.txt", ios::in);//read Mode
-
-        if (MyFile.is_open())
+        for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines("LoginRegister.txt"))
         {
+            stLoginRegisterRecord LoginRegisterRecord = _ConvertLogInRegisterLineToRecord(Line);
 
-            string Line;
+            // skip malformed records
+            if (LoginRegisterRecord.DateTime.empty())
+                continue;
 
-            stLoginRegisterRecord LoginRegisterRecord;
-
-            while (getline(MyFile, Line))
-            {
-
-                LoginRegisterRecord = _ConvertLogInRegisterLineToRecord(Line);
-
-                vLoginRegisterRecord.push_back(LoginRegisterRecord);
-
-            }
-
-            MyFile.close();
-
+            vLoginRegisterRecord.push_back(LoginRegisterRecord);
         }
 
         return vLoginRegisterRecord;
 
     }
 
+private:
+    enMode _Mode;
+    string _UserName;
+    string _Password;
+    int _Permissions;
 };
 
+// Persistence is delegated to UserRepository below. The header is included
+// after the class so the include graph has no cycles: UserRepository.h only
+// consumes the fully-defined User type.
+#include "Repositories/UserRepository.h"
 
+inline User User::Find(string UserName)
+{
+    return Bank::Data::UserRepository::FindByUserName(UserName);
+}
 
+inline User User::Find(string UserName, string Password)
+{
+    return Bank::Data::UserRepository::FindByUserNameAndPassword(UserName, Password);
+}
+
+inline User::enSaveResults User::Save()
+{
+    switch (_Mode)
+    {
+    case enMode::EmptyMode:
+        return enSaveResults::svFaildEmptyObject;
+
+    case enMode::UpdateMode:
+    {
+        vector <User> users = Bank::Data::UserRepository::LoadAll().Records;
+        bool updated = false;
+        for (User& user : users)
+        {
+            if (user.UserName == _UserName)
+            {
+                user = *this;
+                updated = true;
+                break;
+            }
+        }
+        if (!updated)
+            return enSaveResults::svFaildEmptyObject;
+
+        return Bank::Data::UserRepository::SaveAll(users)
+            ? enSaveResults::svSucceeded : enSaveResults::svFaildEmptyObject;
+    }
+
+    case enMode::AddNewMode:
+    {
+        //This will add new record to file or database
+        if (Bank::Data::UserRepository::Exists(_UserName))
+            return enSaveResults::svFaildUserExists;
+
+        vector <User> users = Bank::Data::UserRepository::LoadAll().Records;
+        users.push_back(*this);
+
+        if (!Bank::Data::UserRepository::SaveAll(users))
+            return enSaveResults::svFaildEmptyObject;
+
+        //We need to set the mode to update after add new
+        _Mode = enMode::UpdateMode;
+        return enSaveResults::svSucceeded;
+    }
+    }
+    return enSaveResults::svFaildEmptyObject;
+}
+
+inline bool User::IsUserExist(string UserName)
+{
+    return Bank::Data::UserRepository::Exists(UserName);
+}
+
+inline bool User::Delete()
+{
+    if (!Bank::Data::UserRepository::Exists(_UserName))
+        return false;
+
+    vector <User> users = Bank::Data::UserRepository::LoadAll().Records;
+    bool deleted = false;
+    for (User& user : users)
+    {
+        if (user.UserName == _UserName)
+        {
+            user._MarkedForDelete = true;
+            deleted = true;
+            break;
+        }
+    }
+
+    if (!deleted || !Bank::Data::UserRepository::SaveAll(users))
+        return false;
+
+    *this = _GetEmptyUserObject();
+    return true;
+}
+
+inline vector <User> User::GetUsersList()
+{
+    return Bank::Data::UserRepository::LoadAll().Records;
+}

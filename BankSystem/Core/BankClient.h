@@ -6,136 +6,42 @@
 #include <vector>
 #include "Person.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
+#include "Infrastructure/AtomicFileStore.h"
 #include <vector>
 
 class BankClient : public Person
 {
-private:
+public:
 	enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
-	enMode _Mode;
-	std::string _AccountNumber;
-	std::string _PinCode;
-	double _AccountBalance;
-	bool _MarkedForDelete = false;
 
-	static BankClient _ConvertLinetoClientObject(const std::string& Line, const std::string& Seperator = "#//#")
+	struct stTrnsferLogRecord
 	{
-		std::vector<std::string> vClientData;
+		string DateTime;
+		string SourceAccountNumber;
+		string DestinationAccountNumber;
+		double Amount;
+		double srcBalanceAfter;
+		double destBalanceAfter;
+		string UserName;
 
-		vClientData = Core::String::Split(Line, Seperator);
+	};
 
-		return BankClient(enMode::UpdateMode, vClientData[0], vClientData[1], vClientData[2],
-			vClientData[3], vClientData[4], vClientData[5], std::stod(vClientData[6]));
-	}
-
-	static std::string _ConverClientObjectToLine(const BankClient& Client, const std::string& Seperator = "#//#")
-	{
-		std::string ClientRecord = "";
-		ClientRecord += Client.FirstName + Seperator;
-		ClientRecord += Client.LastName + Seperator;
-		ClientRecord += Client.Email + Seperator;
-		ClientRecord += Client.Phone + Seperator;
-		ClientRecord += Client.AccountNumber + Seperator;
-		ClientRecord += Client.PinCode + Seperator;
-		ClientRecord += std::to_string(Client.AccountBalance);
-
-		return ClientRecord;
-	}
-
-	static std::vector<BankClient> _LoadClientsDataFromFile()
-	{
-		std::vector<BankClient> vClients;
-
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::in); // Read Mode
-
-		if (MyFile.is_open())
-		{
-			std::string Line;
-
-			while (getline(MyFile, Line))
-			{
-				BankClient Client = _ConvertLinetoClientObject(Line);
-				vClients.push_back(Client);
-			}
-
-			MyFile.close();
-		}
-
-		return vClients;
-	}
-
-	static void _SaveCleintsDataToFile(const std::vector<BankClient>& vClients)
-	{
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::out); // overwrite
-
-		if (MyFile.is_open())
-		{
-			std::string DataLine;
-
-			for (const BankClient& C : vClients)
-			{
-				if (C.MarkedForDeleted() == false)
-				{
-					// we only write records that are not marked for delete.  
-					DataLine = _ConverClientObjectToLine(C);
-					MyFile << DataLine << "\n";
-				}
-			}
-
-			MyFile.close();
-		}
-	}
-
-	void _Update()
-	{
-		std::vector<BankClient> vClients = _LoadClientsDataFromFile();
-
-		for (BankClient& C : vClients)
-		{
-			if (C.GetAccountNumber() == _AccountNumber)
-			{
-				C = *this;
-				break;
-			}
-		}
-
-		_SaveCleintsDataToFile(vClients);
-	}
-
-	void _AddNew()
-	{
-
-		_AddDataLineToFile(_ConverClientObjectToLine(*this));
-	}
-
-	void _AddDataLineToFile(const std::string& DataLine)
-	{
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::out | std::ios::app);
-
-		if (MyFile.is_open())
-		{
-
-			MyFile << DataLine << "\n";
-			MyFile.close();
-		}
-
-	}
-
+private:
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
 	}
 
-	struct stTrnsferLogRecord;
-
 	static stTrnsferLogRecord _ConvertTransferLogLineToRecord(string Line, string Seperator = "#//#")
 	{
 		stTrnsferLogRecord TrnsferLogRecord;
 
-		vector <string> vTrnsferLogRecordLine = Core::String::Split(Line, Seperator);
+		vector <string> vTrnsferLogRecordLine = Bank::Persistence::AtomicFileStore::SplitPreserve(Line, Seperator);
+
+		// skip malformed records instead of indexing out of bounds
+		if (vTrnsferLogRecordLine.size() < 7)
+			return TrnsferLogRecord;
+
 		TrnsferLogRecord.DateTime = vTrnsferLogRecordLine[0];
 		TrnsferLogRecord.SourceAccountNumber = vTrnsferLogRecordLine[1];
 		TrnsferLogRecord.DestinationAccountNumber = vTrnsferLogRecordLine[2];
@@ -163,38 +69,14 @@ private:
 		return TransferLogRecord;
 	}
 
-	void _RegisterTransferLog(float Amount, BankClient DestinationClient, string UserName)
+void _RegisterTransferLog(float Amount, BankClient DestinationClient, string UserName)
 	{
-
 		string stDataLine = _PrepareTransferLogRecord(Amount, DestinationClient, UserName);
-
-		fstream MyFile;
-		MyFile.open("TransferLog.txt", ios::out | ios::app);
-
-		if (MyFile.is_open())
-		{
-
-			MyFile << stDataLine << endl;
-
-			MyFile.close();
-		}
-
+		Bank::Persistence::AtomicFileStore::AppendLine("TransferLog.txt", stDataLine);
 	}
 
 
 public:
-	struct stTrnsferLogRecord
-	{
-		string DateTime;
-		string SourceAccountNumber;
-		string DestinationAccountNumber;
-		double Amount;
-		double srcBalanceAfter;
-		double destBalanceAfter;
-		string UserName;
-
-	};
-
 	BankClient(enMode Mode, const std::string& FirstName, const std::string& LastName,
 		const std::string& Email, const std::string& Phone, const std::string& AccountNumber, const std::string& PinCode,
 		double AccountBalance) :
@@ -248,122 +130,23 @@ public:
 	__declspec(property(get = MarkedForDeleted)) bool MarkedForDelete;
 
 
-	static BankClient Find(const std::string& AccountNumber)
-	{
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::in);
-
-		if (MyFile.is_open())
-		{
-			std::string Line;
-			while (getline(MyFile, Line))
-			{
-				BankClient Client = _ConvertLinetoClientObject(Line);
-				if (Client.GetAccountNumber() == AccountNumber)
-				{
-					MyFile.close();
-					return Client;
-				}
-			}
-			MyFile.close();
-		}
-		return _GetEmptyClientObject();
-	}
-
-	static BankClient Find(const std::string& AccountNumber, const std::string& PinCode)
-	{
-		std::fstream MyFile;
-		MyFile.open("Clients.txt", std::ios::in);
-
-		if (MyFile.is_open())
-		{
-			std::string Line;
-			while (getline(MyFile, Line))
-			{
-				BankClient Client = _ConvertLinetoClientObject(Line);
-				if (Client.GetAccountNumber() == AccountNumber && Client.PinCode == PinCode)
-				{
-					MyFile.close();
-					return Client;
-				}
-			}
-			MyFile.close();
-		}
-		return _GetEmptyClientObject();
-	}
+	static BankClient Find(const std::string& AccountNumber);
+	static BankClient Find(const std::string& AccountNumber, const std::string& PinCode);
 
 	enum enSaveResults { svFailedEmptyObject = 0, svSucceeded = 1, svFaildAccountNumberExists = 2 };
 
-	enSaveResults Save()
-	{
-		switch (_Mode)
-		{
-		case enMode::EmptyMode:
-		{
-			if (IsEmpty())
-			{
-				return enSaveResults::svFailedEmptyObject;
-			}
-		}
-		case enMode::UpdateMode:
-		{
-			_Update();
-			return enSaveResults::svSucceeded;
-		}
-		case enMode::AddNewMode:
-		{
-			if (BankClient::IsClientExist(_AccountNumber))
-			{
-				return enSaveResults::svFaildAccountNumberExists;
-			}
-			else
-			{
-				_AddNew();
-				_Mode = enMode::UpdateMode;
-				return enSaveResults::svSucceeded;
-			}
-		}
-		}
+	enSaveResults Save();
 
-		return enSaveResults::svFailedEmptyObject;
-	}
+	static bool IsClientExist(const std::string& AccountNumber);
 
-	static bool IsClientExist(const std::string& AccountNumber)
-	{
-		BankClient Client1 = BankClient::Find(AccountNumber);
-		return (!Client1.IsEmpty());
-	}
-
-	bool Delete()
-	{
-		std::vector<BankClient> _vClients;
-		_vClients = _LoadClientsDataFromFile();
-
-		for (BankClient& C : _vClients)
-		{
-			if (C.GetAccountNumber() == _AccountNumber)
-			{
-				C._MarkedForDelete = true;
-				break;
-			}
-		}
-
-		_SaveCleintsDataToFile(_vClients);
-
-		*this = _GetEmptyClientObject();
-
-		return true;
-	}
+	bool Delete();
 
 	static BankClient GetAddNewClientObject(const std::string& AccountNumber)
 	{
 		return BankClient(enMode::AddNewMode, "", "", "", "", AccountNumber, "", 0);
 	}
 
-	static std::vector<BankClient> GetClientsList()
-	{
-		return _LoadClientsDataFromFile();
-	}
+	static std::vector<BankClient> GetClientsList();
 
 
 	static double GetTotalBalances()
@@ -382,69 +165,254 @@ public:
 
 	}
 
-
-	void Deposit(double Amount)
-	{
-		_AccountBalance += Amount;
-		Save();
-	}
-
-	bool Withdraw(double Amount)
-	{
-		if (Amount > _AccountBalance)
-		{
-			return false;
-		}
-		else
-		{
-			_AccountBalance -= Amount;
-			Save();
-			return true;
-		}
-
-	}
-
-	bool Transfer(double Amount , BankClient& DestinationClient , std::string CurrentUser)
-	{
-		if (Amount > _AccountBalance)
-		{
-			return false;
-		}
-
-		Withdraw(Amount);
-		DestinationClient.Deposit(Amount);
-		_RegisterTransferLog(Amount, DestinationClient, CurrentUser);
-		return true;
-	}
+	bool Deposit(double Amount);
+	bool Withdraw(double Amount);
+	bool Transfer(double Amount, BankClient& DestinationClient, std::string CurrentUser);
 
 	static  vector <stTrnsferLogRecord> GetTransfersLogList()
 	{
 		vector <stTrnsferLogRecord> vTransferLogRecord;
 
-		fstream MyFile;
-		MyFile.open("TransferLog.txt", ios::in);//read Mode
-		
-		if (MyFile.is_open())
+		for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines("TransferLog.txt"))
 		{
+			stTrnsferLogRecord TransferRecord = _ConvertTransferLogLineToRecord(Line);
 
-			string Line;
+			// skip malformed records
+			if (TransferRecord.DateTime.empty())
+				continue;
 
-			stTrnsferLogRecord TransferRecord;
-
-			while (getline(MyFile, Line))
-			{
-
-				TransferRecord = _ConvertTransferLogLineToRecord(Line);
-
-				vTransferLogRecord.push_back(TransferRecord);
-
-			}
-
-			MyFile.close();
-
+			vTransferLogRecord.push_back(TransferRecord);
 		}
 
 		return vTransferLogRecord;
 
 	}
+
+private:
+	enMode _Mode;
+	std::string _AccountNumber;
+	std::string _PinCode;
+	double _AccountBalance;
+	bool _MarkedForDelete = false;
 };
+
+// Persistence and financial logic are delegated to the repository/service
+// headers below. They are included after the class so the include graph has
+// no cycles: BankClientRepository.h/TransactionService.h only consume the
+// fully-defined BankClient type.
+#include "Repositories/BankClientRepository.h"
+#include "Services/TransactionService.h"
+#include "Infrastructure/Logger.h"
+
+inline BankClient BankClient::Find(const std::string& AccountNumber)
+{
+	return Bank::Data::BankClientRepository::FindByAccountNumber(AccountNumber);
+}
+
+inline BankClient BankClient::Find(const std::string& AccountNumber, const std::string& PinCode)
+{
+	return Bank::Data::BankClientRepository::FindByAccountNumberAndPin(AccountNumber, PinCode);
+}
+
+inline BankClient::enSaveResults BankClient::Save()
+{
+	switch (_Mode)
+	{
+	case enMode::EmptyMode:
+		return enSaveResults::svFailedEmptyObject;
+
+	case enMode::UpdateMode:
+	{
+		std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+		bool updated = false;
+		for (BankClient& client : clients)
+		{
+			if (client.GetAccountNumber() == _AccountNumber)
+			{
+				client = *this;
+				updated = true;
+				break;
+			}
+		}
+		if (!updated)
+			return enSaveResults::svFailedEmptyObject;
+
+		return Bank::Data::BankClientRepository::SaveAll(clients)
+			? enSaveResults::svSucceeded : enSaveResults::svFailedEmptyObject;
+	}
+
+	case enMode::AddNewMode:
+	{
+		if (Bank::Data::BankClientRepository::Exists(_AccountNumber))
+			return enSaveResults::svFaildAccountNumberExists;
+
+		std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+		clients.push_back(*this);
+
+		if (!Bank::Data::BankClientRepository::SaveAll(clients))
+			return enSaveResults::svFailedEmptyObject;
+
+		_Mode = enMode::UpdateMode;
+		return enSaveResults::svSucceeded;
+	}
+	}
+
+	return enSaveResults::svFailedEmptyObject;
+}
+
+inline bool BankClient::IsClientExist(const std::string& AccountNumber)
+{
+	return Bank::Data::BankClientRepository::Exists(AccountNumber);
+}
+
+inline bool BankClient::Delete()
+{
+	if (!Bank::Data::BankClientRepository::Exists(_AccountNumber))
+		return false;
+
+	std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+	bool deleted = false;
+	for (BankClient& client : clients)
+	{
+		if (client.GetAccountNumber() == _AccountNumber)
+		{
+			client._MarkedForDelete = true;
+			deleted = true;
+			break;
+		}
+	}
+
+	if (!deleted || !Bank::Data::BankClientRepository::SaveAll(clients))
+		return false;
+
+	*this = _GetEmptyClientObject();
+	return true;
+}
+
+inline std::vector<BankClient> BankClient::GetClientsList()
+{
+	return Bank::Data::BankClientRepository::LoadAll().Records;
+}
+
+inline bool BankClient::Deposit(double Amount)
+{
+	if (Amount <= 0)
+		return false;
+
+	_AccountBalance += Amount;
+
+	std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+	bool updated = false;
+	for (BankClient& client : clients)
+	{
+		if (client.GetAccountNumber() == _AccountNumber)
+		{
+			client = *this;
+			updated = true;
+			break;
+		}
+	}
+	if (!updated)
+		return false;
+
+	// one atomic write commits the balance change
+	if (!Bank::Data::BankClientRepository::SaveAll(clients))
+		return false;
+
+	Bank::Transactions::TransactionEntry entry = Bank::Transactions::TransactionService::Record(
+		static_cast<int>(Bank::Transactions::TransactionType::Deposit),
+		GetAccountNumber(), GetAccountNumber(), Amount, 0.0, "Deposit operation");
+
+	Bank::Diagnostics::Logger::Instance().LogTransaction(
+		entry.TransactionID, "Deposit", Amount, 0.0, GetAccountNumber(), GetAccountNumber());
+
+	return true;
+}
+
+inline bool BankClient::Withdraw(double Amount)
+{
+	if (Amount <= 0)
+		return false;
+	if (Amount > _AccountBalance)
+		return false;
+
+	_AccountBalance -= Amount;
+
+	std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+	bool updated = false;
+	for (BankClient& client : clients)
+	{
+		if (client.GetAccountNumber() == _AccountNumber)
+		{
+			client = *this;
+			updated = true;
+			break;
+		}
+	}
+	if (!updated)
+		return false;
+
+	// one atomic write commits the balance change
+	if (!Bank::Data::BankClientRepository::SaveAll(clients))
+		return false;
+
+	Bank::Transactions::TransactionEntry entry = Bank::Transactions::TransactionService::Record(
+		static_cast<int>(Bank::Transactions::TransactionType::Withdrawal),
+		GetAccountNumber(), GetAccountNumber(), Amount, 0.0, "Withdrawal operation");
+
+	Bank::Diagnostics::Logger::Instance().LogTransaction(
+		entry.TransactionID, "Withdraw", Amount, 0.0, GetAccountNumber(), GetAccountNumber());
+
+	return true;
+}
+
+inline bool BankClient::Transfer(double Amount, BankClient& DestinationClient, std::string CurrentUser)
+{
+	if (Amount <= 0)
+		return false;
+	if (GetAccountNumber() == DestinationClient.GetAccountNumber())
+		return false;
+
+	double TransferFee = Amount * Bank::Transactions::TransactionService::TransferFeeRate;
+	if (_AccountBalance < Amount + TransferFee)
+		return false;
+
+	// Both balances are mutated in memory and committed with ONE atomic
+	// repository save, so a transfer never leaves a partially written pair.
+	_AccountBalance -= (Amount + TransferFee);
+	DestinationClient._AccountBalance += Amount;
+
+	std::vector<BankClient> clients = Bank::Data::BankClientRepository::LoadAll().Records;
+	bool sourceUpdated = false;
+	bool destinationUpdated = false;
+	for (BankClient& client : clients)
+	{
+		if (client.GetAccountNumber() == _AccountNumber && !sourceUpdated)
+		{
+			client = *this;
+			sourceUpdated = true;
+		}
+		else if (client.GetAccountNumber() == DestinationClient.GetAccountNumber() && !destinationUpdated)
+		{
+			client = DestinationClient;
+			destinationUpdated = true;
+		}
+	}
+	if (!sourceUpdated || !destinationUpdated)
+		return false;
+
+	if (!Bank::Data::BankClientRepository::SaveAll(clients))
+		return false;
+
+	Bank::Transactions::TransactionEntry entry = Bank::Transactions::TransactionService::Record(
+		static_cast<int>(Bank::Transactions::TransactionType::Transfer),
+		GetAccountNumber(), DestinationClient.GetAccountNumber(), Amount, TransferFee,
+		"Transfer to " + DestinationClient.FullName());
+
+	Bank::Diagnostics::Logger::Instance().LogTransaction(
+		entry.TransactionID, "Transfer", Amount, TransferFee, GetAccountNumber(), DestinationClient.GetAccountNumber());
+
+	_RegisterTransferLog(static_cast<float>(Amount), DestinationClient, CurrentUser);
+
+	return true;
+}
