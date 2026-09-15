@@ -22,6 +22,12 @@
     <Filter Include="Header Files\Core\Infrastructure">
       <UniqueIdentifier>{c2e0e1a9-4d35-4f6e-9b1a-6d0c6ea3b7c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Repositories">
+      <UniqueIdentifier>{8f45a2d0-1b3c-4a1e-9b7d-2d9c4f0a6e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Services">
+      <UniqueIdentifier>{b35e0f6a-7d2e-43a0-9a5c-4e1b8d9a2f74}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{5eeaec4d-56d2-46c2-9d9d-ff14d9a33119}</UniqueIdentifier>
     </Filter>
@@ -104,6 +110,12 @@
     <ClInclude Include="Core\Infrastructure\CryptoEngine.h">
       <Filter>Header Files\Core\Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Infrastructure\AtomicFileStore.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Infrastructure\PasswordPolicy.h">
+      <Filter>Header Files\Core\Infrastructure</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Infrastructure\DataMigrator.h">
       <Filter>Header Files\Core\Infrastructure</Filter>
     </ClInclude>
@@ -121,6 +133,24 @@
     </ClInclude>
     <ClInclude Include="Core\Currency.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Repositories\UserRepository.h">
+      <Filter>Header Files\Core\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Repositories\BankClientRepository.h">
+      <Filter>Header Files\Core\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Services\AuthService.h">
+      <Filter>Header Files\Core\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Services\MenuManager.h">
+      <Filter>Header Files\Core\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Services\TransactionService.h">
+      <Filter>Header Files\Core\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Services\UserService.h">
+      <Filter>Header Files\Core\Services</Filter>
     </ClInclude>
     <ClInclude Include="Screens\Client\AddNewClientScreen.h">
       <Filter>Header Files\Screens\Client</Filter>
@@ -168,6 +198,9 @@
       <Filter>Header Files\Screens\Transaction</Filter>
     </ClInclude>
     <ClInclude Include="Screens\Transaction\TransferLogScreen.h">
+      <Filter>Header Files\Screens\Transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens\Transaction\TransactionHistoryScreen.h">
       <Filter>Header Files\Screens\Transaction</Filter>
     </ClInclude>
     <ClInclude Include="Screens\Transaction\TransferScreen.h">

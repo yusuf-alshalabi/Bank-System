@@ -141,13 +141,21 @@
   <ItemGroup>
     <ClInclude Include="Core\BankClient.h" />
     <ClInclude Include="Core\Currency.h" />
+    <ClInclude Include="Core\Infrastructure\AtomicFileStore.h" />
     <ClInclude Include="Core\Infrastructure\CryptoEngine.h" />
     <ClInclude Include="Core\Infrastructure\DataMigrator.h" />
     <ClInclude Include="Core\Infrastructure\Logger.h" />
     <ClInclude Include="Core\Infrastructure\PasswordHasher.h" />
+    <ClInclude Include="Core\Infrastructure\PasswordPolicy.h" />
     <ClInclude Include="Core\Infrastructure\SessionManager.h" />
     <ClInclude Include="Core\InterfaceComunication.h" />
     <ClInclude Include="Core\Person.h" />
+    <ClInclude Include="Core\Repositories\BankClientRepository.h" />
+    <ClInclude Include="Core\Repositories\UserRepository.h" />
+    <ClInclude Include="Core\Services\AuthService.h" />
+    <ClInclude Include="Core\Services\MenuManager.h" />
+    <ClInclude Include="Core\Services\TransactionService.h" />
+    <ClInclude Include="Core\Services\UserService.h" />
     <ClInclude Include="Core\User.h" />
     <ClInclude Include="LastVersion\AuthManager.h" />
     <ClInclude Include="LastVersion\ClientManager.h" />
@@ -179,6 +187,7 @@
     <ClInclude Include="Screens\Transaction\DepositScreen.h" />
     <ClInclude Include="Screens\Transaction\TotalBalancesScreen.h" />
     <ClInclude Include="Screens\Transaction\TransactionsScreen.h" />
+    <ClInclude Include="Screens\Transaction\TransactionHistoryScreen.h" />
     <ClInclude Include="Screens\Transaction\TransferLogScreen.h" />
     <ClInclude Include="Screens\Transaction\TransferScreen.h" />
     <ClInclude Include="Screens\Transaction\WithdrawScreen.h" />
