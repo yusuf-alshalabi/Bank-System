@@ -1,8 +1,8 @@
-Yusuf#//#Alshalabi#//#yusuf@email.com#//#01000000000#//#Yusuf#//#3456#//#255
-Admin#//#User#//#admin@bank.com#//#01000000001#//#Admin#//#3456#//#-1
-Manager#//#User#//#manager@bank.com#//#01000000002#//#Manager#//#3456#//#63
-Cashier#//#User#//#cashier@bank.com#//#01000000003#//#Cashier#//#3456#//#32
-Teller#//#User#//#teller@bank.com#//#01000000004#//#Teller#//#3456#//#32
-Supervisor#//#User#//#supervisor@bank.com#//#01000000005#//#Supervisor#//#3456#//#49
-Y#//#Y#//#Y@gmail.com#//#02384484950#//#YY#//#3333#//#-1
-Y#//#SH#//#ysh@gmail.com#//#03839246394#//#YSH#//#3333#//#255
+Yusuf#//#Alshalabi#//#yusuf@email.com#//#01000000000#//#Yusuf#//#$argon2id$v=19$m=65536,t=2,p=1$wGKsTD58psLHD9wOj6Hxwg$LBbtidX0bLEmHtzyESHYxqpkkbpP/TamvAzMo4529kM#//#255
+Admin#//#User#//#admin@bank.com#//#01000000001#//#Admin#//#$argon2id$v=19$m=65536,t=2,p=1$bncLfi320iqV04UMiMlxUw$QVSd6JZ2mSSGRLwhCquB5JseXGMMN9SUi6jB/fnrb+A#//#-1
+Manager#//#User#//#manager@bank.com#//#01000000002#//#Manager#//#$argon2id$v=19$m=65536,t=2,p=1$jn633uGSx5qtH70qtCzYow$gyF1qLd7nZJ320yXXE3a0AIFej6R4aYohP8yrW+h7b4#//#63
+Cashier#//#User#//#cashier@bank.com#//#01000000003#//#Cashier#//#$argon2id$v=19$m=65536,t=2,p=1$kwFnn5Pwf4hqsN4k5obDHw$boMOxwexNMQ2wW8bZPimSoKpobuGrtx9PGJV+ik7rl4#//#32
+Teller#//#User#//#teller@bank.com#//#01000000004#//#Teller#//#$argon2id$v=19$m=65536,t=2,p=1$zEWLDlH/wbC+6E2nxVt7cw$AwnSyKeuEjIO88pGTzgteR7D9DySmeK6ob+117jCK+Y#//#32
+Supervisor#//#User#//#supervisor@bank.com#//#01000000005#//#Supervisor#//#$argon2id$v=19$m=65536,t=2,p=1$be7GcCSENM0U/MLett1QMA$8g03IEn0gI2zF9DySFjEgp6/1YKLwJjot+JBoHVRHmo#//#49
+Y#//#Y#//#Y@gmail.com#//#02384484950#//#YY#//#$argon2id$v=19$m=65536,t=2,p=1$lZJkEoDKQ52M0n1pancNew$qhtk3J42obK4bkI0rmIX2cPRAW083Oxz59j76uwP3/I#//#-1
+Y#//#SH#//#ysh@gmail.com#//#03839246394#//#YSH#//#$argon2id$v=19$m=65536,t=2,p=1$AjahtMbNFDab3SMDy/UkrA$QyTnV3ov6T8cwKXVrjAX1LXkkgENFqoKi7DwX3EJO9w#//#255

@@ -5,6 +5,7 @@
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/Date.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/Util.h"
+#include "Infrastructure/PasswordHasher.h"
 #include <vector>
 #include <fstream>
 
@@ -42,7 +43,7 @@ private:
         string LoginRecord = "";
         LoginRecord += Core::Date::GetSystemDateTime() + Seperator;
         LoginRecord += UserName + Seperator;
-        LoginRecord += Core::Util::EncryptText(Password, 2) + Seperator;
+        LoginRecord += Bank::Security::PasswordHasher::HashIfNeeded(Password) + Seperator;
         LoginRecord += to_string(Permissions);
         return LoginRecord;
     }
@@ -53,7 +54,7 @@ private:
         vUserData = Core::String::Split(Line, Seperator);
 
         return User(enMode::UpdateMode, vUserData[0], vUserData[1], vUserData[2],
-            vUserData[3], vUserData[4], Core::Util::DecryptText(vUserData[5], 2), stoi(vUserData[6]));
+            vUserData[3], vUserData[4], vUserData[5], stoi(vUserData[6]));
 
     }
 
@@ -66,7 +67,7 @@ private:
         UserRecord += User.Email + Seperator;
         UserRecord += User.Phone + Seperator;
         UserRecord += User.UserName + Seperator;
-        UserRecord += Core::Util::EncryptText(User.Password,2) + Seperator;
+        UserRecord += Bank::Security::PasswordHasher::HashIfNeeded(User.Password) + Seperator;
         UserRecord += to_string(User.Permissions);
 
         return UserRecord;
@@ -205,7 +206,7 @@ public:
         _Permissions = Permissions;
     }
 
-    bool IsEmpty()
+    bool IsEmpty() const
     {
         return (_Mode == enMode::EmptyMode);
     }
@@ -286,7 +287,7 @@ public:
             while (getline(MyFile, Line))
             {
                 User User = _ConvertLinetoUserObject(Line);
-                if (User.UserName == UserName && User.Password == Password)
+                if (User.UserName == UserName && Bank::Security::PasswordHasher::Verify(Password, User.Password))
                 {
                     MyFile.close();
                     return User;
@@ -385,7 +386,7 @@ public:
         return _LoadUsersDataFromFile();
     }
 
-    bool CheckAccessPermission(enPermissions Permission)
+    bool CheckAccessPermission(enPermissions Permission) const
     {
         if (this->Permissions == enPermissions::eAll)
             return true;
