@@ -5,7 +5,6 @@
 #include "../../Core/User.h"
 #include "../../Core/Infrastructure/SessionManager.h"
 #include "../../Core/Infrastructure/Logger.h"
-#include <iomanip>
 #include "../MainScreen.h"
 
 class LoginScreen :protected Screen
@@ -26,7 +25,7 @@ private:
             {
                 Attempts++;
                 Bank::Diagnostics::Logger::Instance().LogLoginAttempt(Username, false);
-                std::cout << "\nInvlaid Username/Password!\n";
+                std::cout << "\nInvalid Username/Password!\n";
                 std::cout << "You have " << 3 - Attempts << " attempts to login\n\n";
                 if (Attempts == 3)
                 {
@@ -62,8 +61,8 @@ public:
 
     static bool ShowLoginScreen()
     {
-        system("cls");
-        _DrawScreenHeader("\t  Login Screen");
+        _ClearScreen();
+        _DrawScreenHeader("Login Screen");
         return _Login();
 
     }
