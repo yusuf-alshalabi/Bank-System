@@ -3,73 +3,82 @@
 #include "../Screen.h"
 #include "../../Core/User.h"
 #include "../../Core/Services/UserService.h"
-#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include <iomanip>
+#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class DeleteUserScreen :protected Screen
 {
 
 private:
+
     static void _PrintUser(const User& User)
     {
         std::cout << "\nUser Card:";
-        std::cout << "\n___________________";
-        std::cout << "\nFirstName   : " << User.GetFirstName();
-        std::cout << "\nLastName    : " << User.GetLastName();
-        std::cout << "\nFull Name   : " << User.FullName();
-        std::cout << "\nEmail       : " << User.GetEmail();
-        std::cout << "\nPhone       : " << User.GetPhone();
-        std::cout << "\nUser Name   : " << User.GetUserName();
-        std::cout << "\nPassword    : " << _FormatPasswordForDisplay(User.GetPassword());
-        std::cout << "\nPermissions : " << User.GetPermissions();
-        std::cout << "\n___________________\n";
-
+        _ShowBorderLine(60, '=');
+        std::cout << "FirstName   : " << User.GetFirstName() << "\n";
+        std::cout << "LastName    : " << User.GetLastName() << "\n";
+        std::cout << "Full Name   : " << User.FullName() << "\n";
+        std::cout << "Email       : " << User.GetEmail() << "\n";
+        std::cout << "Phone       : " << User.GetPhone() << "\n";
+        std::cout << "User Name   : " << User.GetUserName() << "\n";
+        std::cout << "Password    : " << _FormatPasswordForDisplay(User.GetPassword()) << "\n";
+        std::cout << "Permissions : " << User.GetPermissions() << "\n";
+        _ShowBorderLine(60, '=');
     }
 
 public:
+
     static void ShowDeleteUserScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pManageUsers))
+        {
+            return;
+        }
 
-        _DrawScreenHeader("\tDelete User Screen");
+        _DrawScreenHeader("Delete User Screen");
 
-        string UserName = "";
+        std::string UserName = "";
+        UserName = Core::InputValidate::ReadString("\nPlease enter UserName (or 0 to Back): ");
+        if (UserName == "0")
+        {
+            return;
+        }
 
-        UserName = Core::InputValidate::ReadString("\nPlease Enter UserName: ");
         while (!User::IsUserExist(UserName))
         {
-            UserName = Core::InputValidate::ReadString("\nUser is not found, choose another one: ");
+            UserName = Core::InputValidate::ReadString("\nUser is not found, choose another one (or 0 to Back): ");
+            if (UserName == "0")
+            {
+                return;
+            }
         }
 
         User User1 = User::Find(UserName);
 
-        // --- credential gate: operator must know the target user's password ---
-        string password = Core::InputValidate::ReadString("\nEnter password to authorize this operation: ");
+        std::string password = Core::InputValidate::ReadString("\nEnter password to authorize this operation: ");
         if (!Bank::Users::UserService::VerifyUserPassword(User1, password))
         {
-            std::cout << "\nInvalid password. Operation denied.\n";
+            _ShowErrorMessage("Invalid password. Operation denied.");
             return;
         }
 
-        // --- last admin protection: cannot delete the sole full-access user ---
         if (User1.GetPermissions() == User::enPermissions::eAll
             && Bank::Users::UserService::IsLastFullAccessAdmin(User1.GetUserName()))
         {
-            std::cout << "\nYou cannot delete the last full-access Admin user.\n";
+            _ShowErrorMessage("You cannot delete the last full-access Admin user.");
             return;
         }
 
         _PrintUser(User1);
 
-        if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to delete this User y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to delete this User? "))
         {
-
             if (User1.Delete())
             {
-                std::cout << "\nUser Deleted Successfully :-)\n";
+                _ShowSuccessMessage("User deleted successfully.");
             }
             else
             {
-                std::cout << "\nError User Was not Deleted\n";
+                _ShowErrorMessage("User was not deleted.");
             }
         }
     }

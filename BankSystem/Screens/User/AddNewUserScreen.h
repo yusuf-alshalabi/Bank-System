@@ -3,8 +3,7 @@
 #include "../Screen.h"
 #include "../../Core/User.h"
 #include "../../Core/Infrastructure/PasswordPolicy.h"
-#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
-#include <iomanip>
+#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class AddNewUserScreen : protected Screen
 {
@@ -12,9 +11,9 @@ private:
 
     static void _ReadUserInfo(User& User)
     {
-        User.FirstName = Core::InputValidate::ReadString("\nEnter FirstName: ");
+        User.FirstName = Core::InputValidate::ReadString("\nEnter First Name: ");
 
-        User.LastName = Core::InputValidate::ReadString("\nEnter LastName: ");
+        User.LastName = Core::InputValidate::ReadString("\nEnter Last Name: ");
 
         User.Email = Core::InputValidate::ReadString("\nEnter Email: ");
 
@@ -22,128 +21,126 @@ private:
 
         User.Password = Bank::Security::PasswordPolicy::ReadPassword("\nEnter Password: ");
 
-        std::cout << "\nEnter Permission: ";
         User.Permissions = _ReadPermissionsToSet();
     }
 
     static void _PrintUser(const User& User)
     {
         std::cout << "\nUser Card:";
-        std::cout << "\n___________________";
-        std::cout << "\nFirstName   : " << User.GetFirstName();
-        std::cout << "\nLastName    : " << User.GetLastName();
-        std::cout << "\nFull Name   : " << User.FullName();
-        std::cout << "\nEmail       : " << User.GetEmail();
-        std::cout << "\nPhone       : " << User.GetPhone();
-        std::cout << "\nUser Name   : " << User.GetUserName();
-        std::cout << "\nPassword    : " << _FormatPasswordForDisplay(User.GetPassword());
-        std::cout << "\nPermissions : " << User.GetPermissions();
-        std::cout << "\n___________________\n";
-
+        _ShowBorderLine(60, '=');
+        std::cout << "FirstName   : " << User.GetFirstName() << "\n";
+        std::cout << "LastName    : " << User.GetLastName() << "\n";
+        std::cout << "Full Name   : " << User.FullName() << "\n";
+        std::cout << "Email       : " << User.GetEmail() << "\n";
+        std::cout << "Phone       : " << User.GetPhone() << "\n";
+        std::cout << "User Name   : " << User.GetUserName() << "\n";
+        std::cout << "Password    : " << _FormatPasswordForDisplay(User.GetPassword()) << "\n";
+        std::cout << "Permissions : " << User.GetPermissions() << "\n";
+        _ShowBorderLine(60, '=');
     }
 
     static int _ReadPermissionsToSet()
     {
         int Permissions = 0;
-        char Answer = 'n';
 
-		if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to give full access? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nDo you want to give full access? "))
         {
             return -1;
         }
 
-        std::cout << "\nDo you want to give access to : \n ";
+        std::cout << "\nDo you want to give access to: ";
 
-        if (Core::InputValidate::ReadYesNoOption("\nShow Client List? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nShow Client List? "))
         {
             Permissions += User::enPermissions::pListClients;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nAdd New Client? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nAdd New Client? "))
         {
             Permissions += User::enPermissions::pAddNewClient;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nDelete Client? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nDelete Client? "))
         {
             Permissions += User::enPermissions::pDeleteClient;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nUpdate Client? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nUpdate Client? "))
         {
             Permissions += User::enPermissions::pUpdateClients;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nFind Client? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nFind Client? "))
         {
             Permissions += User::enPermissions::pFindClient;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nTransactions? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nTransactions? "))
         {
             Permissions += User::enPermissions::pTranactions;
         }
 
-        if (Core::InputValidate::ReadYesNoOption("\nManage Users? y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nManage Users? "))
         {
             Permissions += User::enPermissions::pManageUsers;
         }
-        if (Core::InputValidate::ReadYesNoOption("\nLogin/Register? y/n? "))
+
+        if (Core::InputValidate::ReadYesNoOption("\nLogin/Register? "))
         {
             Permissions += User::enPermissions::pLoginRegister;
         }
 
         return Permissions;
-
     }
 
 public:
 
     static void ShowAddNewUserScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pManageUsers))
+        {
+            return;
+        }
 
-        _DrawScreenHeader("\t  Add New User Screen");
+        _DrawScreenHeader("Add New User Screen");
 
-        string UserName = "";
+        std::string UserName = "";
+        UserName = Core::InputValidate::ReadString("\nPlease enter UserName (or 0 to Back): ");
+        if (UserName == "0")
+        {
+            return;
+        }
 
-        UserName = Core::InputValidate::ReadString("\nPlease Enter UserName: ");
         while (User::IsUserExist(UserName))
         {
-            UserName = Core::InputValidate::ReadString("\nUserName Is Already Used, Choose another one: ");
+            UserName = Core::InputValidate::ReadString("\nUserName is already used, choose another one (or 0 to Back): ");
+            if (UserName == "0")
+            {
+                return;
+            }
         }
 
         User NewUser = User::GetAddNewUserObject(UserName);
 
         _ReadUserInfo(NewUser);
 
-        User::enSaveResults SaveResult;
-
-        SaveResult = NewUser.Save();
+        User::enSaveResults SaveResult = NewUser.Save();
 
         switch (SaveResult)
         {
-        case  User::enSaveResults::svSucceeded:
-        {
-            cout << "\nUser Addeded Successfully :-)\n";
+        case User::enSaveResults::svSucceeded:
+            _ShowSuccessMessage("User added successfully.");
             _PrintUser(NewUser);
             break;
-        }
+
         case User::enSaveResults::svFaildEmptyObject:
-        {
-            cout << "\nError User was not saved because it's Empty";
+            _ShowErrorMessage("User was not saved because it's empty.");
             break;
 
-        }
         case User::enSaveResults::svFaildUserExists:
-        {
-            cout << "\nError User was not saved because UserName is used!\n";
+            _ShowErrorMessage("User was not saved because the UserName is already used.");
             break;
-
-        }
         }
     }
 
-
-
 };
-
