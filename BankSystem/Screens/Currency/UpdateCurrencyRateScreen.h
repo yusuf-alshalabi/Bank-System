@@ -8,55 +8,55 @@ class UpdateCurrencyRateScreen :protected Screen
 {
 private:
 
-    static double _ReadRate()
-    {
-        double NewRate = 0;
-
-        NewRate = Core::InputValidate::ReadNumber<double>("\nEnter New Rate: ");
-        return NewRate;
-    }
-
     static void _PrintCurrency(Currency Currency)
     {
-        std::cout << "\nCurrency Card:\n";
-        std::cout << "_____________________________\n";
-        std::cout << "\nCountry    : " << Currency.Country();
-        std::cout << "\nCode       : " << Currency.CurrencyCode();
-        std::cout << "\nName       : " << Currency.CurrencyName();
-        std::cout << "\nRate(1$) = : " << Currency.Rate();
-        std::cout << "\n_____________________________\n";
+        std::cout << "\nCurrency Card:";
+        _ShowBorderLine(50, '=');
+        std::cout << "Country       : " << Currency.Country() << "\n";
+        std::cout << "Code          : " << Currency.CurrencyCode() << "\n";
+        std::cout << "Name          : " << Currency.CurrencyName() << "\n";
+        std::cout << "Rate (1$) =   : " << Currency.Rate() << "\n";
+        _ShowBorderLine(50, '=');
     }
 
 public:
 
     static void ShowUpdateCurrencyRateScreen()
     {
-        _DrawScreenHeader("\tUpdate Currency Screen");
+        if (!CheckActiveSession())
+        {
+            return;
+        }
 
-        std::string CurrencyCode = "";
+        _DrawScreenHeader("Update Currency Rate Screen");
 
-        CurrencyCode = Core::InputValidate::ReadString("\nPlease Enter Currency Code: ");
+        std::string CurrencyCode = Core::InputValidate::ReadString("\nPlease Enter Currency Code (or 0 to Back): ");
+        if (CurrencyCode == "0")
+        {
+            return;
+        }
 
         while (!Currency::IsCurrencyExist(CurrencyCode))
         {
-            CurrencyCode = Core::InputValidate::ReadString("\nCurrency is not found, choose another one: ");
+            CurrencyCode = Core::InputValidate::ReadString("\nCurrency is not found, choose another one (or 0 to Back): ");
+            if (CurrencyCode == "0")
+            {
+                return;
+            }
         }
 
         Currency Currency = Currency::FindByCode(CurrencyCode);
         _PrintCurrency(Currency);
 
-   
-        if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to update the rate of this Currency y/n? "))
+        if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to update the rate of this currency? "))
         {
-            std::cout << "\n\nUpdate Currency Rate:";
-            std::cout << "\n____________________\n";
+            std::cout << "\nUpdate Currency Rate:";
+            _ShowBorderLine(50, '=');
 
-            Currency.UpdateRate(_ReadRate());
+            Currency.UpdateRate(static_cast<float>(Core::InputValidate::ReadNumber<double>("\nEnter New Rate: ")));
 
-            std::cout << "\nCurrency Rate Updated Successfully :-)\n";
+            _ShowSuccessMessage("Currency rate updated successfully.");
             _PrintCurrency(Currency);
         }
-
     }
 };
-

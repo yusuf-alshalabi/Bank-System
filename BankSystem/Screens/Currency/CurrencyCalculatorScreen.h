@@ -9,48 +9,44 @@ class CurrencyCalculatorScreen :protected Screen
 {
 private:
 
-    static double _ReadAmount()
+    static std::string _ReadCurrencyCode(const std::string& Message)
     {
-        return Core::InputValidate::ReadNumber<double>("\nEnter Amount to Exchange: ");
-    }
-
-    static Currency _GetCurrency(std::string Message)
-    {
-
         std::string CurrencyCode = Core::InputValidate::ReadString(Message);
+        if (CurrencyCode == "0")
+        {
+            return "0";
+        }
 
         while (!Currency::IsCurrencyExist(CurrencyCode))
         {
-            CurrencyCode = Core::InputValidate::ReadString("\nCurrency is not found, choose another one: ");
+            CurrencyCode = Core::InputValidate::ReadString("\nCurrency is not found, choose another one (or 0 to Back): ");
+            if (CurrencyCode == "0")
+            {
+                return "0";
+            }
         }
 
-        Currency Currency = Currency::FindByCode(CurrencyCode);
-        return Currency;
-
+        return CurrencyCode;
     }
 
-
-    static  void _PrintCurrencyCard(Currency Currency, std::string Title = "Currency Card:")
+    static void _PrintCurrencyCard(Currency Currency, std::string Title = "Currency Card:")
     {
-
-       std::cout << "\n" << Title << "\n";
-       std::cout << "_____________________________\n";
-       std::cout << "\nCountry       : " << Currency.Country();
-       std::cout << "\nCode          : " << Currency.CurrencyCode();
-       std::cout << "\nName          : " << Currency.CurrencyName();
-       std::cout << "\nRate(1$) =    : " << Currency.Rate();
-       std::cout << "\n_____________________________\n\n";
-
+        std::cout << "\n" << Title << "\n";
+        _ShowBorderLine(50, '=');
+        std::cout << "Country       : " << Currency.Country() << "\n";
+        std::cout << "Code          : " << Currency.CurrencyCode() << "\n";
+        std::cout << "Name          : " << Currency.CurrencyName() << "\n";
+        std::cout << "Rate (1$) =   : " << Currency.Rate() << "\n";
+        _ShowBorderLine(50, '=');
     }
 
     static void _PrintCalculationsResults(double Amount, Currency Currency1, Currency Currency2)
     {
-
         _PrintCurrencyCard(Currency1, "Convert From:");
 
         double AmountInUSD = Currency1.ConvertToUSD(Amount);
 
-        std::cout << Amount << " " << Currency1.CurrencyCode()
+        std::cout << "\n" << Amount << " " << Currency1.CurrencyCode()
             << " = " << AmountInUSD << " USD\n";
 
         if (Currency2.CurrencyCode() == "USD")
@@ -64,29 +60,46 @@ private:
 
         double AmountInCurrrency2 = Currency1.ConvertToOtherCurrency(Amount, Currency2);
 
-        std::cout << Amount << " " << Currency1.CurrencyCode()
-            << " = " << AmountInCurrrency2 << " " << Currency2.CurrencyCode();
-
+        std::cout << "\n" << Amount << " " << Currency1.CurrencyCode()
+            << " = " << AmountInCurrrency2 << " " << Currency2.CurrencyCode() << "\n";
     }
-
 
 public:
 
     static void ShowCurrencyCalculatorScreen()
     {
+        if (!CheckActiveSession())
+        {
+            return;
+        }
+
         do
         {
-            std::system("cls");
+            _ClearScreen();
 
-            _DrawScreenHeader("\tUpdate Currency Screen");
+            _DrawScreenHeader("Currency Calculator Screen");
 
-            Currency CurrencyFrom = _GetCurrency("\nPlease Enter Currency1 Code: ");
-            Currency CurrencyTo = _GetCurrency("\nPlease Enter Currency2 Code: ");
-            double Amount = _ReadAmount();
+            std::string Currency1Code = _ReadCurrencyCode("\nPlease Enter Currency1 Code (or 0 to Back): ");
+            if (Currency1Code == "0")
+            {
+                return;
+            }
+
+            std::string Currency2Code = _ReadCurrencyCode("\nPlease Enter Currency2 Code (or 0 to Back): ");
+            if (Currency2Code == "0")
+            {
+                return;
+            }
+
+            Currency CurrencyFrom = Currency::FindByCode(Currency1Code);
+            Currency CurrencyTo = Currency::FindByCode(Currency2Code);
+
+            double Amount = Core::InputValidate::ReadNumber<double>("\nEnter Amount to Exchange: ");
 
             _PrintCalculationsResults(Amount, CurrencyFrom, CurrencyTo);
 
-        } while (Core::InputValidate::ReadYesNoOption("\n\nDo you want to perform another calculation? y/n ? "));
+            _ShowLine(58, '-');
+
+        } while (Core::InputValidate::ReadYesNoOption("\nDo you want to perform another calculation? "));
     }
 };
-
