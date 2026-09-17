@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -147,6 +148,18 @@ protected:
 
             _ShowErrorMessage("Invalid choice: enter 0 or a number from " + std::to_string(From) + " to " + std::to_string(To) + ".");
         }
+    }
+
+    static std::string _CurrencyText(double Amount)
+    {
+        std::ostringstream Stream;
+        Stream << std::fixed << std::setprecision(2) << Amount;
+        return "$" + Stream.str();
+    }
+
+    static std::string _FormatCurrency(double Amount)
+    {
+        return std::string(GREEN) + _CurrencyText(Amount) + RESET;
     }
 
     static std::string _FormatPasswordForDisplay(const std::string& Password)
