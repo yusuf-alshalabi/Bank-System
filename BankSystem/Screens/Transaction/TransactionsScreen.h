@@ -4,7 +4,6 @@
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
 #include "../../Core/User.h"
-#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "DepositScreen.h"
 #include "WithdrawScreen.h"
 #include "TotalBalancesScreen.h"
@@ -16,62 +15,46 @@ class TransactionsScreen :protected Screen
 {
 
 private:
+
     enum enTransactionsMenueOptions {
         eDeposit = 1, eWithdraw = 2,
         eShowTotalBalance = 3, eTransfer = 4, eTransferLog = 5,
-        eHistory = 6, eShowMainMenue = 7
+        eHistory = 6
     };
-
-    static short ReadTransactionsMenueOption()
-    {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [1 to 7]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, 7, "Enter Number between 1 to 7? ");
-        return Choice;
-    }
-
 
     static void _ShowDepositScreen()
     {
-        //cout << "\n Deposit Screen will be here.\n";
         DepositScreen::ShowDepositScreen();
-
     }
 
     static void _ShowWithdrawScreen()
     {
-       // cout << "\n Withdraw Screen will be here.\n";
-		WithdrawScreen::ShowWithdrawScreen();
+        WithdrawScreen::ShowWithdrawScreen();
     }
 
     static void _ShowTotalBalancesScreen()
     {
-       // cout << "\n Balances Screen will be here.\n";
-        	TotalBalancesScreen::ShowTotalBalances();
+        TotalBalancesScreen::ShowTotalBalances();
     }
 
-	static void _ShowTransferScreen()
-	{
-		// cout << "\n Transfer Screen will be here.\n";
-		TransferScreen::ShowTransferScreen();
-	}
+    static void _ShowTransferScreen()
+    {
+        TransferScreen::ShowTransferScreen();
+    }
 
-	static void _ShowTransferLogScreen()
-	{
-		// cout << "\n Transfer Log Screen will be here.\n";
-		TransferLogScreen::ShowTransferLogScreen();
-	}
+    static void _ShowTransferLogScreen()
+    {
+        TransferLogScreen::ShowTransferLogScreen();
+    }
 
-	static void _ShowHistoryScreen()
-	{
-		TransactionHistoryScreen::ShowTransactionHistoryScreen();
-	}
+    static void _ShowHistoryScreen()
+    {
+        TransactionHistoryScreen::ShowTransactionHistoryScreen();
+    }
 
     static void _GoBackToTransactionsMenue()
     {
-        std::cout << "\n\nPress any key to go back to Transactions Menue...";
-        system("pause>0");
-        ShowTransactionsMenue();
-
+        _PressEnterToContinue();
     }
 
     static void _PerformTransactionsMenueOption(enTransactionsMenueOptions TransactionsMenueOption)
@@ -79,90 +62,70 @@ private:
         switch (TransactionsMenueOption)
         {
         case enTransactionsMenueOptions::eDeposit:
-        {
-            std::system("cls");
+            _ClearScreen();
             _ShowDepositScreen();
             _GoBackToTransactionsMenue();
             break;
-        }
 
         case enTransactionsMenueOptions::eWithdraw:
-        {
-            std::system("cls");
+            _ClearScreen();
             _ShowWithdrawScreen();
             _GoBackToTransactionsMenue();
             break;
-        }
 
         case enTransactionsMenueOptions::eShowTotalBalance:
-        {
-            std::system("cls");
+            _ClearScreen();
             _ShowTotalBalancesScreen();
             _GoBackToTransactionsMenue();
             break;
+
+        case enTransactionsMenueOptions::eTransfer:
+            _ClearScreen();
+            _ShowTransferScreen();
+            _GoBackToTransactionsMenue();
+            break;
+
+        case enTransactionsMenueOptions::eTransferLog:
+            _ClearScreen();
+            _ShowTransferLogScreen();
+            _GoBackToTransactionsMenue();
+            break;
+
+        case enTransactionsMenueOptions::eHistory:
+            _ClearScreen();
+            _ShowHistoryScreen();
+            _GoBackToTransactionsMenue();
+            break;
         }
-
-		case enTransactionsMenueOptions::eTransfer:
-		{
-			std::system("cls");
-			_ShowTransferScreen();
-			_GoBackToTransactionsMenue();
-			break;
-		}
-
-		case enTransactionsMenueOptions::eTransferLog:
-		{
-			std::system("cls");
-			_ShowTransferLogScreen();
-			_GoBackToTransactionsMenue();
-			break;
-		}
-
-		case enTransactionsMenueOptions::eHistory:
-		{
-			std::system("cls");
-			_ShowHistoryScreen();
-			_GoBackToTransactionsMenue();
-			break;
-		}
-
-        case enTransactionsMenueOptions::eShowMainMenue:
-        {
-            //do nothing here the main screen will handle it :-) ;
-        }
-        }
-
-
     }
 
-
-
 public:
-
 
     static void ShowTransactionsMenue()
     {
         if (!CheckAccessRights(User::enPermissions::pTranactions))
         {
-            return;// this will exit the function and it will not continue
+            return;
         }
 
-        std::system("cls");
-        _DrawScreenHeader("\t  Transactions Screen");
+        while (true)
+        {
+            _ClearScreen();
+            _DrawScreenHeader("Transactions Menu Screen");
 
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
-        std::cout << std::setw(37) << std::left << "" << "\t\t  Transactions Menue\n";
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[1] Deposit.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[2] Withdraw.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[3] Total Balances.\n";
-		std::cout << std::setw(37) << std::left << "" << "\t[4] Transfer.\n";
-		std::cout << std::setw(37) << std::left << "" << "\t[5] Transfer Log.\n";
-		std::cout << std::setw(37) << std::left << "" << "\t[6] Transactions History.\n";
-        std::cout << std::setw(37) << std::left << "" << "\t[7] Main Menue.\n";
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+            _ShowOptions({ "Deposit", "Withdraw", "Total Balances", "Transfer", "Transfer Log", "Transactions History" });
+            _ShowBackOption(false);
+            _ShowLine(60, '-');
 
-        _PerformTransactionsMenueOption((enTransactionsMenueOptions)ReadTransactionsMenueOption());
+            short Choice = _ReadMenuOption(1, 6);
+
+            if (Choice == 0)
+            {
+                return;
+            }
+
+            _PerformTransactionsMenueOption(static_cast<enTransactionsMenueOptions>(Choice));
+        }
     }
 
 };

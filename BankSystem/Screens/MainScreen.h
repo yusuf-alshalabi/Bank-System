@@ -1,6 +1,7 @@
 #pragma once
+#include <algorithm>
+#include <cstdlib>
 #include <iostream>
-#include <iomanip>
 #include "Screen.h"
 #include "Client/ClientListScreen.h"
 #include "Client/AddNewClientScreen.h"
@@ -11,7 +12,6 @@
 #include "Transaction/TransactionsScreen.h"
 #include "User/ManageUsersScreen.h"
 #include "Currency/CurrencyExchangeMainScreen.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "../Core/Infrastructure/SessionManager.h"
 #include "../Core/Infrastructure/Logger.h"
 #include "../Core/Services/MenuManager.h"
@@ -19,6 +19,7 @@
 class MainScreen : protected Screen
 {
 private:
+
     enum enMainMenueOptions {
         eListClients = 1,
         eAddNewClient = 2,
@@ -27,84 +28,65 @@ private:
         eFindClient = 5,
         eShowTransactionsMenue = 6,
         eManageUsers = 7,
-		eLoginRegister = 8,
-		eCurrencyExchange = 9,
-        eExit = 10
+        eLoginRegister = 8,
+        eCurrencyExchange = 9,
+        eLogout = 10
     };
-
-    static short _ReadMainMenueOption(short MaxOption)
-    {
-        std::cout << std::setw(37) << std::left << "" << "Choose what do you want to do? [" << 1 << " to " << MaxOption << "]? ";
-        short Choice = Core::InputValidate::ReadNumberBetween<short>(1, MaxOption, "Enter Number between 1 and " + std::to_string(MaxOption) + "? ");
-        return Choice;
-    }
-
-    static void _GoBackToMainMenue()
-    {
-        std::cout << "\n\nPress any key to go back to Main Menue...";
-        system("pause>0");
-        ShowMainMenue();
-    }
 
     static void _ShowAllClientsScreen()
     {
-       // std::cout << "\nClient List Screen Will be here...\n";
         ClientListScreen::ShowClientsList();
     }
 
     static void _ShowAddNewClientsScreen()
     {
-        // std::cout << "\nAdd New Client Screen Will be here...\n";
         AddNewClientScreen::ShowAddNewClientScreen();
     }
 
     static void _ShowDeleteClientScreen()
     {
-       // DeleteClientScreen::ShowDeleteClientScreen();
         DeleteClientScreen::ShowDeleteClientScreen();
     }
 
     static void _ShowUpdateClientScreen()
     {
-       // std::cout << "\nUpdate Client Screen Will be here...\n";
         UpdateClientScreen::ShowUpdateClientScreen();
     }
 
     static void _ShowFindClientScreen()
     {
-        // std::cout << "\nFind Client Screen Will be here...\n";
         FindClientScreen::ShowFindClientScreen();
     }
 
     static void _ShowTransactionsMenue()
     {
-       // std::cout << "\nTransactions Menue Will be here...\n";
         TransactionsScreen::ShowTransactionsMenue();
     }
 
     static void _ShowManageUsersMenue()
     {
-       // std::cout << "\nManage Users Menue Will be here...\n";
         ManageUsersScreen::ShowManageUsersMenue();
     }
 
-	static void _ShowLoginRegisterScreen()
-	{
-		// std::cout << "\nLogin Register Screen Will be here...\n";
-		LoginRegisterScreen::ShowLoginRegisterScreen();
-	}
+    static void _ShowLoginRegisterScreen()
+    {
+        LoginRegisterScreen::ShowLoginRegisterScreen();
+    }
 
-	static void _ShowCurrencyExchangeScreen()
-	{
-		// std::cout << "\nCurrency Exchange Screen Will be here...\n";
-		CurrencyExchangeMainScreen::ShowCurrenciesMenue();
-	}
+    static void _ShowCurrencyExchangeScreen()
+    {
+        CurrencyExchangeMainScreen::ShowCurrenciesMenue();
+    }
 
     static void _Logout()
     {
         Bank::Diagnostics::Logger::Instance().LogUserAction("LOGOUT");
-        // secure session wipe + back to the login flow
         Bank::Security::SessionManager::Instance().End();
+    }
+
+    static void _GoBackToMainMenue()
+    {
+        _PressEnterToContinue();
     }
 
     static void _PerformMainMenueOption(enMainMenueOptions MainMenueOption)
@@ -112,83 +94,113 @@ private:
         switch (MainMenueOption)
         {
         case enMainMenueOptions::eListClients:
-            std::system("cls");
+            _ClearScreen();
             _ShowAllClientsScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eAddNewClient:
-            std::system("cls");
+            _ClearScreen();
             _ShowAddNewClientsScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eDeleteClient:
-            std::system("cls");
+            _ClearScreen();
             _ShowDeleteClientScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eUpdateClient:
-            std::system("cls");
+            _ClearScreen();
             _ShowUpdateClientScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eFindClient:
-            std::system("cls");
+            _ClearScreen();
             _ShowFindClientScreen();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eShowTransactionsMenue:
-            system("cls");
             _ShowTransactionsMenue();
             _GoBackToMainMenue();
             break;
 
         case enMainMenueOptions::eManageUsers:
-            std::system("cls");
             _ShowManageUsersMenue();
             _GoBackToMainMenue();
             break;
+
         case enMainMenueOptions::eLoginRegister:
-            std::system("cls");
-			_ShowLoginRegisterScreen();
-			_GoBackToMainMenue();
+            _ClearScreen();
+            _ShowLoginRegisterScreen();
+            _GoBackToMainMenue();
             break;
+
         case enMainMenueOptions::eCurrencyExchange:
-            std::system("cls");
-			_ShowCurrencyExchangeScreen();
-			_GoBackToMainMenue();
-            break;
-        case enMainMenueOptions::eExit:
-            std::system("cls");
-            _Logout();
+            _ShowCurrencyExchangeScreen();
+            _GoBackToMainMenue();
             break;
         }
     }
 
+    static void _ShowExitScreen()
+    {
+        _ClearScreen();
+        _DrawScreenHeader("Program Ends");
+        _ShowSuccessMessage("Thank you for using BankSystem. Goodbye!");
+    }
+
 public:
+
     static void ShowMainMenue()
     {
-        std::system("cls");
-        _DrawScreenHeader("\t\tMain Screen");
-
-        // Dynamic menu: only entries the acting user is permitted to use.
-        const User& CurrentUser = Bank::Security::SessionManager::Instance().Current();
-        std::vector<Bank::UI::MainMenuEntry> Entries = Bank::UI::MenuManager::BuildMainMenu(CurrentUser);
-
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
-        std::cout << std::setw(37) << std::left << "" << "\t\tMain Menue\n";
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
-        for (std::size_t i = 0; i < Entries.size(); ++i)
+        while (true)
         {
-            std::cout << std::setw(37) << std::left << "" << "\t[" << (i + 1) << "] " << Entries[i].Label << ".\n";
-        }
-        std::cout << std::setw(37) << std::left << "" << "===========================================\n";
+            _ClearScreen();
+            _DrawScreenHeader("Main Menu Screen");
 
-        short Choice = _ReadMainMenueOption(static_cast<short>(Entries.size()));
-        _PerformMainMenueOption((enMainMenueOptions)Entries[Choice - 1].Key);
+            const User& CurrentUser = Bank::Security::SessionManager::Instance().Current();
+            std::vector<Bank::UI::MainMenuEntry> Entries = Bank::UI::MenuManager::BuildMainMenu(CurrentUser);
+
+            std::cout << "\n";
+            for (const Bank::UI::MainMenuEntry& Entry : Entries)
+            {
+                std::cout << CYAN << "  [" << Entry.Key << "]  " << RESET
+                    << YELLOW << Entry.Label << RESET << ".\n";
+            }
+            std::cout << CYAN << "\n  [0]  " << RESET << YELLOW << "Exit App" << RESET << ".\n";
+
+            _ShowLine(60, '-');
+
+            short Choice = _ReadMenuOption(1, 10, true);
+
+            if (Choice == 0)
+            {
+                _ShowExitScreen();
+                std::exit(0);
+            }
+
+            auto Found = std::find_if(Entries.begin(), Entries.end(),
+                [Choice](const Bank::UI::MainMenuEntry& Entry) { return Entry.Key == Choice; });
+
+            if (Found == Entries.end())
+            {
+                std::cout << "\n";
+                _ShowErrorMessage("Invalid option: the feature is not available for your account.");
+                _PressEnterToContinue();
+                continue;
+            }
+
+            if (Found->Key == static_cast<int>(Bank::UI::MainMenuKey::Logout))
+            {
+                _Logout();
+                return;
+            }
+
+            _PerformMainMenueOption(static_cast<enMainMenueOptions>(Found->Key));
+        }
     }
 };
