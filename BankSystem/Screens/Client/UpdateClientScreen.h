@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Screen.h"
 #include "../Core/BankClient.h"
+#include "../Core/User.h"
 #include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 
@@ -45,6 +46,11 @@ public:
 
 	static void ShowUpdateClientScreen()
 	{
+
+		if (!CheckAccessRights(User::enPermissions::pUpdateClients))
+		{
+			return;// this will exit the function and it will not continue
+		}
 
 		_DrawScreenHeader("\tUpdate Client Screen");
 
