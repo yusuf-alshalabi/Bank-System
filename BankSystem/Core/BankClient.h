@@ -27,6 +27,8 @@ public:
 	};
 
 private:
+	inline static const std::string _TransferLogFileName = "Database/TransferLog.txt";
+
 	static BankClient _GetEmptyClientObject()
 	{
 		return BankClient(enMode::EmptyMode, "", "", "", "", "", "", 0);
@@ -72,7 +74,7 @@ private:
 void _RegisterTransferLog(float Amount, BankClient DestinationClient, string UserName)
 	{
 		string stDataLine = _PrepareTransferLogRecord(Amount, DestinationClient, UserName);
-		Bank::Persistence::AtomicFileStore::AppendLine("TransferLog.txt", stDataLine);
+		Bank::Persistence::AtomicFileStore::AppendLine(_TransferLogFileName, stDataLine);
 	}
 
 
@@ -173,7 +175,7 @@ public:
 	{
 		vector <stTrnsferLogRecord> vTransferLogRecord;
 
-		for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines("TransferLog.txt"))
+		for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines(_TransferLogFileName))
 		{
 			stTrnsferLogRecord TransferRecord = _ConvertTransferLogLineToRecord(Line);
 

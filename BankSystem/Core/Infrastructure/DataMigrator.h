@@ -20,8 +20,11 @@ namespace Bank::Data {
 	// hash are left untouched, so it is safe to run on every startup.
 	class DataMigrator
 	{
+	private:
+		inline static const std::string _UsersFileName = "Database/Users.txt";
+
 	public:
-		static bool MigrateLegacyUsersPasswordStorage(const std::string& usersFile = "Users.txt")
+		static bool MigrateLegacyUsersPasswordStorage(const std::string& usersFile = _UsersFileName)
 		{
 			if (!std::filesystem::exists(usersFile))
 				return true; // nothing to migrate

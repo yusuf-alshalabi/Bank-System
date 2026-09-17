@@ -48,8 +48,6 @@ namespace Bank::Transactions {
 	public:
 		static constexpr double TransferFeeRate = 0.01;
 
-		static constexpr const char* FilePath = "Transactions.txt";
-
 		// "TXN" + microsecond timestamp + 8 hex random digits (legacy format).
 		static std::string GenerateTransactionId()
 		{
@@ -127,13 +125,13 @@ namespace Bank::Transactions {
 		{
 			if (entry.TransactionID.empty())
 				return false;
-			return AtomicFileStore::AppendLine(FilePath, ToLine(entry));
+			return AtomicFileStore::AppendLine(_TransactionsFileName, ToLine(entry));
 		}
 
 		static std::vector<TransactionEntry> LoadAll()
 		{
 			std::vector<TransactionEntry> entries;
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_TransactionsFileName))
 			{
 				TransactionEntry entry = FromLine(line);
 				if (entry.TransactionID.empty())
@@ -160,6 +158,8 @@ namespace Bank::Transactions {
 		}
 
 	private:
+		inline static const std::string _TransactionsFileName = "Database/Transactions.txt";
+
 		static std::string _FormatAmount(double value)
 		{
 			std::ostringstream ss;

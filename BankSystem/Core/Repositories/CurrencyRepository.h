@@ -17,7 +17,6 @@ namespace Bank::Data {
 	class CurrencyRepository
 	{
 	public:
-		static constexpr const char* FilePath = "Currencies.txt";
 		static constexpr std::size_t FieldCount = 4;
 
 		struct LoadResult
@@ -57,7 +56,7 @@ namespace Bank::Data {
 		static LoadResult LoadAll()
 		{
 			LoadResult result;
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_CurrenciesFileName))
 			{
 				Currency currency = FromLine(line);
 				if (currency.IsEmpty())
@@ -77,13 +76,13 @@ namespace Bank::Data {
 			lines.reserve(currencies.size());
 			for (const Currency& currency : currencies)
 				lines.push_back(ToLine(currency));
-			return AtomicFileStore::SaveLines(FilePath, lines);
+			return AtomicFileStore::SaveLines(_CurrenciesFileName, lines);
 		}
 
 		static Currency FindByCode(const std::string& currencyCode)
 		{
 			std::string code = Core::String::UpperAllString(currencyCode);
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_CurrenciesFileName))
 			{
 				Currency currency = FromLine(line);
 				if (!currency.IsEmpty() && currency.CurrencyCode() == code)
@@ -95,7 +94,7 @@ namespace Bank::Data {
 		static Currency FindByCountry(const std::string& country)
 		{
 			std::string target = Core::String::UpperAllString(country);
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_CurrenciesFileName))
 			{
 				Currency currency = FromLine(line);
 				if (!currency.IsEmpty() && Core::String::UpperAllString(currency.Country()) == target)
@@ -110,6 +109,8 @@ namespace Bank::Data {
 		}
 
 	private:
+		inline static const std::string _CurrenciesFileName = "Database/Currencies.txt";
+
 		static Currency _Empty()
 		{
 			return Currency(Currency::enMode::EmptyMode, "", "", "", 0);

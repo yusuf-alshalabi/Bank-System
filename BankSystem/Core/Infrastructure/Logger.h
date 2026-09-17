@@ -79,7 +79,7 @@ namespace Bank::Diagnostics {
 			return Bank::Security::SessionManager::Instance().CurrentUserName();
 		}
 
-		std::string _LogFile = "SystemLog.txt";
+		std::string _LogFile = "Database/SystemLog.txt";
 		std::mutex _Mutex;
 	};
 

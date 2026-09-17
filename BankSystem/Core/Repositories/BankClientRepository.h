@@ -17,7 +17,6 @@ namespace Bank::Data {
 	class BankClientRepository
 	{
 	public:
-		static constexpr const char* FilePath = "Clients.txt";
 		static constexpr std::size_t FieldCount = 7;
 
 		struct LoadResult
@@ -60,7 +59,7 @@ namespace Bank::Data {
 		static LoadResult LoadAll()
 		{
 			LoadResult result;
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_ClientsFileName))
 			{
 				BankClient client = FromLine(line);
 				if (client.IsEmpty())
@@ -83,12 +82,12 @@ namespace Bank::Data {
 				if (!client.MarkedForDeleted())
 					lines.push_back(ToLine(client));
 			}
-			return AtomicFileStore::SaveLines(FilePath, lines);
+			return AtomicFileStore::SaveLines(_ClientsFileName, lines);
 		}
 
 		static BankClient FindByAccountNumber(const std::string& accountNumber)
 		{
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_ClientsFileName))
 			{
 				BankClient client = FromLine(line);
 				if (!client.IsEmpty() && client.GetAccountNumber() == accountNumber)
@@ -99,7 +98,7 @@ namespace Bank::Data {
 
 		static BankClient FindByAccountNumberAndPin(const std::string& accountNumber, const std::string& pinCode)
 		{
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_ClientsFileName))
 			{
 				BankClient client = FromLine(line);
 				if (!client.IsEmpty() && client.GetAccountNumber() == accountNumber
@@ -115,6 +114,8 @@ namespace Bank::Data {
 		}
 
 	private:
+		inline static const std::string _ClientsFileName = "Database/Clients.txt";
+
 		static BankClient _Empty()
 		{
 			return BankClient(BankClient::enMode::EmptyMode, "", "", "", "", "", "", 0);

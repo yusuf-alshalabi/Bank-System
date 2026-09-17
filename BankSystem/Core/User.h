@@ -25,6 +25,8 @@ public:
 
 private:
 
+    inline static const std::string _LoginRegisterFileName = "Database/LoginRegister.txt";
+
     bool _MarkedForDelete = false;
 
     static stLoginRegisterRecord _ConvertLogInRegisterLineToRecord(string Line, string Seperator = "#//#")
@@ -161,7 +163,7 @@ public:
 
         string stDataLine = _PrepareLogInRecord();
 
-        Bank::Persistence::AtomicFileStore::AppendLine("LoginRegister.txt", stDataLine);
+        Bank::Persistence::AtomicFileStore::AppendLine(_LoginRegisterFileName, stDataLine);
 
     }
 
@@ -169,7 +171,7 @@ public:
     {
         vector <stLoginRegisterRecord> vLoginRegisterRecord;
 
-        for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines("LoginRegister.txt"))
+        for (const string& Line : Bank::Persistence::AtomicFileStore::LoadLines(_LoginRegisterFileName))
         {
             stLoginRegisterRecord LoginRegisterRecord = _ConvertLogInRegisterLineToRecord(Line);
 

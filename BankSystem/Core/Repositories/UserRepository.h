@@ -19,7 +19,6 @@ namespace Bank::Data {
 	class UserRepository
 	{
 	public:
-		static constexpr const char* FilePath = "Users.txt";
 		static constexpr std::size_t FieldCount = 7;
 
 		struct LoadResult
@@ -62,7 +61,7 @@ namespace Bank::Data {
 		static LoadResult LoadAll()
 		{
 			LoadResult result;
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_UsersFileName))
 			{
 				User user = FromLine(line);
 				if (user.IsEmpty())
@@ -85,12 +84,12 @@ namespace Bank::Data {
 				if (!user.MarkedForDeleted())
 					lines.push_back(ToLine(user));
 			}
-			return AtomicFileStore::SaveLines(FilePath, lines);
+			return AtomicFileStore::SaveLines(_UsersFileName, lines);
 		}
 
 		static User FindByUserName(const std::string& userName)
 		{
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_UsersFileName))
 			{
 				User user = FromLine(line);
 				if (!user.IsEmpty() && user.GetUserName() == userName)
@@ -101,7 +100,7 @@ namespace Bank::Data {
 
 		static User FindByUserNameAndPassword(const std::string& userName, const std::string& password)
 		{
-			for (const std::string& line : AtomicFileStore::LoadLines(FilePath))
+			for (const std::string& line : AtomicFileStore::LoadLines(_UsersFileName))
 			{
 				User user = FromLine(line);
 				if (!user.IsEmpty() && user.GetUserName() == userName
@@ -128,6 +127,8 @@ namespace Bank::Data {
 		}
 
 	private:
+		inline static const std::string _UsersFileName = "Database/Users.txt";
+
 		static User _Empty()
 		{
 			return User(User::enMode::EmptyMode, "", "", "", "", "", "", 0);

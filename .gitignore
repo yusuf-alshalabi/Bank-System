@@ -28,7 +28,8 @@ obj/
 *.opendb
 
 # Runtime files
-BankSystem/SystemLog.txt
+BankSystem/Database/SystemLog.txt
+*.bak
 
 # Temporary / Draft files
 0

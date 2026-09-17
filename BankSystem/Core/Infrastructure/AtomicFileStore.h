@@ -58,6 +58,8 @@ namespace Bank::Persistence {
 			const std::string tmpPath = path + ".tmp";
 			const std::string bakPath = path + ".bak";
 
+			_EnsureParentDirectory(path);
+
 			try
 			{
 				{
@@ -104,6 +106,8 @@ namespace Bank::Persistence {
 		// transfer log, login register audit).
 		static bool AppendLine(const std::string& path, const std::string& line)
 		{
+			_EnsureParentDirectory(path);
+
 			std::ofstream stream(path, std::ios::out | std::ios::app);
 			if (!stream.is_open())
 				return false;
@@ -160,6 +164,15 @@ namespace Bank::Persistence {
 		}
 
 	private:
+		static void _EnsureParentDirectory(const std::string& path)
+		{
+			const std::filesystem::path parent = std::filesystem::path(path).parent_path();
+			if (parent.empty())
+				return;
+			std::error_code ec;
+			std::filesystem::create_directories(parent, ec);
+		}
+
 		static void _Remove(const std::string& path)
 		{
 			std::error_code ec;
