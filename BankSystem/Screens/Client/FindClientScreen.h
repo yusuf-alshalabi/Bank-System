@@ -1,29 +1,29 @@
 #pragma once
 #include <iostream>
-#include "Screen.h"
-#include "../Core/Person.h"
-#include "../Core/BankClient.h"
-#include "../Core/User.h"
-#include "../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
+#include "../Screen.h"
+#include "../../Core/Person.h"
+#include "../../Core/BankClient.h"
+#include "../../Core/User.h"
+#include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class FindClientScreen :protected Screen
 {
 
 private:
+
     static void _PrintClient(const BankClient& Client)
     {
         std::cout << "\nClient Card:";
-        std::cout << "\n___________________";
-        std::cout << "\nFirstName   : " << Client.GetFirstName();
-        std::cout << "\nLastName    : " << Client.GetLastName();
-        std::cout << "\nFull Name   : " << Client.FullName();
-        std::cout << "\nEmail       : " << Client.GetEmail();
-        std::cout << "\nPhone       : " << Client.GetPhone();
-        std::cout << "\nAcc. Number : " << Client.GetAccountNumber();
-        std::cout << "\nPassword    : " << Client.GetPinCode();
-        std::cout << "\nBalance     : " << Client.GetAccountBalance();
-        std::cout << "\n___________________\n";
-
+        _ShowBorderLine(60, '=');
+        std::cout << "FirstName   : " << Client.GetFirstName() << "\n";
+        std::cout << "LastName    : " << Client.GetLastName() << "\n";
+        std::cout << "Full Name   : " << Client.FullName() << "\n";
+        std::cout << "Email       : " << Client.GetEmail() << "\n";
+        std::cout << "Phone       : " << Client.GetPhone() << "\n";
+        std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
+        std::cout << "Password    : " << Client.GetPinCode() << "\n";
+        std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+        _ShowBorderLine(60, '=');
     }
 
 public:
@@ -32,31 +32,38 @@ public:
     {
         if (!CheckAccessRights(User::enPermissions::pFindClient))
         {
-            return;// this will exit the function and it will not continue
+            return;
         }
 
-        _DrawScreenHeader("\tFind Client Screen");
+        _DrawScreenHeader("Find Client Screen");
 
-        std::string AccountNumber = Core::InputValidate::ReadString("\nPlease Enter Account Number: ");
+        std::string AccountNumber = "";
+        AccountNumber = Core::InputValidate::ReadString("\nPlease enter Account Number (or 0 to Back): ");
+        if (AccountNumber == "0")
+        {
+            return;
+        }
+
         while (!BankClient::IsClientExist(AccountNumber))
         {
-            AccountNumber = Core::InputValidate::ReadString("\nAccount number is not found, choose another one: ");
+            AccountNumber = Core::InputValidate::ReadString("\nAccount number is not found, choose another one (or 0 to Back): ");
+            if (AccountNumber == "0")
+            {
+                return;
+            }
         }
 
         BankClient Client1 = BankClient::Find(AccountNumber);
 
         if (!Client1.IsEmpty())
         {
-            std::cout << "\nClient Found :-)\n";
+            std::cout << "\nClient Found.\n";
+            _PrintClient(Client1);
         }
         else
         {
-            std::cout << "\nClient Was not Found :-(\n";
+            std::cout << "\nClient was not found.\n";
         }
-
-        _PrintClient(Client1);
-
     }
 
 };
-
