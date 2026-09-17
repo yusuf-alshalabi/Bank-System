@@ -4,58 +4,59 @@
 #include "../Screen.h"
 #include "../../Core/Currency.h"
 #include <iomanip>
+#include <vector>
+#include <string>
 
 class CurrenciesListScreen :protected Screen
 {
 
 private:
-    static void PrintCurrencyRecordLine(Currency Currency)
+    static void PrintCurrencyRecordLine(const Currency& Currency)
     {
-
-        std::cout << std::setw(8) << std::left << "" << "| " << std::setw(30) << std::left << Currency.Country();
-        std::cout << "| " << std::setw(8) << std::left << Currency.CurrencyCode();
-        std::cout << "| " << std::setw(45) << std::left << Currency.CurrencyName();
-        std::cout << "| " << std::setw(10) << std::left << Currency.Rate();
-
+        std::cout << CYAN << "| " << RESET << std::setw(30) << std::left << Currency.Country();
+        std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << Currency.CurrencyCode();
+        std::cout << CYAN << "| " << RESET << std::setw(45) << std::left << Currency.CurrencyName();
+        std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << Currency.Rate();
+        std::cout << CYAN << "|" << RESET;
     }
 
 public:
 
-
     static void ShowCurrenciesListScreen()
     {
+        if (!CheckActiveSession())
+        {
+            return;
+        }
 
+        std::vector<Currency> vCurrencies = Currency::GetCurrenciesList();
 
-        vector <Currency> vCurrencys = Currency::GetCurrenciesList();
-        string Title = "\t  Currencies List Screen";
-        string SubTitle = "\t    (" + to_string(vCurrencys.size()) + ") Currency.";
+        _DrawScreenHeader("Currencies List Screen", "(" + std::to_string(vCurrencies.size()) + ") Currency.");
 
-        _DrawScreenHeader(Title, SubTitle);
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_______________________________________________\n" << std::endl;
+        _ShowTableBorder(102);
 
-        std::cout << std::setw(8) << std::left << "" << "| " << std::left << std::setw(30) << "Country";
-        std::cout << "| " << std::left << std::setw(8) << "Code";
-        std::cout << "| " << std::left << std::setw(45) << "Name";
-        std::cout << "| " << std::left << std::setw(10) << "Rate/(1$)";
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_______________________________________________\n" << std::endl;
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(30) << "Country";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(8) << "Code";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(45) << "Name";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(12) << "Rate/(1$)";
+        std::cout << CYAN << "|\n" << RESET;
 
-        if (vCurrencys.size() == 0)
-            std::cout << "\t\t\t\tNo Currencies Available In the System!";
+        _ShowTableBorder(102);
+
+        if (vCurrencies.size() == 0)
+        {
+            std::cout << "\n  No Currencies Available In the System!\n";
+        }
         else
-
-            for (Currency Currency : vCurrencys)
+        {
+            for (const Currency& Currency : vCurrencies)
             {
-
                 PrintCurrencyRecordLine(Currency);
-                std::cout << std::endl;
+                std::cout << "\n";
             }
+        }
 
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_______________________________________________\n" << std::endl;
-
+        _ShowTableBorder(102);
     }
 
 };
-

@@ -3,6 +3,7 @@
 #include "../Screen.h"
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
+#include "../../Core/User.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/Util.h"
 #include <vector>
@@ -12,54 +13,56 @@ class TotalBalancesScreen : protected Screen
 
 private:
 
-    static void PrintClientRecordBalanceLine(BankClient Client)
+    static void PrintClientRecordBalanceLine(const BankClient& Client)
     {
-        std::cout << std::setw(25) << std::left << "" << "| " << std::setw(15) << std::left << Client.GetAccountNumber();
-        std::cout << "| " << std::setw(40) << std::left << Client.FullName();
-        std::cout << "| " << std::setw(12) << std::left
+        std::cout << CYAN<< "| " << RESET << std::setw(15) << std::left << Client.GetAccountNumber();
+        std::cout << CYAN<< "| " << RESET << std::setw(40) << std::left << Client.FullName();
+        std::cout << CYAN<< "| " << RESET << std::setw(14) << std::left
             << std::fixed << std::setprecision(2)
             << Client.GetAccountBalance();
+        std::cout << CYAN << "|" << RESET;
     }
 
 public:
 
     static void ShowTotalBalances()
     {
+        if (!CheckAccessRights(User::enPermissions::pTranactions))
+        {
+            return;
+        }
 
-        std::vector <BankClient> vClients = BankClient::GetClientsList();
-
-        std::string Title = "\t  Balances List Screen";
-        std::string SubTitle = "\t    (" + std::to_string(vClients.size()) + ") Client(s).";
-
-        _DrawScreenHeader(Title, SubTitle);
-
-        std::cout << std::setw(25) << std::left << "" << "\n\t\t_______________________________________________________";
-        std::cout << "__________________________\n" << std::endl;
-
-        std::cout << std::setw(25) << std::left << "" << "| " << std::left << std::setw(15) << "Accout Number";
-        std::cout << "| " << std::left << std::setw(40) << "Client Name";
-        std::cout << "| " << std::left << std::setw(12) << "Balance";
-        std::cout << std::setw(25) << std::left << "" << "\t\t_______________________________________________________";
-        std::cout << "__________________________\n" << std::endl;
-
+        std::vector<BankClient> vClients = BankClient::GetClientsList();
         double TotalBalances = BankClient::GetTotalBalances();
 
-        if (vClients.size() == 0)
-            std::cout << "\t\t\t\tNo Clients Available In the System!";
-        else
+        _DrawScreenHeader("Balances List Screen", "(" + std::to_string(vClients.size()) + ") Client(s).");
 
-            for (BankClient Client : vClients)
+        _ShowTableBorder(74);
+
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(15) << "Acc. Number";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(40) << "Client Name";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(14) << "Balance";
+        std::cout << CYAN << "|\n" << RESET;
+
+        _ShowTableBorder(74);
+
+        if (vClients.size() == 0)
+        {
+            std::cout << "\n  No Clients Available In the System!\n";
+        }
+        else
+        {
+            for (const BankClient& Client : vClients)
             {
                 PrintClientRecordBalanceLine(Client);
-                std::cout << std::endl;
+                std::cout << "\n";
             }
+        }
 
-        std::cout << std::setw(25) << std::left << "" << "\n\t\t_______________________________________________________";
-        std::cout << "__________________________\n" << std::endl;
+        _ShowTableBorder(74);
 
-        std::cout << std::setw(8) << std::left << "" << "\t\t\t\t\t\t\t     Total Balances = " << std::fixed << std::setprecision(2) << TotalBalances << std::endl;
-        std::cout << std::setw(8) << std::left << "" << "\t\t\t\t  ( " << Core::Util::NumberToText(TotalBalances) << ")";
+        std::cout << "\n  Total Balances = " << std::fixed << std::setprecision(2) << YELLOW << TotalBalances << RESET << "\n";
+        std::cout << YELLOW << "  ( " << Core::Util::NumberToText(TotalBalances) << ")\n" << RESET;
     }
 
 };
-;

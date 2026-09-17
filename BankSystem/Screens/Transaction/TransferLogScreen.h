@@ -2,72 +2,69 @@
 
 #include <iostream>
 #include "../Screen.h"
-#include <iomanip>
-#include <fstream>
 #include "../../Core/BankClient.h"
-
+#include "../../Core/User.h"
+#include <iomanip>
+#include <vector>
+#include <string>
 
 class TransferLogScreen :protected Screen
 {
 
 private:
 
-    static void PrintTransferLogRecordLine(BankClient::stTrnsferLogRecord TransferLogRecord)
+    static void PrintTransferLogRecordLine(const BankClient::stTrnsferLogRecord& TransferLogRecord)
     {
-
-        cout << setw(8) << left << "" << "| " << setw(23) << left << TransferLogRecord.DateTime;
-        cout << "| " << setw(8) << left << TransferLogRecord.SourceAccountNumber;
-        cout << "| " << setw(8) << left << TransferLogRecord.DestinationAccountNumber;
-        cout << "| " << setw(8) << left << TransferLogRecord.Amount;
-        cout << "| " << setw(10) << left << TransferLogRecord.srcBalanceAfter;
-        cout << "| " << setw(10) << left << TransferLogRecord.destBalanceAfter;
-        cout << "| " << setw(8) << left << TransferLogRecord.UserName;
-
-
+        std::cout << CYAN << "| " << RESET << std::setw(23) << std::left << TransferLogRecord.DateTime;
+        std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.SourceAccountNumber;
+        std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.DestinationAccountNumber;
+        std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.Amount;
+        std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.srcBalanceAfter;
+        std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.destBalanceAfter;
+        std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.UserName;
+        std::cout << CYAN << "|" << RESET;
     }
 
 public:
 
     static void ShowTransferLogScreen()
     {
+        if (!CheckAccessRights(User::enPermissions::pTranactions))
+        {
+            return;
+        }
 
+        std::vector<BankClient::stTrnsferLogRecord> vTransferLogRecord = BankClient::GetTransfersLogList();
 
-        vector <BankClient::stTrnsferLogRecord> vTransferLogRecord = BankClient::GetTransfersLogList();
+        _DrawScreenHeader("Transfer Log List Screen", "(" + std::to_string(vTransferLogRecord.size()) + ") Record(s).");
 
-        string Title = "\tTransfer Log List Screen";
-        string SubTitle = "\t    (" + to_string(vTransferLogRecord.size()) + ") Record(s).";
+        _ShowTableBorder(90);
 
-        _DrawScreenHeader(Title, SubTitle);
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(23) << "Date/Time";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(8) << "s.Acct";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(8) << "d.Acct";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(8) << "Amount";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(10) << "s.Balance";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(10) << "d.Balance";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(10) << "User";
+        std::cout << CYAN << "|\n" << RESET;
 
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_________________________________________\n" << endl;
-
-        std::cout << std::setw(8) << std::left << "" << "| " << std::left << std::setw(23) << "Date/Time";
-        std::cout << "| " << std::left << std::setw(8) << "s.Acct";
-        std::cout << "| " << std::left << std::setw(8) << "d.Acct";
-        std::cout << "| " << std::left << std::setw(8) << "Amount";
-        std::cout << "| " << std::left << std::setw(10) << "s.Balance";
-        std::cout << "| " << std::left << std::setw(10) << "d.Balance";
-        std::cout << "| " << std::left << std::setw(8) << "User";
-
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_________________________________________\n" << endl;
+        _ShowTableBorder(90);
 
         if (vTransferLogRecord.size() == 0)
-            std::cout << "\t\t\t\tNo Transfers Available In the System!";
+        {
+            std::cout << "\n  No Transfers Available In the System!\n";
+        }
         else
-
-            for (BankClient::stTrnsferLogRecord Record : vTransferLogRecord)
+        {
+            for (const BankClient::stTrnsferLogRecord& Record : vTransferLogRecord)
             {
-
                 PrintTransferLogRecordLine(Record);
-                std::cout << endl;
+                std::cout << "\n";
             }
+        }
 
-        std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
-        std::cout << "_________________________________________\n" << endl;
-
+        _ShowTableBorder(90);
     }
 
 };
-
