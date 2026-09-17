@@ -151,6 +151,7 @@
     <ClInclude Include="Core\InterfaceComunication.h" />
     <ClInclude Include="Core\Person.h" />
     <ClInclude Include="Core\Repositories\BankClientRepository.h" />
+    <ClInclude Include="Core\Repositories\CurrencyRepository.h" />
     <ClInclude Include="Core\Repositories\UserRepository.h" />
     <ClInclude Include="Core\Services\AuthService.h" />
     <ClInclude Include="Core\Services\MenuManager.h" />

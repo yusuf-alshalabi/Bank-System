@@ -140,6 +140,9 @@
     <ClInclude Include="Core\Repositories\BankClientRepository.h">
       <Filter>Header Files\Core\Repositories</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Repositories\CurrencyRepository.h">
+      <Filter>Header Files\Core\Repositories</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Services\AuthService.h">
       <Filter>Header Files\Core\Services</Filter>
     </ClInclude>

@@ -4,123 +4,13 @@
 #include<string>
 #include "../../Libs/Cpp-Library-Collection/Lib/String.h"
 #include <vector>
-#include <fstream>
+
 class Currency
 {
 
-private:
+public:
 
     enum enMode { EmptyMode = 0, UpdateMode = 1 };
-    enMode _Mode;
-
-    std::string _Country;
-    std::string _CurrencyCode;
-    std::string _CurrencyName;
-    double _Rate;
-
-    static Currency _ConvertLinetoCurrencyObject(std::string Line, std::string Seperator = "#//#")
-    {
-        std::vector<std::string> vCurrencyData;
-        vCurrencyData = Core::String::Split(Line, Seperator);
-
-        return Currency(enMode::UpdateMode, vCurrencyData[0], vCurrencyData[1], vCurrencyData[2],
-            stod(vCurrencyData[3]));
-
-    }
-
-    static std::string _ConverCurrencyObjectToLine(Currency Currency, std::string Seperator = "#//#")
-    {
-
-        std::string stCurrencyRecord = "";
-        stCurrencyRecord += Currency.Country() + Seperator;
-        stCurrencyRecord += Currency.CurrencyCode() + Seperator;
-        stCurrencyRecord += Currency.CurrencyName() + Seperator;
-        stCurrencyRecord += std::to_string(Currency.Rate());
-
-        return stCurrencyRecord;
-
-    }
-
-    static  std::vector <Currency> _LoadCurrencysDataFromFile()
-    {
-
-        std::vector <Currency> vCurrencys;
-
-        std::fstream MyFile;
-        MyFile.open("Currencies.txt", std::ios::in);//read Mode
-
-        if (MyFile.is_open())
-        {
-
-            std::string Line;
-
-            while (getline(MyFile, Line))
-            {
-
-                Currency Currency = _ConvertLinetoCurrencyObject(Line);
-
-                vCurrencys.push_back(Currency);
-            }
-
-            MyFile.close();
-
-        }
-
-        return vCurrencys;
-
-    }
-
-    static void _SaveCurrencyDataToFile(std::vector <Currency> vCurrencys)
-    {
-
-        std::fstream MyFile;
-        MyFile.open("Currencies.txt", std::ios::out);//overwrite
-
-        std::string DataLine;
-
-        if (MyFile.is_open())
-        {
-
-            for (Currency C : vCurrencys)
-            {
-                DataLine = _ConverCurrencyObjectToLine(C);
-                MyFile << DataLine << std::endl;
-
-
-
-            }
-
-            MyFile.close();
-
-        }
-
-    }
-
-    void _Update()
-    {
-        std::vector <Currency> _vCurrencys;
-        _vCurrencys = _LoadCurrencysDataFromFile();
-
-        for (Currency& C : _vCurrencys)
-        {
-            if (C.CurrencyCode() == CurrencyCode())
-            {
-                C = *this;
-                break;
-            }
-
-        }
-
-        _SaveCurrencyDataToFile(_vCurrencys);
-
-    }
-
-    static Currency _GetEmptyCurrencyObject()
-    {
-        return Currency(enMode::EmptyMode, "", "", "", 0);
-    }
-
-public:
 
     Currency(enMode Mode, std::string Country, std::string CurrencyCode, std::string CurrencyName, float Rate)
     {
@@ -131,29 +21,24 @@ public:
         _Rate = Rate;
     }
 
-    static std::vector <Currency> GetAllUSDRates()
-    {
+    static std::vector <Currency> GetAllUSDRates();
 
-        return _LoadCurrencysDataFromFile();
-
-    }
-
-    bool IsEmpty()
+    bool IsEmpty() const
     {
         return (_Mode == enMode::EmptyMode);
     }
 
-    std::string Country()
+    std::string Country() const
     {
         return _Country;
     }
 
-    std::string CurrencyCode()
+    std::string CurrencyCode() const
     {
         return _CurrencyCode;
     }
 
-    std::string CurrencyName()
+    std::string CurrencyName() const
     {
         return _CurrencyName;
     }
@@ -164,88 +49,25 @@ public:
         _Update();
     }
 
-    float Rate()
+    float Rate() const
     {
-        return _Rate;
+        return static_cast<float>(_Rate);
     }
 
+    static Currency FindByCode(std::string CurrencyCode);
 
-    static Currency FindByCode(std::string CurrencyCode)
-    {
+    static   Currency FindByCountry(std::string Country);
 
-        CurrencyCode = Core::String::UpperAllString(CurrencyCode);
+    static bool IsCurrencyExist(std::string CurrencyCode);
 
-        std::fstream MyFile;
-        MyFile.open("Currencies.txt", std::ios::in);//read Mode
+    static std::vector <Currency> GetCurrenciesList();
 
-        if (MyFile.is_open())
-        {
-            std::string Line;
-            while (getline(MyFile, Line))
-            {
-                Currency Currency = _ConvertLinetoCurrencyObject(Line);
-                if (Currency.CurrencyCode() == CurrencyCode)
-                {
-                    MyFile.close();
-                    return Currency;
-                }
-            }
-
-            MyFile.close();
-
-        }
-
-        return _GetEmptyCurrencyObject();
-
-    }
-
-    static   Currency FindByCountry(std::string Country)
-    {
-        Country = Core::String::UpperAllString(Country);
-
-        std::fstream MyFile;
-        MyFile.open("Currencies.txt", std::ios::in);//read Mode
-
-        if (MyFile.is_open())
-        {
-            std::string Line;
-            while (getline(MyFile, Line))
-            {
-                Currency Currency = _ConvertLinetoCurrencyObject(Line);
-                if (Core::String::UpperAllString(Currency.Country()) == Country)
-                {
-                    MyFile.close();
-                    return Currency;
-                }
-
-            }
-
-            MyFile.close();
-
-        }
-
-        return _GetEmptyCurrencyObject();
-
-    }
-
-    static bool IsCurrencyExist(std::string CurrencyCode)
-    {
-        Currency C1 = Currency::FindByCode(CurrencyCode);
-        return (!C1.IsEmpty());
-
-    }
-
-    static std::vector <Currency> GetCurrenciesList()
-    {
-        return _LoadCurrencysDataFromFile();
-    }
-
-    double ConvertToUSD(double Amount)
+    double ConvertToUSD(double Amount) const
     {
         return (double)(Amount / Rate());
     }
 
-    double ConvertToOtherCurrency(double Amount, Currency Currency2)
+    double ConvertToOtherCurrency(double Amount, Currency Currency2) const
     {
         double AmountInUSD = ConvertToUSD(Amount);
 
@@ -256,7 +78,61 @@ public:
 
         return (double)(AmountInUSD * Currency2.Rate());
     }
+
+private:
+
+    void _Update();
+
+    enMode _Mode;
+
+    std::string _Country;
+    std::string _CurrencyCode;
+    std::string _CurrencyName;
+    double _Rate;
 };
 
+// Persistence is delegated to CurrencyRepository below. The header is included
+// after the class so the include graph has no cycles: CurrencyRepository.h only
+// consumes the fully-defined Currency type.
+#include "Repositories/CurrencyRepository.h"
 
+inline std::vector <Currency> Currency::GetAllUSDRates()
+{
+    return Bank::Data::CurrencyRepository::LoadAll().Records;
+}
 
+inline Currency Currency::FindByCode(std::string CurrencyCode)
+{
+    return Bank::Data::CurrencyRepository::FindByCode(CurrencyCode);
+}
+
+inline Currency Currency::FindByCountry(std::string Country)
+{
+    return Bank::Data::CurrencyRepository::FindByCountry(Country);
+}
+
+inline bool Currency::IsCurrencyExist(std::string CurrencyCode)
+{
+    return Bank::Data::CurrencyRepository::Exists(CurrencyCode);
+}
+
+inline std::vector <Currency> Currency::GetCurrenciesList()
+{
+    return Bank::Data::CurrencyRepository::LoadAll().Records;
+}
+
+inline void Currency::_Update()
+{
+    std::vector <Currency> currencies = Bank::Data::CurrencyRepository::LoadAll().Records;
+
+    for (Currency& C : currencies)
+    {
+        if (C.CurrencyCode() == CurrencyCode())
+        {
+            C = *this;
+            break;
+        }
+    }
+
+    Bank::Data::CurrencyRepository::SaveAll(currencies);
+}
