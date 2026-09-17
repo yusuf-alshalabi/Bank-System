@@ -14,11 +14,11 @@ private:
 
 	static void PrintLoginRegisterRecordLine(const User::stLoginRegisterRecord& LoginRegisterRecord)
 	{
-		std::cout << "| " << std::setw(35) << std::left << LoginRegisterRecord.DateTime;
-		std::cout << "| " << std::setw(20) << std::left << LoginRegisterRecord.UserName;
-		std::cout << "| " << std::setw(20) << std::left << _FormatPasswordForDisplay(LoginRegisterRecord.Password);
-		std::cout << "| " << std::setw(10) << std::left << LoginRegisterRecord.Permissions;
-		std::cout << "|";
+		std::cout << CYAN << "| " << RESET << std::setw(35) << std::left << LoginRegisterRecord.DateTime;
+		std::cout << CYAN << "| " << RESET << std::setw(20) << std::left << LoginRegisterRecord.UserName;
+		std::cout << CYAN << "| " << RESET << std::setw(20) << std::left << _FormatPasswordForDisplay(LoginRegisterRecord.Password);
+		std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << LoginRegisterRecord.Permissions;
+		std::cout << CYAN << "|"<< RESET ;
 	}
 
 public:
@@ -36,11 +36,11 @@ public:
 
 		_ShowTableBorder(94);
 
-		std::cout << "| " << std::left << std::setw(35) << "Date/Time";
-		std::cout << "| " << std::left << std::setw(20) << "UserName";
-		std::cout << "| " << std::left << std::setw(20) << "Password";
-		std::cout << "| " << std::left << std::setw(10) << "Permissions";
-		std::cout << "|";
+		std::cout << CYAN << "| " << RESET << std::left << std::setw(35) << "Date/Time";
+		std::cout << CYAN << "| " << RESET << std::left << std::setw(20) << "UserName";
+		std::cout << CYAN << "| " << RESET << std::left << std::setw(20) << "Password";
+		std::cout << CYAN << "| " << RESET << std::left << std::setw(12) << "Permissions";
+		std::cout << CYAN << "|\n"<< RESET ;
 
 		_ShowTableBorder(94);
 
