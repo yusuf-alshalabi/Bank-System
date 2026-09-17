@@ -4,6 +4,7 @@
 #include "../Screen.h"
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
+#include "../../Core/User.h"
 #include "../../Core/Infrastructure/SessionManager.h"
 #include "../../Core/Services/TransactionService.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
@@ -16,70 +17,97 @@ private:
 	static void _PrintClient(const BankClient& Client)
 	{
 		std::cout << "\nClient Card:";
-		std::cout << "\n___________________";
-		std::cout << "\nFull Name   : " << Client.FullName();
-		std::cout << "\nAcc. Number : " << Client.GetAccountNumber();
-		std::cout << "\nBalance     : " << Client.GetAccountBalance();
-		std::cout << "\n___________________\n";
+		_ShowBorderLine(60, '=');
+		std::cout << "Full Name   : " << Client.FullName() << "\n";
+		std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
+		std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+		_ShowBorderLine(60, '=');
 	}
 
-	static string _ReadAccountNumber(const std::string& Prompt)
+	static std::string _ReadAccountNumber(const std::string& Prompt)
 	{
 		std::string AccountNumber = Core::InputValidate::ReadString(Prompt);
-		while (!BankClient::IsClientExist(AccountNumber))
+		if (AccountNumber == "0")
 		{
-			std::cout << "\nClient with [" << AccountNumber << "] does not exist.\n";
-			AccountNumber = Core::InputValidate::ReadString(Prompt);
+			return "0";
 		}
-		return AccountNumber;
-	}
 
-	static string _ReadAccountNumber()
-	{
-		string AccountNumber;
-		cout << "\nPlease Enter Account Number to Transfer From: ";
-		AccountNumber = Core::InputValidate::ReadString();
 		while (!BankClient::IsClientExist(AccountNumber))
 		{
-			cout << "\nAccount number is not found, choose another one: ";
-			AccountNumber = Core::InputValidate::ReadString();
+			AccountNumber = Core::InputValidate::ReadString("\nClient with [" + AccountNumber + "] does not exist (or 0 to Back): ");
+			if (AccountNumber == "0")
+			{
+				return "0";
+			}
 		}
 		return AccountNumber;
 	}
 
 	static double ReadAmount(const BankClient& SourceClient)
 	{
-		double Amount = Core::InputValidate::ReadNumber<double>("\nEnter transfer amount? ");
+		double Amount = Core::InputValidate::ReadNumber<double>("\nEnter transfer amount (or 0 to cancel): ");
+		if (Amount == 0)
+		{
+			return 0;
+		}
 
 		while (Amount <= 0)
 		{
 			std::cout << "\nTransfer amount must be greater than zero.\n";
-			Amount = Core::InputValidate::ReadNumber<double>("\nEnter transfer amount? ");
+			Amount = Core::InputValidate::ReadNumber<double>("\nEnter transfer amount (or 0 to cancel): ");
+			if (Amount == 0)
+			{
+				return 0;
+			}
 		}
 
 		while (SourceClient.GetAccountBalance() < Amount)
 		{
-			std::cout << "\nAmount Exceeds the available Balance,";
-			Amount = Core::InputValidate::ReadNumber<double>("\nEnter another amount : ");
+			std::cout << "\nAmount exceeds the available balance.\n";
+			Amount = Core::InputValidate::ReadNumber<double>("\nEnter another amount (or 0 to cancel): ");
+			if (Amount == 0)
+			{
+				return 0;
+			}
 		}
 		return Amount;
 	}
-
 
 public:
 
 	static void ShowTransferScreen()
 	{
-		_DrawScreenHeader("\t   Transfer Screen");
+		if (!CheckAccessRights(User::enPermissions::pTranactions))
+		{
+			return;
+		}
 
-		BankClient SourceClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer from: "));
+		_DrawScreenHeader("Transfer Screen");
+
+		std::string SourceAccount = _ReadAccountNumber("\nPlease enter Account Number to transfer from (or 0 to Back): ");
+		if (SourceAccount == "0")
+		{
+			return;
+		}
+
+		BankClient SourceClient = BankClient::Find(SourceAccount);
 		_PrintClient(SourceClient);
 
-		BankClient DestinationClient = BankClient::Find(_ReadAccountNumber("\nPlease enter Account Number to transfer to: "));
+		std::string DestinationAccount = _ReadAccountNumber("\nPlease enter Account Number to transfer to (or 0 to Back): ");
+		if (DestinationAccount == "0")
+		{
+			return;
+		}
+
+		BankClient DestinationClient = BankClient::Find(DestinationAccount);
 		_PrintClient(DestinationClient);
 
 		double Amount = ReadAmount(SourceClient);
-
+		if (Amount == 0)
+		{
+			_ShowErrorMessage("Operation was cancelled.");
+			return;
+		}
 
 		if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
 		{
@@ -87,20 +115,19 @@ public:
 
 			if (SourceClient.Transfer(Amount, DestinationClient, Bank::Security::SessionManager::Instance().CurrentUserName()))
 			{
-				std::cout << "\nAmount Transferred Successfully.\n";
-				std::cout << "\nTransfer Fee (1%): " << TransferFee;
+				_ShowSuccessMessage("Amount transferred successfully.");
+				std::cout << "Transfer Fee (1%): " << TransferFee << "\n";
 				_PrintClient(SourceClient);
 				_PrintClient(DestinationClient);
 			}
 			else
 			{
-				std::cout << "\nTransfer failed. Insufficient balance (amount + 1% fee) or invalid input.\n";
+				_ShowErrorMessage("Transfer failed. Insufficient balance (amount + 1% fee) or invalid input.");
 			}
 		}
 		else
 		{
-			std::cout << "\nOperation was cancelled.\n";
+			_ShowErrorMessage("Operation was cancelled.");
 		}
 	}
 };
-

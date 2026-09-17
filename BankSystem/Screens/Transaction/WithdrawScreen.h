@@ -4,6 +4,7 @@
 #include "../Screen.h"
 #include "../../Core/Person.h"
 #include "../../Core/BankClient.h"
+#include "../../Core/User.h"
 #include "../../../Libs/Cpp-Library-Collection/Lib/InputValidate.h"
 
 class WithdrawScreen : protected Screen
@@ -13,62 +14,72 @@ private:
     static void _PrintClient(const BankClient& Client)
     {
         std::cout << "\nClient Card:";
-        std::cout << "\n___________________";
-        std::cout << "\nFirstName   : " << Client.GetFirstName();
-        std::cout << "\nLastName    : " << Client.GetLastName();
-        std::cout << "\nFull Name   : " << Client.FullName();
-        std::cout << "\nEmail       : " << Client.GetEmail();
-        std::cout << "\nPhone       : " << Client.GetPhone();
-        std::cout << "\nAcc. Number : " << Client.GetAccountNumber();
-        std::cout << "\nPassword    : " << Client.GetPinCode();
-        std::cout << "\nBalance     : " << Client.GetAccountBalance();
-        std::cout << "\n___________________\n";
-
+        _ShowBorderLine(60, '=');
+        std::cout << "FirstName   : " << Client.GetFirstName() << "\n";
+        std::cout << "LastName    : " << Client.GetLastName() << "\n";
+        std::cout << "Full Name   : " << Client.FullName() << "\n";
+        std::cout << "Email       : " << Client.GetEmail() << "\n";
+        std::cout << "Phone       : " << Client.GetPhone() << "\n";
+        std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
+        std::cout << "Password    : " << Client.GetPinCode() << "\n";
+        std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+        _ShowBorderLine(60, '=');
     }
 
 public:
 
     static void ShowWithdrawScreen()
     {
-        _DrawScreenHeader("\t   Withdraw Screen");
+        if (!CheckAccessRights(User::enPermissions::pTranactions))
+        {
+            return;
+        }
 
-        std::string AccountNumber = Core::InputValidate::ReadString("\nPlease enter Account Number: ");
+        _DrawScreenHeader("Withdraw Screen");
 
+        std::string AccountNumber = Core::InputValidate::ReadString("\nPlease enter Account Number (or 0 to Back): ");
+        if (AccountNumber == "0")
+        {
+            return;
+        }
 
         while (!BankClient::IsClientExist(AccountNumber))
         {
-            std::cout << "\nClient with [" << AccountNumber << "] does not exist.\n";
-            AccountNumber = Core::InputValidate::ReadString("\nPlease enter Account Number: ");
+            AccountNumber = Core::InputValidate::ReadString("\nClient with [" + AccountNumber + "] does not exist (or 0 to Back): ");
+            if (AccountNumber == "0")
+            {
+                return;
+            }
         }
 
         BankClient Client1 = BankClient::Find(AccountNumber);
         _PrintClient(Client1);
 
-
-        double Amount = 0;
-        Amount = Core::InputValidate::ReadNumber<double>("\nPlease enter Withdraw amount? ");
+        double Amount = Core::InputValidate::ReadNumber<double>("\nPlease enter Withdraw amount (or 0 to cancel): ");
+        if (Amount == 0)
+        {
+            _ShowErrorMessage("Operation was cancelled.");
+            return;
+        }
 
         if (Core::InputValidate::ReadYesNoOption("\nAre you sure you want to perform this transaction? "))
         {
             if (Client1.Withdraw(Amount))
             {
-                std::cout << "\nAmount Withdrew Successfully.\n";
-                std::cout << "\nNew Balance Is: " << Client1.GetAccountBalance();
+                _ShowSuccessMessage("Amount withdrawn successfully.");
+                std::cout << "New Balance Is: " << Client1.GetAccountBalance() << "\n";
             }
             else
             {
-                std::cout << "\nCannot withdraw, Insuffecient Balance!\n";
-                std::cout << "\nAmout to withdraw is: " << Amount;
-                std::cout << "\nYour Balance is: " << Client1.GetAccountBalance();
-
+                _ShowErrorMessage("Cannot withdraw, insufficient balance!");
+                std::cout << "Amount to withdraw is: " << Amount << "\n";
+                std::cout << "Your Balance is: " << Client1.GetAccountBalance() << "\n";
             }
         }
         else
         {
-            std::cout << "\nOperation was cancelled.\n";
+            _ShowErrorMessage("Operation was cancelled.");
         }
-
     }
 
 };
-
