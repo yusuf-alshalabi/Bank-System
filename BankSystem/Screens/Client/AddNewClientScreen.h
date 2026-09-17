@@ -36,7 +36,7 @@ private:
         std::cout << "Phone       : " << Client.GetPhone() << "\n";
         std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
         std::cout << "Password    : " << Client.GetPinCode() << "\n";
-        std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+        std::cout << "Balance     : " << _FormatCurrency(Client.GetAccountBalance()) << "\n";
         _ShowBorderLine(60, '=');
     }
 

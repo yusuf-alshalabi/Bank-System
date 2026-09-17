@@ -17,7 +17,7 @@ private:
         std::cout << CYAN << "| " << RESET<< std::setw(12) << std::left << Client.GetPhone();
         std::cout << CYAN << "| " << RESET<< std::setw(20) << std::left << Client.GetEmail();
         std::cout << CYAN << "| " << RESET<< std::setw(10) << std::left << Client.GetPinCode();
-        std::cout << CYAN << "| " << RESET<< std::setw(14) << std::left << Client.GetAccountBalance();
+        std::cout << CYAN << "| " << RESET << GREEN << std::setw(14) << std::left << _CurrencyText(Client.GetAccountBalance()) << RESET;
         std::cout << CYAN << "|" << RESET;
     }
 
