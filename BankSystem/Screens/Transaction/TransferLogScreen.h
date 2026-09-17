@@ -18,9 +18,9 @@ private:
         std::cout << CYAN << "| " << RESET << std::setw(23) << std::left << TransferLogRecord.DateTime;
         std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.SourceAccountNumber;
         std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.DestinationAccountNumber;
-        std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << TransferLogRecord.Amount;
-        std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.srcBalanceAfter;
-        std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.destBalanceAfter;
+        std::cout << CYAN << "| " << RESET << GREEN << std::setw(8) << std::left << _CurrencyText(TransferLogRecord.Amount) << RESET;
+        std::cout << CYAN << "| " << RESET << GREEN << std::setw(10) << std::left << _CurrencyText(TransferLogRecord.srcBalanceAfter) << RESET;
+        std::cout << CYAN << "| " << RESET << GREEN << std::setw(10) << std::left << _CurrencyText(TransferLogRecord.destBalanceAfter) << RESET;
         std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << TransferLogRecord.UserName;
         std::cout << CYAN << "|" << RESET;
     }

@@ -22,7 +22,7 @@ private:
         std::cout << "Phone       : " << Client.GetPhone() << "\n";
         std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
         std::cout << "Password    : " << Client.GetPinCode() << "\n";
-        std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+        std::cout << "Balance     : " << _FormatCurrency(Client.GetAccountBalance()) << "\n";
         _ShowBorderLine(60, '=');
     }
 
@@ -67,13 +67,13 @@ public:
             if (Client1.Withdraw(Amount))
             {
                 _ShowSuccessMessage("Amount withdrawn successfully.");
-                std::cout << "New Balance Is: " << Client1.GetAccountBalance() << "\n";
+                std::cout << "New Balance Is: " << _FormatCurrency(Client1.GetAccountBalance()) << "\n";
             }
             else
             {
                 _ShowErrorMessage("Cannot withdraw, insufficient balance!");
-                std::cout << "Amount to withdraw is: " << Amount << "\n";
-                std::cout << "Your Balance is: " << Client1.GetAccountBalance() << "\n";
+                std::cout << "Amount to withdraw is: " << _FormatCurrency(Amount) << "\n";
+                std::cout << "Your Balance is: " << _FormatCurrency(Client1.GetAccountBalance()) << "\n";
             }
         }
         else

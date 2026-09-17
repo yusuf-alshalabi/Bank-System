@@ -17,9 +17,8 @@ private:
     {
         std::cout << CYAN<< "| " << RESET << std::setw(15) << std::left << Client.GetAccountNumber();
         std::cout << CYAN<< "| " << RESET << std::setw(40) << std::left << Client.FullName();
-        std::cout << CYAN<< "| " << RESET << std::setw(14) << std::left
-            << std::fixed << std::setprecision(2)
-            << Client.GetAccountBalance();
+        std::cout << CYAN<< "| " << RESET << GREEN << std::setw(14) << std::left
+            << _CurrencyText(Client.GetAccountBalance()) << RESET;
         std::cout << CYAN << "|" << RESET;
     }
 
@@ -61,7 +60,7 @@ public:
 
         _ShowTableBorder(74);
 
-        std::cout << "\n  Total Balances = " << std::fixed << std::setprecision(2) << YELLOW << TotalBalances << RESET << "\n";
+        std::cout << "\n  Total Balances = " << _FormatCurrency(TotalBalances) << "\n";
         std::cout << YELLOW << "  ( " << Core::Util::NumberToText(TotalBalances) << ")\n" << RESET;
     }
 

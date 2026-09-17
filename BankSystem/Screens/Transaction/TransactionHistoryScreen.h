@@ -32,8 +32,8 @@ private:
 		std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << _TypeName(Entry.Type);
 		std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << Entry.FromAccount;
 		std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << Entry.ToAccount;
-		std::cout << CYAN << "| " << RESET << std::setw(10) << std::left << std::fixed << std::setprecision(2) << Entry.Amount;
-		std::cout << CYAN << "| " << RESET << std::setw(8) << std::left << std::fixed << std::setprecision(2) << Entry.Fees;
+		std::cout << CYAN << "| " << RESET << GREEN << std::setw(10) << std::left << _CurrencyText(Entry.Amount) << RESET;
+		std::cout << CYAN << "| " << RESET << GREEN << std::setw(8) << std::left << _CurrencyText(Entry.Fees) << RESET;
 		std::cout << CYAN << "| " << RESET << std::setw(20) << std::left << Entry.Timestamp;
 		std::cout << CYAN << "| " << RESET << std::setw(27) << std::left << Entry.Description;
 		std::cout << CYAN << "|" << RESET;

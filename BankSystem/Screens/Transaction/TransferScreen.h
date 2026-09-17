@@ -20,7 +20,7 @@ private:
 		_ShowBorderLine(60, '=');
 		std::cout << "Full Name   : " << Client.FullName() << "\n";
 		std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
-		std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+		std::cout << "Balance     : " << _FormatCurrency(Client.GetAccountBalance()) << "\n";
 		_ShowBorderLine(60, '=');
 	}
 
@@ -116,7 +116,7 @@ public:
 			if (SourceClient.Transfer(Amount, DestinationClient, Bank::Security::SessionManager::Instance().CurrentUserName()))
 			{
 				_ShowSuccessMessage("Amount transferred successfully.");
-				std::cout << "Transfer Fee (1%): " << TransferFee << "\n";
+				std::cout << "Transfer Fee (1%): " << _FormatCurrency(TransferFee) << "\n";
 				_PrintClient(SourceClient);
 				_PrintClient(DestinationClient);
 			}

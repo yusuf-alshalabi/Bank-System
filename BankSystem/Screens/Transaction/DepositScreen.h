@@ -23,7 +23,7 @@ private:
         std::cout << "Phone       : " << Client.GetPhone() << "\n";
         std::cout << "Acc. Number : " << Client.GetAccountNumber() << "\n";
         std::cout << "Password    : " << Client.GetPinCode() << "\n";
-        std::cout << "Balance     : " << Client.GetAccountBalance() << "\n";
+        std::cout << "Balance     : " << _FormatCurrency(Client.GetAccountBalance()) << "\n";
         _ShowBorderLine(60, '=');
     }
 
@@ -68,7 +68,7 @@ public:
             if (Client1.Deposit(Amount))
             {
                 _ShowSuccessMessage("Amount deposited successfully.");
-                std::cout << "New Balance Is: " << Client1.GetAccountBalance() << "\n";
+                std::cout << "New Balance Is: " << _FormatCurrency(Client1.GetAccountBalance()) << "\n";
             }
             else
             {
