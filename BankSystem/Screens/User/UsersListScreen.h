@@ -16,7 +16,7 @@ private:
         std::cout << "| " << std::setw(25) << std::left << User.FullName();
         std::cout << "| " << std::setw(12) << std::left << User.GetPhone();
         std::cout << "| " << std::setw(20) << std::left << User.GetEmail();
-        std::cout << "| " << std::setw(10) << std::left << User.GetPassword();
+        std::cout << "| " << std::setw(25) << std::left << _FormatPasswordForDisplay(User.GetPassword());
         std::cout << "| " << std::setw(12) << std::left << User.GetPermissions();
 
     }
@@ -39,7 +39,7 @@ public:
         std::cout << "| " << std::left << std::setw(25) << "Full Name";
         std::cout << "| " << std::left << std::setw(12) << "Phone";
         std::cout << "| " << std::left << std::setw(20) << "Email";
-        std::cout << "| " << std::left << std::setw(10) << "Password";
+        std::cout << "| " << std::left << std::setw(25) << "Password";
         std::cout << "| " << std::left << std::setw(12) << "Permissions";
         std::cout << std::setw(8) << std::left << "" << "\n\t_______________________________________________________";
         std::cout << "______________________________________________\n" << endl;
