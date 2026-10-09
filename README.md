@@ -1,157 +1,232 @@
-# 🏦 CRUD Bank System — Version 1.4.1
+# 🏦 CRUD Bank System — Version 2.0.0 (OOP)
+
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Language](https://img.shields.io/badge/C%2B%2B-17-blue)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
+![Crypto](https://img.shields.io/badge/crypto-libsodium-green)
+![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
 > ⚠️ **PRODUCTION WARNING**  
-> This is an **educational project** demonstrating procedural programming concepts.  
+> This is an **educational project** demonstrating procedural-to-object-oriented refactoring and secure console programming concepts.  
 > **NOT RECOMMENDED FOR PRODUCTION USE**.  
 > For production banking software, use established frameworks with proper security audits.
 
 ---
 
-A professional console-based Bank Management System built in C++ as part of the Programming Advices Roadmap (Course 7).
+A professional console-based Bank Management System built in **C++17** as part of the Programming Advices Roadmap (Course 7).
 
-This version is a **structural refactor** of v1.4.0. The codebase has been reorganized into modular header files to improve readability, maintainability, and separation of responsibilities. No application logic was changed.
-
-This modular structure also simplifies the upcoming v2.0.0 OOP refactor while keeping the future object-oriented design flexible as the project evolves. 
+Version **v2.0.0** is a **complete Object-Oriented Programming (OOP) redesign** of the procedural v1.x series. The single-purpose free functions of the past have been replaced by a **layered class architecture** — domain models own their behavior, repositories own persistence, infrastructure owns security and I/O, services own policy, and screens own presentation. All application functionality from v1.4.1 is preserved, re-homed, and extended with a **Currency Exchange** module.
 
 ---
 
 ## ✨ Features
 
 ### 🔧 Client Management
-- **View All Clients** – Display all clients in a formatted table
+- **View All Clients** – Display all clients in a bordered, color-coded table
 - **Add New Client** – Add a client with a unique account number
-- **Delete Client** – Remove a client by account number
-- **Update Client Info** – Modify client details
-- **Find Client** – Search for a client and display full information
+- **Delete Client** – Remove a client with confirmation
+- **Update Client Info** – Modify client details through encapsulated setters
+- **Find Client** – Search for a client and display a full client card
 
 ### 💰 Financial Transactions
 - **Deposit** – Add funds to a client's account
-- **Withdraw** – Withdraw funds with full balance validation
-- **Transfer** – Send money between accounts with automatic fee calculation (1%)
-- **Total Balances** – Display all balances with a grand total
-- **Transaction History** – View complete transaction log for any account
-
-### 📊 Transaction Management System
-- **Complete Audit Trail** – Every deposit, withdrawal, and transfer is logged
-- **Unique Transaction IDs** – Format: TXN + timestamp + random component
-- **Fee Management** – Automatic 1% fee calculation for transfers
-- **Transaction Records** – Stored persistently in `Transactions.txt`
-- **History Reports** – Detailed transaction history per account
+- **Withdraw** – Withdraw funds with full overdraft/balance validation
+- **Transfer** – Send money between accounts with automatic **1% fee** and a single atomic commit for both balances
+- **Total Balances** – Display all balances with a grand total (plus number-to-text)
+- **Transaction History** – Newest-first transaction report per account
+- **Transfer Log** – Dedicated human-readable transfer audit table
 
 ### 👥 User Management & Access Control
 - **User CRUD Operations** – Add, Delete, Update, Find system users
-- **Role-Based Access Control (RBAC)** – Bitwise permission flags for granular access
-- **Dynamic Menus** – Menu adapts based on user permissions
-- **Password Hashing** – Secure password storage using Libsodium Argon2id hashing
-- **First-Time Setup** – System forces you to create a secure administrator account on first run with a strong password policy (minimum 8 characters, must include uppercase, lowercase, and a digit).
+- **Bitwise Role-Based Access Control (RBAC)** – **9 permission flags** for granular access
+- **Dynamic Menus** – The main menu is built at runtime from the signed-in user's permission bits
+- **Password Hashing** – Secure password storage using Libsodium **Argon2id** (`crypto_pwhash`)
+- **Strong Password Policy** – Minimum 8 characters, must include uppercase, lowercase, and a digit
+- **First-Time Setup** – The system forces creation of a secure administrator account on first run
+- **Last-Admin Protection** – The final full-access admin cannot be deleted or downgraded
 
 ### 🔒 Security & Session Management
-- **Binary Session Encryption** – XChaCha20-Poly1305 using Libsodium
-- **Secure Key Storage** – OS-protected encryption keys
-- **Auto Session Resume** – Seamless login experience
-- **Secure Logout** – 3-pass random overwrite before deletion
+- **Argon2id Password Hashing** – Memory-hard, salted hashes (`m=65536, t=2, p=1`)
+- **XChaCha20-Poly1305 Session Encryption** – Encrypted session token via Libsodium `crypto_secretbox`
+- **Auto Session Resume** – Seamless encrypted login resume on startup
+- **RAII Key Management** – The 32-byte key is zeroed on destruction (`SecretKey` + `sodium_memzero`), guarded by `SodiumRaiiGuard`
+- **Secure Logout** – 3-pass random overwrite (0x00 → 0xFF → random) before deletion
+- **No Password on Disk** – Only the username is stored in the encrypted session file
+- **Login Lockout** – Account is blocked after 3 failed login attempts
+- **Legacy Password Upgrade** – `DataMigrator` re-hashes legacy Caesar-cipher passwords to Argon2id
 
-### 💾 Data Management
-- **Data Persistence** – All client data stored in `Clients.txt`
-- **User Credentials** – Stored in `Users.txt` with hashed passwords
-- **Transaction Logs** – Complete history in `Transactions.txt`
-- **Real-Time Updates** – Instant file updates after modifications
-- **Automatic File Creation** – Generates data files if not exists
+### 💱 Currency Exchange System *(New in v2.0.0)*
+- **Browse Currencies** – Full currency list with USD-based rates
+- **Find Currency** – Lookup by currency code or country
+- **Update Rate** – Persist live exchange-rate changes
+- **Currency Calculator** – Bidirectional conversion between any two currencies through a USD pivot
 
-### 📜 Logging System
-- Logs all system activities in `SystemLog.txt`
-- Levels: **INFO, WARNING, ERROR, CRITICAL**
-- Context-aware: includes current user and timestamp
-- Transaction logs automatically generated
+### 📜 Audit & Resilience
+- **Complete Audit Trail** – Every deposit, withdrawal, transfer, and login is logged
+- **Structured Logs**
+  - `Transactions.txt` – Full financial transaction ledger
+  - `TransferLog.txt` – Before/after balances per transfer
+  - `LoginRegister.txt` – Successful login registry
+  - `SystemLog.txt` – Leveled system log (INFO, WARNING, ERROR, CRITICAL)
+- **Unique Transaction IDs** – Format: `TXN` + microsecond timestamp + random hex component
+- **AtomicFileStore** – Crash-safe `.tmp → .bak → rename` persistence with automatic backups
+- **Malformed-Line Skipping** – Corrupt records are ignored instead of crashing the loader
 
 ### 🎨 Enhanced User Interface
-- **Color-coded messages** (success, error, info) using ANSI escape codes
-- **Centered headers** and **bordered separators** for professional console output
-- Clear navigation prompts (`pressEnterToContinue()`, `backToMenu()`)
-
-### 🛡 Defensive Programming & Error Handling
-- Validates file size and format before reading
-- Prevents corrupted or tampered session files from loading
-- Secure overwrite of session files (3-pass random data) before deletion
-- Silent fail design in logging (errors don't disrupt program flow)
-- Comprehensive input validation for transactions and user actions
-
-### 🛡 Data Backup & Atomic Save
-- Automatic backup files (`Clients.bak`, `Users.bak`) created before any overwrite
-- Atomic Save: write to `.tmp` → backup original to `.bak` → rename `.tmp` to original
-- Guarantees recovery in case of unexpected errors or crashes
+- **Color-coded messages** (success, error, info, access denied) using ANSI escape codes
+- **Green currency formatting** and **bordered/centered tables** for professional console output
+- **Consistent navigation** with `0 to Back / Exit` prompts on every screen
 
 ---
 
-## 🗂 File Structure (v1.4.1 — Modular)
+## 🗂 File & Directory Architecture (v2.0.0 — Layered OOP)
 
-> **NEW in v1.4.1:** The single-file `BankSystem.cpp` has been split into 14 modular header files. This improves code organization, readability, maintainability, and separation of responsibilities, laying the groundwork for the complete object-oriented redesign planned for v2.0.0.
-### Source Files
+> **NEW in v2.0.0:** The modular procedural headers of v1.4.1 have been rebuilt as an **object-oriented, layered architecture**. Presentation, domain logic, persistence, security, and policy are now cleanly separated. The old v1.4.1 headers are kept under `LastVersion/` for reference and are no longer compiled.
 
-| File | Responsibility |
-|:-----|:--------------|
-| `Main.cpp` | Entry point — includes all headers in order |
-| `Globals.h` | Structs, Enums, Constants, Forward Declarations |
-| `Utilities.h` | Formatting, UI helpers, screen control |
-| `Crypto.h` | Encryption & Decryption (libsodium) |
-| `Session.h` | Session save / load / clear |
-| `Logger.h` | Logging system |
-| `FileManager.h` | File I/O, Serialization, Atomic save |
-| `InputManager.h` | Input reading & validation |
-| `PermissionManager.h` | Permission checks |
-| `ClientManager.h` | Client CRUD operations |
-| `TransactionManager.h` | Deposit / Withdraw / Transfer |
-| `UserManager.h` | User CRUD operations |
-| `AuthManager.h` | Login, Password hashing, Admin setup |
-| `MenuManager.h` | All menus and navigation |
+```text
+BankSystem/
+├── BankSystem.sln                 # Visual Studio solution
+├── Main.cpp                       # Entry point (only .cpp file)
+├── BankSystem/
+│   ├── Core/                      # Domain + business/security layers
+│   │   ├── InterfaceComunication.h   # Abstract communication interface
+│   │   ├── Person.h                  # Base identity class
+│   │   ├── User.h                    # System operator + RBAC
+│   │   ├── BankClient.h              # Bank account + money operations
+│   │   ├── Currency.h                # Currency + conversion logic
+│   │   ├── Infrastructure/           # Cross-cutting services
+│   │   │   ├── AtomicFileStore.h        # Crash-safe file I/O
+│   │   │   ├── CryptoEngine.h           # Libsodium encryption (+ RAII guards)
+│   │   │   ├── DataMigrator.h           # Legacy password migration
+│   │   │   ├── Logger.h                 # Singleton leveled logger
+│   │   │   ├── PasswordHasher.h         # Argon2id hashing
+│   │   │   ├── PasswordPolicy.h         # Strength policy
+│   │   │   └── SessionManager.h         # Encrypted session singleton
+│   │   ├── Repositories/            # Persistence layer
+│   │   │   ├── BankClientRepository.h
+│   │   │   ├── CurrencyRepository.h
+│   │   │   └── UserRepository.h
+│   │   └── Services/               # Policy & orchestration layer
+│   │       ├── AuthService.h
+│   │       ├── MenuManager.h
+│   │       ├── TransactionService.h
+│   │       └── UserService.h
+│   ├── Screens/                   # UI layer
+│   │   ├── Screen.h                  # Shared UI toolkit (base class)
+│   │   ├── MainScreen.h
+│   │   ├── Auth/                     # LoginScreen, LoginRegisterScreen
+│   │   ├── Client/                   # Add/List/Delete/Update/Find
+│   │   ├── Currency/                 # List/Find/UpdateRate/Calculator/Main
+│   │   ├── Transaction/              # Deposit/Withdraw/Transfer/...
+│   │   └── User/                     # Manage/Add/List/Delete/Update/Find
+│   └── Database/                  # Flat-file persistent storage
+│       ├── Clients.txt
+│       ├── Users.txt
+│       ├── Currencies.txt
+│       ├── Transactions.txt
+│       ├── TransferLog.txt
+│       ├── LoginRegister.txt
+│       └── SystemLog.txt
+└── Libs/Cpp-Library-Collection/    # Git submodule (String, Date, Util, InputValidate)
+```
+
+### Layer Responsibilities
+
+| Layer | Location | Responsibility |
+|:------|:---------|:---------------|
+| **Domain** | `Core/*.h` | Entities owned by an identity: `Person`, `User`, `BankClient`, `Currency` |
+| **Infrastructure** | `Core/Infrastructure/` | Crypto, session, logging, atomic file I/O, migration |
+| **Repositories** | `Core/Repositories/` | Record format + file persistence for each entity |
+| **Services** | `Core/Services/` | Auth bootstrap, transactions, user policy, dynamic menus |
+| **UI (Screens)** | `Screens/` | Console presentation, input, navigation, permission gates |
 
 ### Data Files
 - **Clients.txt** – Client account information
-- **Users.txt** – User credentials and permissions
-- **Transactions.txt** – Complete transaction history
+- **Users.txt** – User credentials (Argon2id hashes) and permissions
+- **Currencies.txt** – Currency catalogue and rates
+- **Transactions.txt** – Complete transaction ledger
+- **TransferLog.txt** – Detailed transfer audit
+- **LoginRegister.txt** – Login registry
+- **SystemLog.txt** – System activity log
 
 ### Session Files (Hidden)
-- **Windows:** `%LOCALAPPDATA%\BankSystem\session_username.bsess`
-- **Linux/macOS:** `~/.config/BankSystem/session.bsess`
+- **Windows:** `%LOCALAPPDATA%\BankSystem\session_<osUser>.bsess`
+- **Linux/macOS:** `~/.config/BankSystem/session.bsess` (falls back to the temp directory)
+- **Encryption Key:** `encryption_key.bsess` stored alongside the session file
 
 ---
 
 ## 📊 Version Comparison
 
-| Feature | v1.0 | v1.1 | v1.2 | v1.3 | v1.4 | v1.4.1 |
-|---------|:----:|:----:|:----:|:----:|:----:|:------:|
-| Client CRUD | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Deposit/Withdraw | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Money Transfers | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Total Balances Report | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Transaction History | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| User Management | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| RBAC Permissions | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| Session Encryption | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Password Hashing | ❌ | ❌ | ⚠️ Weak | ⚠️ Weak | ✅ Argon2id | ✅ Argon2id |
-| Transaction Logging | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| System Logging | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Color-coded UI | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Data Loss Protection | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| **Modular Header Files** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Feature | v1.0 | v1.1 | v1.2 | v1.3 | v1.4 | v1.4.1 | **v2.0.0 (OOP)** |
+|---------|:----:|:----:|:----:|:----:|:----:|:------:|:----------------:|
+| Client CRUD | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Deposit/Withdraw | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Money Transfers | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Total Balances Report | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Transaction History | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| User Management | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| RBAC Permissions | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ (9 flags) |
+| Session Encryption | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Password Hashing | ❌ | ❌ | ⚠️ Weak | ⚠️ Weak | ✅ Argon2id | ✅ Argon2id | ✅ Argon2id |
+| Password Strength Policy | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Transaction Logging | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| System Logging | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Color-coded UI | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Data Loss Protection (Atomic Save) | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Modular Header Files | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| **Currency Exchange** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Object-Oriented Architecture** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Layered Repositories & Services** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Legacy Password Migration** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 **Legend:**  
 ✅ Fully Implemented | ⚠️ Implemented (Weak/Insecure) | ❌ Not Available
 
-**Security Note:** v1.2.0 and v1.3.0 used `std::hash` for password hashing, which is NOT cryptographically secure. Only v1.4.0+ uses Libsodium Argon2id password hashing.
+**Security Note:** v1.2.0 and v1.3.0 used `std::hash` for password hashing, which is NOT cryptographically secure. Only v1.4.0+ uses Libsodium Argon2id password hashing. v2.0.0 additionally migrates any surviving legacy passwords automatically.
+
+---
+
+## 🏗 Architecture Overview
+
+```text
+v1.0.0 → v1.3.0
+Single / early modular procedural source
+        │
+        ▼
+v1.4.1
+Modular procedural headers (14 files)
+        │
+        ▼
+v2.0.0
+Layered Object-Oriented Architecture
+Domain · Infrastructure · Repositories · Services · UI Screens
+```
+
+### 🧩 OOP Concepts Applied
+- **Inheritance** – `Person` → `User` / `BankClient`; every screen derives from `Screen`
+- **Abstraction / Interfaces** – `InterfaceComunication` abstract base
+- **Encapsulation** – `private` members exposed via getters/setters and `__declspec(property)`
+- **Polymorphism** – Virtual `SendEmail` / `SendFax` / `SendSMS`
+- **Composition** – Repositories compose `AtomicFileStore`; `Logger` composes `SessionManager`
+- **Singleton** – `Logger::Instance()`, `SessionManager::Instance()`
+- **Repository Pattern** – One repository per entity owns record format + persistence
+- **Service Layer** – Auth, transaction, user, and menu policy isolated from UI
+- **RAII** – `SodiumRaiiGuard` and `SecretKey` manage crypto resources safely
+- **Static Utility Classes** – `AtomicFileStore`, `CryptoEngine`, `PasswordHasher`, `PasswordPolicy`, `DataMigrator`
 
 ---
 
 ## ⚙ How to Run
 
 ### Prerequisites
-- C++ compiler (g++ recommended)
-- C++11 standard or later
+- A **C++17** (or later) compiler: MSVC 2017+/VS2022, GCC 7+, or Clang 5+
 - **Libsodium** library installed and linked
+- *(Windows)* Visual Studio with the **v143** toolset and **vcpkg** for Libsodium
 
 ### Installation & Build
 
-1. **Install Libsodium**
+1. **Install Libsodium** (see [LIBSODIUM_SETUP.md](LIBSODIUM_SETUP.md) for details)
 
    **Ubuntu/Debian:**
    ```bash
@@ -170,7 +245,7 @@ This modular structure also simplifies the upcoming v2.0.0 OOP refactor while ke
 
 2. **Compile the program**
    ```bash
-   g++ -o BankSystem Main.cpp -std=c++11 -lsodium
+   g++ -o BankSystem Main.cpp -std=c++17 -lsodium
    ```
 
 3. **Run the executable**
@@ -179,50 +254,15 @@ This modular structure also simplifies the upcoming v2.0.0 OOP refactor while ke
    BankSystem.exe      # Windows
    ```
 
-4. The system starts automatically with main menu and loads/creates data files
-
-### 📦 Libsodium Installation
-
-For detailed setup instructions, see the full guide here:  
-[Libsodium Setup Instructions](LIBSODIUM_SETUP.md)
+   > **Windows (Visual Studio):** open `BankSystem.sln`, select **x64**, and build. The project is configured for `stdcpp17` and links `libsodium.lib` from vcpkg.
 
 ### 🔐 First-Time Setup
-
-1. Program detects no users exist in `Users.txt`
-2. Prompts you to create first administrator account
-3. Enter desired username
-4. Enter password (minimum 8 characters, must include uppercase, lowercase, and a digit)
-5. Password is immediately hashed using Argon2id
-6. Account created with full permissions (pAll = 127)
-
----
-
-## 💻 Code Quality & Architecture
-
-### 🏗 v1.4.1 — Modular Procedural Architecture
-
-v1.4.1 is a **pure structural refactor** of v1.4.0 with **zero logic changes**. The goal of this release is to improve code organization by separating the application into logical modules with clear responsibilities. This structural refactor makes the codebase easier to maintain, navigate, and extend while making future architectural changes easier, including the transition to an object-oriented design.
-
-```text
-v1.4.0
-Monolithic source file
-        │
-        ▼
-v1.4.1
-Modular source organization
-        │
-        ▼
-v2.0.0
-Object-Oriented Architecture
-```
-
-### 🔧 Professional C++ Usage
-- **Structs** – `strClient`, `strUser`, `Transaction` organize related data
-- **Enums** – Menu options and permission flags eliminate magic numbers
-- **Pointers** – `strClient*` enables direct in-memory editing
-- **Input Validation** – Prevents negative amounts, overdrafts, invalid input
-- **Cross-Platform** – Works on Windows, Linux, and macOS
-- **Pointers** – Direct in-memory modification of client records without unnecessary copying
+1. `DataMigrator::MigrateLegacyUsersPasswordStorage()` runs automatically — any legacy Caesar-cipher passwords in `Users.txt` are upgraded to Argon2id (idempotent).
+2. `AuthService::EnsureFirstRunAdmin()` runs automatically — if no users exist, you are prompted to create the first administrator.
+3. Enter a username.
+4. Enter a password meeting the strength policy (min 8 chars, uppercase, lowercase, digit).
+5. The password is hashed with Argon2id; the account is created with full permissions (`eAll = -1`).
+6. Subsequent launches resume an encrypted session or present the login screen.
 
 ---
 
@@ -230,27 +270,42 @@ Object-Oriented Architecture
 
 | Feature Area | Implementation Details |
 | :--- | :--- |
-| **Password Security** | Libsodium Argon2id hashing, minimum 8 characters, uppercase + lowercase + digit required |
-| **Session Security** | XChaCha20-Poly1305 encryption, OS-protected key storage, 3-pass secure overwrite |
-| **Transaction Security** | Unique transaction IDs, timestamp validation, balance verification |
-| **Access Control** | Bitwise permission flags (7 levels + admin), dynamic menu system |
-| **Data Protection** | Input validation, bounds checking, file corruption detection |
+| **Password Security** | Libsodium **Argon2id** (`crypto_pwhash`, INTERACTIVE cost), min 8 chars, uppercase + lowercase + digit required |
+| **Password Migration** | `DataMigrator` decrypts legacy Caesar-cipher passwords and re-hashes them with Argon2id |
+| **Session Security** | **XChaCha20-Poly1305** (`crypto_secretbox`), per-OS-user encrypted key file, 3-pass secure overwrite |
+| **Memory Safety** | `SecretKey` zeroes key material on destruction; `SodiumRaiiGuard` guarantees one-time init |
+| **Transaction Security** | Unique transaction IDs, timestamp capture, balance verification, single atomic commit for transfers |
+| **Access Control** | Bitwise permission flags (8 granular bits + full-access), dynamic permission-filtered menus |
+| **Data Protection** | Atomic saves (`.tmp → .bak → rename`), 100 MB file-size guard, malformed-line skipping |
 
 ---
 
 ## 🛡 Bitwise Permissions
 
 ```cpp
-enum Permission {
-    pListClients  = 1,   // 0000001
-    pAddClient    = 2,   // 0000010
-    pDeleteClient = 4,   // 0000100
-    pUpdateClient = 8,   // 0001000
-    pFindClient   = 16,  // 0010000
-    pTransactions = 32,  // 0100000
-    pManageUsers  = 64,  // 1000000
-    pAll          = 127  // 1111111 (Full Access)
+enum enPermissions {
+    eAll           = -1,   // Full Access (all bits set)
+    pListClients   = 1,    // 00000001
+    pAddNewClient  = 2,    // 00000010
+    pDeleteClient  = 4,    // 00000100
+    pUpdateClients = 8,    // 00001000
+    pFindClient    = 16,   // 00010000
+    pTranactions   = 32,   // 00100000
+    pManageUsers   = 64,   // 01000000
+    pLoginRegister = 128   // 10000000  (New in v2.0.0)
 };
+```
+
+Permission checks are performed by `User::CheckAccessPermission()`:
+
+```cpp
+bool CheckAccessPermission(enPermissions Permission) const
+{
+    if (Permissions == enPermissions::eAll)
+        return true;
+
+    return (Permission & Permissions) == Permission;
+}
 ```
 
 ---
@@ -258,15 +313,15 @@ enum Permission {
 ## 📊 Transaction Structure
 
 ```cpp
-struct Transaction {
-    string TransactionID;       // Format: TXN + timestamp + random component
-    TransactionType Type;       // DEPOSIT (1) / WITHDRAWAL (2) / TRANSFER (3)
-    string FromAccount;         // Source account number
-    string ToAccount;           // Destination account number
-    double Amount;              // Transaction amount
-    double Fees;                // Transfer fees (0 for deposit/withdraw)
-    string Timestamp;           // YYYY-MM-DD HH:MM:SS
-    string Description;         // Transaction description
+struct TransactionEntry {
+    std::string TransactionID;   // Format: TXN + timestamp + random hex
+    int         Type;            // 1 = Deposit | 2 = Withdrawal | 3 = Transfer
+    std::string FromAccount;     // Source account number
+    std::string ToAccount;       // Destination account number
+    double      Amount;          // Transaction amount
+    double      Fees;            // Transfer fees (0 for deposit/withdraw)
+    std::string Timestamp;       // YYYY-MM-DD HH:MM:SS
+    std::string Description;     // Transaction description
 };
 ```
 
@@ -283,7 +338,8 @@ For detailed information about each version and changes, see **[VERSIONS.md](VER
 | [v1.2.0][v120] | User Management + RBAC System |
 | [v1.3.0][v130] | Binary Session Encryption (Libsodium) |
 | [v1.4.0][v140] | Transaction Management + Money Transfers |
-| [v1.4.1][v141] | Modular Code Organization ⭐ |
+| [v1.4.1][v141] | Modular Code Organization |
+| [v2.0.0][v200] | Complete OOP Redesign + Currency Exchange ⭐ |
 
 ---
 
@@ -299,11 +355,12 @@ Contributions are welcome. If you find a bug or have an idea for improvement, fe
 
 ---
 
-**Built with:** C++ | Libsodium | File-based Persistence  
+**Built with:** C++17 | Libsodium | File-based Persistence  
 **Developer:** Yusuf Zakaria Alshalabi  
-**Version:** 1.4.1  
-**Last Update:** February 2026
+**Version:** 2.0.0  
+**Last Update:** October 2026
 
+[v200]: https://github.com/yusuf-alshalabi/Bank-System/tree/v2.0.0
 [v141]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.1
 [v140]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.0
 [v130]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.3.0

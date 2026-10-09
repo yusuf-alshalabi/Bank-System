@@ -4,6 +4,129 @@ Complete changelog and feature details for all versions.
 
 ---
 
+## Version 2.0.0 — Complete Object-Oriented Redesign (OOP) & Currency Exchange (October 2026)  [v2.0.0][v200]
+
+### 🎯 Main Focus
+A **complete architectural refactor from procedural programming to layered Object-Oriented Programming (OOP)** in **C++17**, together with the introduction of a brand-new **Currency Exchange** module.
+
+> ⚠️ **Major release.** All v1.4.1 functionality is preserved and re-homed into classes; the presentation layer, domain logic, persistence, security, and policy are now cleanly separated.
+
+### ✨ What Changed
+
+#### 🏗 Layered OOP Architecture (NEW)
+The 14 procedural header modules of v1.4.1 were redesigned into five cooperating layers:
+
+| Layer | Type | Examples |
+|:------|:-----|:---------|
+| **Domain** | Entity classes | `Person`, `User`, `BankClient`, `Currency` |
+| **Infrastructure** | Cross-cutting utilities | `AtomicFileStore`, `CryptoEngine`, `PasswordHasher`, `PasswordPolicy`, `Logger`, `SessionManager`, `DataMigrator` |
+| **Repositories** | Persistence | `UserRepository`, `BankClientRepository`, `CurrencyRepository` |
+| **Services** | Policy & orchestration | `AuthService`, `TransactionService`, `UserService`, `MenuManager` |
+| **Screens** | Presentation | `Screen` + 26 feature screens |
+
+#### 🧬 Object-Oriented Concepts Introduced
+- **Inheritance:** `Person` → `User` and `Person` → `BankClient`; every screen derives from `Screen`.
+- **Abstraction:** `InterfaceComunication` is a pure abstract interface.
+- **Encapsulation:** All entity state is `private`, exposed through getters/setters and `__declspec(property)`.
+- **Polymorphism:** Virtual `SendEmail` / `SendFax` / `SendSMS` on `Person`.
+- **Singleton:** `Logger` and `SessionManager`.
+- **Repository Pattern:** One repository class per entity.
+- **RAII:** `SodiumRaiiGuard` and `SecretKey` for safe crypto resource lifecycle.
+- **Namespaces:** `Bank::Persistence`, `Bank::Security`, `Bank::Data`, `Bank::Transactions`, `Bank::Users`, `Bank::UI`, `Bank::Auth`, `Bank::Diagnostics`.
+
+#### 💱 Currency Exchange Module (NEW)
+- `Currency` domain class with conversion logic (`ConvertToUSD`, `ConvertToOtherCurrency`).
+- `CurrencyRepository` for `Currencies.txt` persistence.
+- `CurrencyExchangeMainScreen` sub-menu.
+- `CurrenciesListScreen` – browse all currencies and USD rates.
+- `FindCurrencyScreen` – lookup by code or country.
+- `UpdateCurrencyRateScreen` – persist live rate changes.
+- `CurrencyCalculatorScreen` – bidirectional multi-currency conversion via a USD pivot.
+
+#### 🔐 Enhanced Security
+- **`PasswordHasher`** – Argon2id hashing and verification (`crypto_pwhash`, INTERACTIVE cost).
+- **`PasswordPolicy`** – Enforces min 8 chars with uppercase, lowercase, and digit.
+- **`PasswordHasher::IsHashed()` / `HashIfNeeded()`** – Seamlessly distinguishes raw vs. already-hashed values.
+- **`SessionManager`** – Singleton encrypted session resume; **RAII key wipe** on destruction; 3-pass logout.
+- **`DataMigrator`** – One-time, idempotent migration of legacy Caesar-cipher passwords to Argon2id on startup.
+- **`SecretKey`** – Overwrites key bytes with `sodium_memzero` when destroyed.
+
+#### 🛡 Resilience & Data Integrity
+- **`AtomicFileStore`** – Every full-file write follows `.tmp → .bak → rename`, so a crash never yields a truncated file.
+- **Backups** – Automatic `.bak` copy before each overwrite.
+- **Validation** – 100 MB size cap, empty-line filtering, and malformed-record skipping.
+- **`SplitPreserve`** – Field splitting that preserves empty fields (unlike the shared `Core::String::Split`).
+
+#### 🖥 UI Re-Architecture
+- `Screen` base class centralizing ANSI colors, table/border drawing, headers, prompts, and permission/session gates.
+- All screens now use `protected Screen` inheritance for shared rendering.
+- Permission-filtered dynamic main menu built by `MenuManager::BuildMainMenu()`.
+- Consistent `0 to Back / Exit` navigation across all menus.
+- Green currency formatting via `_CurrencyText()` and `_FormatCurrency()`.
+- Argon2id hashes masked in list screens via `_FormatPasswordForDisplay()`.
+
+### 🆕 Newly Added Classes
+
+#### Domain
+| Class | Responsibility |
+|:------|:---------------|
+| `InterfaceComunication` | Abstract communication interface |
+| `Person` | Shared identity (name, email, phone) + virtual messaging |
+| `User` | Operator account, RBAC, save/delete, login registry |
+| `BankClient` | Account holder; deposit/withdraw/transfer, transfer log |
+| `Currency` | Currency data, rate update, conversion math |
+
+#### Infrastructure
+| Class | Responsibility |
+|:------|:---------------|
+| `AtomicFileStore` | Crash-safe line-oriented persistence |
+| `CryptoEngine` | XChaCha20-Poly1305 encryption/decryption |
+| `SodiumRaiiGuard` | One-time libsodium initialization guard |
+| `SecretKey` | Zeroed-on-destroy secret key buffer |
+| `PasswordHasher` | Argon2id hashing/verification |
+| `PasswordPolicy` | Password strength validation + secure input |
+| `Logger` | Thread-safe leveled logging singleton |
+| `SessionManager` | Encrypted session persistence + resume singleton |
+| `DataMigrator` | Caesar → Argon2id password migration |
+
+#### Repositories
+| Class | Responsibility |
+|:------|:---------------|
+| `UserRepository` | `Users.txt` record format + persistence |
+| `BankClientRepository` | `Clients.txt` record format + persistence |
+| `CurrencyRepository` | `Currencies.txt` record format + persistence |
+
+#### Services
+| Class | Responsibility |
+|:------|:---------------|
+| `AuthService` | First-run admin bootstrap |
+| `TransactionService` | Transaction IDs, fee rate, ledger + history |
+| `UserService` | User policy gates (last-admin, credential verify) |
+| `MenuManager` | Permission-filtered dynamic main menu |
+
+#### Screens (26 concrete + 1 base)
+- **Base:** `Screen`
+- **Main:** `MainScreen`
+- **Auth:** `LoginScreen`, `LoginRegisterScreen`
+- **Client:** `ClientListScreen`, `AddNewClientScreen`, `DeleteClientScreen`, `UpdateClientScreen`, `FindClientScreen`
+- **Currency:** `CurrencyExchangeMainScreen`, `CurrenciesListScreen`, `FindCurrencyScreen`, `UpdateCurrencyRateScreen`, `CurrencyCalculatorScreen`
+- **Transaction:** `TransactionsScreen`, `DepositScreen`, `WithdrawScreen`, `TotalBalancesScreen`, `TransferScreen`, `TransferLogScreen`, `TransactionHistoryScreen`
+- **User:** `ManageUsersScreen`, `UsersListScreen`, `AddNewUserScreen`, `DeleteUserScreen`, `UpdateUserScreen`, `FindUserScreen`
+
+### 🔧 Technical Additions
+- Standardized on **C++17** (`stdcpp17`), namespaces, `std::optional`, `std::filesystem`, `std::unique_ptr`.
+- Permanent `LastVersion/` folder retaining the procedural v1.4.1 headers for reference (not compiled).
+- New `pLoginRegister` permission bit (`128`) gates the Login Register audit screen.
+- Data files standardized to `Database/` and resolved via private path constants.
+
+### 📈 Improvements
+- Single atomic commit for transfers (both balances written together).
+- Stronger input validation and cancellation (`0`-to-cancel/back) across screens.
+- Centralized, reusable console rendering.
+- Cleaner include graph via repository delegation (no circular dependencies).
+
+---
+
 ## Version 1.4.1 — Modular Header Split (February 2026)  [v1.4.1][v141]
 
 ### 🎯 Main Focus
@@ -446,33 +569,39 @@ struct strClient {
 | **v1.3.0** | Session Encryption | Secure Session Management with Binary Encryption |
 | **v1.4.0** | Transaction Management | Complete audit trail |
 | **v1.4.1** | Modular Header Split | Pre-OOP bridge |
+| **v2.0.0** | Complete OOP Redesign + Currency Exchange | Layered, maintainable, extensible architecture |
 
 ---
 
 ## 📊 Cumulative Feature Count
 
+### v1.4.1 (Procedural — final)
 - **Total Structs:** 3 (strClient, strUser, Transaction)
-- **Total Enums:** 6 (TransactionType, MainMenuOption, TransactionsOption, UserManagementOption, Permission, LogLevel)
-- **Total Functions:** 80+ functions across 14 modules
+- **Total Enums:** 6
+- **Total Functions:** 80+ across 14 modules
 - **Source Files:** 14 (1 `.cpp` + 13 `.h`)
-- **Data Files:** 3 (Clients.txt, Users.txt, Transactions.txt)
 - **External Dependencies:** 1 (Libsodium)
+
+### v2.0.0 (OOP — current)
+- **Total Classes / Structs:** 48 across 5 layers
+  - Domain: 5 · Infrastructure: 9 · Repositories: 3 · Services: 4 · UI: 27
+- **Total Enums:** 6 shared (+ per-screen menu enums)
+- **Screens:** 1 base + 26 concrete
+- **Source Files:** 1 `.cpp` (`Main.cpp`) + 47 `.h` (header-only design)
+- **Data Files:** 7 (`Clients`, `Users`, `Currencies`, `Transactions`, `TransferLog`, `LoginRegister`, `SystemLog`)
+- **External Dependencies:** 2 (Libsodium, Cpp-Library-Collection submodule)
+- **Language Standard:** C++17
 
 ---
 
 ## 🚀 Future Roadmap
 
-### 📅 Next Release: Version 2.0.0 — The OOP Transformation
-
-After mastering the procedural logic and security foundations in the 1.x series, the next major milestone will be a complete Architectural Refactor:
-
-- **Paradigm Shift:** Moving from Procedural to Object-Oriented Programming (OOP)
-- **Class Hierarchy:** Implementing a robust inheritance system (e.g., `clsPerson` → `clsUser` & `clsClient`)
-- **Encapsulation:** Protecting sensitive financial data using private members and public getters/setters
-- **Abstraction & Polymorphism:** Streamlining bank operations through abstract classes and interfaces
-- **Modern Memory Management:** Utilizing Smart Pointers (`std::unique_ptr`, `std::shared_ptr`) for modern C++ standards
-
-> v1.4.1 header files map 1-to-1 with planned v2.0.0 classes — migration will be significantly more straightforward.
+The v2.0.0 OOP foundation opens the door to further evolution:
+- **Smart Pointers & Ownership:** Apply `std::unique_ptr` / `std::shared_ptr` where object lifetimes are dynamic.
+- **Polymorphic Messaging:** Implement the `Person` communication methods (email/fax/SMS) for real notifications.
+- **Abstract Persistence Interfaces:** Extract repository interfaces to allow swapping flat files for a database.
+- **Unit Testing:** Add a test harness around the repository and service layers.
+- **Authentication Hardening:** Add account lockout persistence and audit-based anomaly detection.
 
 ---
 
@@ -480,6 +609,7 @@ After mastering the procedural logic and security foundations in the 1.x series,
 **Developer:** Yusuf Zakaria Alshalabi  
 **Part of:** Programming Advices Roadmap – Course 7
 
+[v200]: https://github.com/yusuf-alshalabi/Bank-System/tree/v2.0.0
 [v141]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.1
 [v140]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.4.0
 [v130]: https://github.com/yusuf-alshalabi/Bank-System/tree/v1.3.0
