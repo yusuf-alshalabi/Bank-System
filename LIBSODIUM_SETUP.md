@@ -32,7 +32,7 @@ The Bank System uses Libsodium for:
 * *Memory (RAM)*: 100MB free for compilation
 * *Storage*: 50MB free space
 
-> 📌 **Project standard:** The Bank System v2.0.0 is built with the C++17 standard and a header-only OOP architecture. `Main.cpp` is the single translation unit (`.cpp`) that pulls in the entire class hierarchy.
+> 📌 **Project standard:** The Bank System v2.0.0 is built with the C++17 standard and a header-only OOP architecture. `Main.cpp` is the single translation unit (`.cpp`) that pulls in the entire layered class hierarchy (`Core/` and `Screens/`).
 
 ---
 
@@ -110,7 +110,7 @@ sudo ldconfig
 
 ## 🔗 Linking with C++
 
-> ⚠️ **v2.0.0 Note:** The entry point remains `Main.cpp`. The codebase is now a **header-only OOP architecture** — `Main.cpp` includes the layered `Core/` and `Screens/` headers directly.  
+> ⚠️ **v2.0.0 Note:** The entry point is `Main.cpp`. The codebase is now a **header-only OOP architecture** — `Main.cpp` includes the layered `Core/` and `Screens/` headers directly.  
 > Use `Main.cpp` in all compilation commands below and compile with **C++17**.
 
 | Purpose | Command |

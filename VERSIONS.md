@@ -65,6 +65,30 @@ The 14 procedural header modules of v1.4.1 were redesigned into five cooperating
 - Green currency formatting via `_CurrencyText()` and `_FormatCurrency()`.
 - Argon2id hashes masked in list screens via `_FormatPasswordForDisplay()`.
 
+### 🔑 Permission Constant Standardization
+The full-access permission constant was redefined as the **complete 8-bit mask** so that access checks are pure bitwise operations:
+
+```cpp
+enum enPermissions {
+    pListClients   = 1,    // 00000001
+    pAddNewClient  = 2,    // 00000010
+    pDeleteClient  = 4,    // 00000100
+    pUpdateClients = 8,    // 00001000
+    pFindClient    = 16,   // 00010000
+    pTranactions   = 32,   // 00100000
+    pManageUsers   = 64,   // 01000000
+    pLoginRegister = 128,  // 10000000
+    eAll           = 255   // 11111111  (Full Access)
+};
+
+bool CheckAccessPermission(enPermissions Permission) const
+{
+    return (Permission & Permissions) == Permission;
+}
+```
+
+**Constant history:** `eAll`/`pAll` was `-1` (all bits set in two's complement) in v1.2–v1.3, `127` in v1.4–v1.4.1 (the then-7-bit mask), and is now **`255` (11111111)** in v2.0.0 to match the full 8-permission-bit layout including `pLoginRegister`.
+
 ### 🆕 Newly Added Classes
 
 #### Domain
@@ -350,7 +374,7 @@ enum TransactionType {
 
 #### 🔐 Security Enhancements
 - Password hashing upgraded from `std::hash` (used in v1.2.0–v1.3.0) to **Libsodium Argon2id** in v1.4.0, providing modern, memory-hard, and secure password storage
-- Permission constant `pAll` standardized: previously defined as `-1` in v1.2–v1.3, now set to `127` (binary 1111111) for consistency
+- Permission constant `pAll` standardized: previously defined as `-1` in v1.2–v1.3, now set to `127` (binary 1111111) for consistency with the then-7-bit mask
 
 ### 📈 Improvements
 - Real-time transaction logging
@@ -589,6 +613,7 @@ struct strClient {
 - **Screens:** 1 base + 26 concrete
 - **Source Files:** 1 `.cpp` (`Main.cpp`) + 47 `.h` (header-only design)
 - **Data Files:** 7 (`Clients`, `Users`, `Currencies`, `Transactions`, `TransferLog`, `LoginRegister`, `SystemLog`)
+- **RBAC Full-Access Mask:** `eAll = 255` (11111111)
 - **External Dependencies:** 2 (Libsodium, Cpp-Library-Collection submodule)
 - **Language Standard:** C++17
 

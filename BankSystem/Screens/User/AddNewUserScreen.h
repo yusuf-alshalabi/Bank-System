@@ -45,7 +45,7 @@ private:
 
         if (Core::InputValidate::ReadYesNoOption("\nDo you want to give full access? "))
         {
-            return -1;
+            return User::enPermissions::eAll;
         }
 
         std::cout << "\nDo you want to give access to: ";

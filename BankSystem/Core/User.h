@@ -68,8 +68,15 @@ public:
     enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
 
     enum enPermissions {
-        eAll = -1, pListClients = 1, pAddNewClient = 2, pDeleteClient = 4,
-		pUpdateClients = 8, pFindClient = 16, pTranactions = 32, pManageUsers = 64, pLoginRegister = 128
+        pListClients   = 1,
+        pAddNewClient  = 2,
+        pDeleteClient  = 4,
+        pUpdateClients = 8,
+        pFindClient    = 16,
+        pTranactions   = 32,
+        pManageUsers   = 64,
+        pLoginRegister = 128,
+        eAll           = 255
     };
 
     User(enMode Mode, string FirstName, string LastName,
@@ -148,14 +155,7 @@ public:
 
     bool CheckAccessPermission(enPermissions Permission) const
     {
-        if (this->Permissions == enPermissions::eAll)
-            return true;
-
-        if ((Permission & this->Permissions) == Permission)
-            return true;
-        else
-            return false;
-
+        return (Permission & this->Permissions) == Permission;
     }
 
     void RegisterLogIn()

@@ -261,7 +261,7 @@ Domain · Infrastructure · Repositories · Services · UI Screens
 2. `AuthService::EnsureFirstRunAdmin()` runs automatically — if no users exist, you are prompted to create the first administrator.
 3. Enter a username.
 4. Enter a password meeting the strength policy (min 8 chars, uppercase, lowercase, digit).
-5. The password is hashed with Argon2id; the account is created with full permissions (`eAll = -1`).
+5. The password is hashed with Argon2id; the account is created with full permissions (`eAll = 255`).
 6. Subsequent launches resume an encrypted session or present the login screen.
 
 ---
@@ -275,7 +275,7 @@ Domain · Infrastructure · Repositories · Services · UI Screens
 | **Session Security** | **XChaCha20-Poly1305** (`crypto_secretbox`), per-OS-user encrypted key file, 3-pass secure overwrite |
 | **Memory Safety** | `SecretKey` zeroes key material on destruction; `SodiumRaiiGuard` guarantees one-time init |
 | **Transaction Security** | Unique transaction IDs, timestamp capture, balance verification, single atomic commit for transfers |
-| **Access Control** | Bitwise permission flags (8 granular bits + full-access), dynamic permission-filtered menus |
+| **Access Control** | Bitwise permission flags (8 granular bits + full access `eAll = 255`), dynamic permission-filtered menus |
 | **Data Protection** | Atomic saves (`.tmp → .bak → rename`), 100 MB file-size guard, malformed-line skipping |
 
 ---
@@ -284,7 +284,6 @@ Domain · Infrastructure · Repositories · Services · UI Screens
 
 ```cpp
 enum enPermissions {
-    eAll           = -1,   // Full Access (all bits set)
     pListClients   = 1,    // 00000001
     pAddNewClient  = 2,    // 00000010
     pDeleteClient  = 4,    // 00000100
@@ -292,18 +291,16 @@ enum enPermissions {
     pFindClient    = 16,   // 00010000
     pTranactions   = 32,   // 00100000
     pManageUsers   = 64,   // 01000000
-    pLoginRegister = 128   // 10000000  (New in v2.0.0)
+    pLoginRegister = 128,  // 10000000  (New in v2.0.0)
+    eAll           = 255   // 11111111  (Full Access)
 };
 ```
 
-Permission checks are performed by `User::CheckAccessPermission()`:
+Permission checks are performed by `User::CheckAccessPermission()` using pure bitwise evaluation:
 
 ```cpp
 bool CheckAccessPermission(enPermissions Permission) const
 {
-    if (Permissions == enPermissions::eAll)
-        return true;
-
     return (Permission & Permissions) == Permission;
 }
 ```
