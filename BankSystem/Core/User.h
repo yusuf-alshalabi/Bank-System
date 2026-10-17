@@ -10,6 +10,7 @@
 #include <vector>
 
 using namespace std;
+
 class User : public Person
 {
 public:
@@ -20,7 +21,6 @@ public:
         string UserName;
         string Password;
         int Permissions;
-
     };
 
 private:
@@ -45,7 +45,6 @@ private:
         LoginRegisterRecord.Permissions = stoi(LoginRegisterDataLine[3]);
 
         return LoginRegisterRecord;
-
     }
 
     string _PrepareLogInRecord(string Seperator = "#//#")
@@ -68,22 +67,21 @@ public:
     enum enMode { EmptyMode = 0, UpdateMode = 1, AddNewMode = 2 };
 
     enum enPermissions {
-        pListClients   = 1,
-        pAddNewClient  = 2,
-        pDeleteClient  = 4,
+        pListClients = 1,
+        pAddNewClient = 2,
+        pDeleteClient = 4,
         pUpdateClients = 8,
-        pFindClient    = 16,
-        pTranactions   = 32,
-        pManageUsers   = 64,
+        pFindClient = 16,
+        pTranactions = 32,
+        pManageUsers = 64,
         pLoginRegister = 128,
-        eAll           = 255
+        eAll = 255
     };
 
     User(enMode Mode, string FirstName, string LastName,
         string Email, string Phone, string UserName, string Password,
         int Permissions) :
         Person(FirstName, LastName, Email, Phone)
-
     {
         _Mode = Mode;
         _UserName = UserName;
@@ -135,6 +133,51 @@ public:
     }
     __declspec(property(get = GetPermissions, put = SetPermissions)) int Permissions;
 
+    // =========================================================================
+    // دالة تحويل الصلاحيات (Bitwise Integer) إلى نص مقروء ومحدد
+    // =========================================================================
+    static string FormatPermissions(int Permissions)
+    {
+        if (Permissions == enPermissions::eAll)
+            return "Full Access";
+
+        if (Permissions == 0)
+            return "No Permissions";
+
+        vector<pair<enPermissions, string>> mapping = {
+            {enPermissions::pListClients,   "List Clients"},
+            {enPermissions::pAddNewClient,  "Add Clients"},
+            {enPermissions::pDeleteClient,  "Delete Clients"},
+            {enPermissions::pUpdateClients, "Update Clients"},
+            {enPermissions::pFindClient,    "Find Clients"},
+            {enPermissions::pTranactions,   "Transactions"},
+            {enPermissions::pManageUsers,   "Manage Users"},
+            {enPermissions::pLoginRegister, "Login Register"}
+        };
+
+        vector<string> resultList;
+        for (const auto& item : mapping)
+        {
+            if (Permissions & item.first)
+            {
+                resultList.push_back(item.second);
+            }
+        }
+
+        if (resultList.empty())
+            return "No Permissions";
+
+        string result = "";
+        for (size_t i = 0; i < resultList.size(); i++)
+        {
+            result += resultList[i];
+            if (i < resultList.size() - 1)
+                result += ", ";
+        }
+
+        return result;
+    }
+
     static User Find(string UserName);
     static User Find(string UserName, string Password);
 
@@ -160,14 +203,11 @@ public:
 
     void RegisterLogIn()
     {
-
         string stDataLine = _PrepareLogInRecord();
-
         Bank::Persistence::AtomicFileStore::AppendLine(_LoginRegisterFileName, stDataLine);
-
     }
 
-    static  vector <stLoginRegisterRecord> GetLoginRegisterList()
+    static vector <stLoginRegisterRecord> GetLoginRegisterList()
     {
         vector <stLoginRegisterRecord> vLoginRegisterRecord;
 
@@ -183,7 +223,6 @@ public:
         }
 
         return vLoginRegisterRecord;
-
     }
 
 private:
