@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{46eff7a8-4a57-4f4f-8307-91eb80146679}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Core\Infrastructure">
-      <UniqueIdentifier>{c2e0e1a9-4d35-4f6e-9b1a-6d0c6ea3b7c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Core\Repositories">
       <UniqueIdentifier>{8f45a2d0-1b3c-4a1e-9b7d-2d9c4f0a6e82}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="Header Files\Screens\Auth">
       <UniqueIdentifier>{cadbd019-abb8-4eb2-a4b8-6db2f169ddb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Repositories\Infrastructure">
+      <UniqueIdentifier>{c2e0e1a9-4d35-4f6e-9b1a-6d0c6ea3b7c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -108,25 +108,25 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\CryptoEngine.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\AtomicFileStore.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\PasswordPolicy.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\DataMigrator.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\Logger.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\PasswordHasher.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\Infrastructure\SessionManager.h">
-      <Filter>Header Files\Core\Infrastructure</Filter>
+      <Filter>Header Files\Core\Repositories\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="Core\InterfaceComunication.h">
       <Filter>Header Files\Core</Filter>
