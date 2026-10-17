@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\LastVersion">
-      <UniqueIdentifier>{69be1c2b-baa7-4e08-a172-7497457c4fba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{46eff7a8-4a57-4f4f-8307-91eb80146679}</UniqueIdentifier>
     </Filter>
@@ -64,45 +61,6 @@
     </ClInclude>
     <ClInclude Include="Screens\MainScreen.h">
       <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\AuthManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\ClientManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\Crypto.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\FileManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\Globals.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\InputManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\Logger.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\MenuManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\PermissionManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\Session.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\TransactionManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\UserManager.h">
-      <Filter>Header Files\LastVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="LastVersion\Utilities.h">
-      <Filter>Header Files\LastVersion</Filter>
     </ClInclude>
     <ClInclude Include="Core\User.h">
       <Filter>Header Files\Core</Filter>
