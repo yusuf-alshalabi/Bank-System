@@ -12,12 +12,12 @@ class UsersListScreen :protected Screen
 private:
     static void _PrintUserRecordLine(const User& User)
     {
-        std::cout << CYAN << "| "<< RESET << std::setw(12) << std::left << User.GetUserName();
-        std::cout << CYAN << "| "<< RESET << std::setw(25) << std::left << User.FullName();
-        std::cout << CYAN << "| "<< RESET << std::setw(12) << std::left << User.GetPhone();
-        std::cout << CYAN << "| "<< RESET << std::setw(20) << std::left << User.GetEmail();
-        std::cout << CYAN << "| "<< RESET << std::setw(25) << std::left << _FormatPasswordForDisplay(User.GetPassword());
-        std::cout << CYAN << "| "<< RESET << std::setw(14) << std::left << User.GetPermissions();
+        std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << User.GetUserName();
+        std::cout << CYAN << "| " << RESET << std::setw(22) << std::left << User.FullName();
+        std::cout << CYAN << "| " << RESET << std::setw(12) << std::left << User.GetPhone();
+        std::cout << CYAN << "| " << RESET << std::setw(20) << std::left << User.GetEmail();
+        std::cout << CYAN << "| " << RESET << std::setw(25) << std::left << _FormatPasswordForDisplay(User.GetPassword());
+        std::cout << CYAN << "| " << RESET << std::setw(90) << std::left << User.FormatPermissions(User.GetPermissions());
         std::cout << CYAN << "|" << RESET;
     }
 
@@ -34,17 +34,17 @@ public:
 
         _DrawScreenHeader("User List Screen", "(" + std::to_string(vUsers.size()) + ") User(s).");
 
-        _ShowTableBorder(119);
+        _ShowTableBorder(192);
 
         std::cout << CYAN << "| " << RESET << std::left << std::setw(12) << "UserName";
-        std::cout << CYAN << "| " << RESET << std::left << std::setw(25) << "Full Name";
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(22) << "Full Name";
         std::cout << CYAN << "| " << RESET << std::left << std::setw(12) << "Phone";
         std::cout << CYAN << "| " << RESET << std::left << std::setw(20) << "Email";
         std::cout << CYAN << "| " << RESET << std::left << std::setw(25) << "Password";
-        std::cout << CYAN << "| " << RESET << std::left << std::setw(14) << "Permissions";
-        std::cout << CYAN << "|\n"<< RESET ;
+        std::cout << CYAN << "| " << RESET << std::left << std::setw(90) << "Permissions";
+        std::cout << CYAN << "|\n" << RESET;
 
-        _ShowTableBorder(119);
+        _ShowTableBorder(192);
 
         if (vUsers.size() == 0)
         {
@@ -59,7 +59,7 @@ public:
             }
         }
 
-        _ShowTableBorder(119);
+        _ShowTableBorder(192);
     }
 
 };
