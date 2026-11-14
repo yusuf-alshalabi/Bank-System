@@ -46,7 +46,7 @@ namespace Bank::Security {
 		}
 	};
 
-	// XChaCha20-Poly1305 authenticated encryption (migration of LastVersion/Crypto.h).
+	// XSalsa20-Poly1305 authenticated encryption (migration of LastVersion/Crypto.h).
 	// EncryptBlob output layout: [24-byte nonce][ciphertext + 16-byte MAC].
 	class CryptoEngine
 	{
