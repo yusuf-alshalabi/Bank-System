@@ -13,7 +13,7 @@ The Bank System uses Libsodium for:
 | Feature | Libsodium API |
 |:--------|:--------------|
 | **Password hashing** | `crypto_pwhash` / `crypto_pwhash_str_verify` (Argon2id) |
-| **Session encryption** | `crypto_secretbox_easy` / `crypto_secretbox_open_easy` (XChaCha20-Poly1305) |
+| **Session encryption** | `crypto_secretbox_easy` / `crypto_secretbox_open_easy` (XSalsa20-Poly1305) |
 | **Secure randomness** | `randombytes_buf` / `randombytes_random` |
 | **Secure memory wipe** | `sodium_memzero` |
 | **Initialization** | `sodium_init` (via the `SodiumRaiiGuard` RAII helper) |

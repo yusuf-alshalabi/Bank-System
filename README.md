@@ -47,7 +47,7 @@ Version **v2.0.0** is a **complete Object-Oriented Programming (OOP) redesign** 
 
 ### 🔒 Security & Session Management
 - **Argon2id Password Hashing** – Memory-hard, salted hashes (`m=65536, t=2, p=1`)
-- **XChaCha20-Poly1305 Session Encryption** – Encrypted session token via Libsodium `crypto_secretbox`
+- **XSalsa20-Poly1305 Session Encryption** – Encrypted session token via Libsodium `crypto_secretbox`
 - **Auto Session Resume** – Seamless encrypted login resume on startup
 - **RAII Key Management** – The 32-byte key is zeroed on destruction (`SecretKey` + `sodium_memzero`), guarded by `SodiumRaiiGuard`
 - **Secure Logout** – 3-pass random overwrite (0x00 → 0xFF → random) before deletion
@@ -81,7 +81,7 @@ Version **v2.0.0** is a **complete Object-Oriented Programming (OOP) redesign** 
 
 ## 🗂 File & Directory Architecture (v2.0.0 — Layered OOP)
 
-> **NEW in v2.0.0:** The modular procedural headers of v1.4.1 have been rebuilt as an **object-oriented, layered architecture**. Presentation, domain logic, persistence, security, and policy are now cleanly separated. The old v1.4.1 headers are kept under `LastVersion/` for reference and are no longer compiled.
+> **NEW in v2.0.0:** The modular procedural headers of v1.4.1 have been rebuilt as an **object-oriented, layered architecture**. Presentation, domain logic, persistence, security, and policy are now cleanly separated. The old v1.4.1 headers are not part of the v2.0.0 tree; they remain available in the `v1.4.1` Git tag for reference.
 
 ```text
 BankSystem/
@@ -272,7 +272,7 @@ Domain · Infrastructure · Repositories · Services · UI Screens
 | :--- | :--- |
 | **Password Security** | Libsodium **Argon2id** (`crypto_pwhash`, INTERACTIVE cost), min 8 chars, uppercase + lowercase + digit required |
 | **Password Migration** | `DataMigrator` decrypts legacy Caesar-cipher passwords and re-hashes them with Argon2id |
-| **Session Security** | **XChaCha20-Poly1305** (`crypto_secretbox`), per-OS-user encrypted key file, 3-pass secure overwrite |
+| **Session Security** | **XSalsa20-Poly1305** (`crypto_secretbox`), per-OS-user encrypted key file, 3-pass secure overwrite |
 | **Memory Safety** | `SecretKey` zeroes key material on destruction; `SodiumRaiiGuard` guarantees one-time init |
 | **Transaction Security** | Unique transaction IDs, timestamp capture, balance verification, single atomic commit for transfers |
 | **Access Control** | Bitwise permission flags (8 granular bits + full access `eAll = 255`), dynamic permission-filtered menus |

@@ -104,7 +104,7 @@ bool CheckAccessPermission(enPermissions Permission) const
 | Class | Responsibility |
 |:------|:---------------|
 | `AtomicFileStore` | Crash-safe line-oriented persistence |
-| `CryptoEngine` | XChaCha20-Poly1305 encryption/decryption |
+| `CryptoEngine` | XSalsa20-Poly1305 encryption/decryption |
 | `SodiumRaiiGuard` | One-time libsodium initialization guard |
 | `SecretKey` | Zeroed-on-destroy secret key buffer |
 | `PasswordHasher` | Argon2id hashing/verification |
@@ -139,7 +139,7 @@ bool CheckAccessPermission(enPermissions Permission) const
 
 ### 🔧 Technical Additions
 - Standardized on **C++17** (`stdcpp17`), namespaces, `std::optional`, `std::filesystem`, `std::unique_ptr`.
-- Permanent `LastVersion/` folder retaining the procedural v1.4.1 headers for reference (not compiled).
+- Procedural v1.4.1 headers are no longer shipped in the working tree; they remain available in the `v1.4.1` Git tag for reference (not compiled).
 - New `pLoginRegister` permission bit (`128`) gates the Login Register audit screen.
 - Data files standardized to `Database/` and resolved via private path constants.
 
@@ -393,7 +393,7 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 ### ✨ New Features
 
 #### 🔒 Binary Session Encryption
-- **Algorithm:** XChaCha20-Poly1305 (strong authenticated encryption)
+- **Algorithm:** XSalsa20-Poly1305 (strong authenticated encryption)
 - **Library:** Libsodium integration
 - Encrypted session files stored as `.bsess` (binary format)
 - Non-reversible encryption for session data
@@ -424,7 +424,7 @@ Enterprise-grade **Session Management** with binary encryption using Libsodium.
 #### New Functions
 - `getEncryptionKey()` – Load or generate encryption key
 - `generateEncryptionKey()` – Create new random key
-- `encryptData()` – XChaCha20-Poly1305 encryption
+- `encryptData()` – XSalsa20-Poly1305 encryption
 - `decryptData()` – Decryption with authentication
 - `getSessionPath()` – Platform-specific session file path
 - `getSessionFolder()` – Session folder path
